@@ -11,9 +11,12 @@ load_dotenv()
 # Try multiple sources for API key
 try:
     import streamlit as st
-    API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg"))
+    API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY"))
 except:
-    API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg") 
+    API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    raise ValueError("GEMINI_API_KEY not found. Please set it in .env file") 
 genai.configure(api_key=API_KEY)
 
 def process_pdf_to_json(pdf_path, output_path):

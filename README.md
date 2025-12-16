@@ -13,7 +13,9 @@ Hệ thống thi thử GMAT được tối ưu hóa cho tuyển sinh Thạc sĩ 
 
 ## 🚀 Demo
 
-**Live Demo:** [https://gmat-ueh-training.azurewebsites.net](https://gmat-ueh-training.azurewebsites.net)
+**Live Demo:** [https://gmatuehtraining.streamlit.app/](https://gmatuehtraining.streamlit.app/)
+
+> 🎓 **Deployed on Streamlit Cloud** - Free, fast, and optimized for mobile devices!
 
 ## 📱 Mobile Support
 

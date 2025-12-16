@@ -12,12 +12,15 @@ from functools import lru_cache
 load_dotenv()
 
 # --- CẤU HÌNH ---
-# Try Streamlit secrets first, then env variable, then fallback
+# Try Streamlit secrets first, then env variable
 try:
     import streamlit as st
-    API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg"))
+    API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY"))
 except:
-    API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg")
+    API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    raise ValueError("GEMINI_API_KEY not found. Please set it in Streamlit secrets or .env file")
 try:
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemma-3-12b-it') # Dùng Gemma 3 12B Instruction-Tuned
