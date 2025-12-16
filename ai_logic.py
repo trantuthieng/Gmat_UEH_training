@@ -11,31 +11,39 @@ from functools import lru_cache
 # Load environment variables
 load_dotenv()
 
-# --- CẤU HÌNH ---
-# Try Streamlit secrets first, then env variable, with fallback for testing
-try:
-    import streamlit as st
-    API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY"))
-except Exception as e:
-    API_KEY = os.getenv("GEMINI_API_KEY")
+# --- CẤU HÌNH (Lazy init để không gọi Streamlit trước set_page_config) ---
 
-# Fallback warning if no API key (will use cached questions)
-if not API_KEY:
-    print("⚠️ Warning: GEMINI_API_KEY not found. Using cached questions only.")
-    API_KEY = None
-try:
-    if API_KEY:
-        genai.configure(api_key=API_KEY)
-        model = genai.GenerativeModel('gemini-1.5-flash')  # Dùng model ổn định hơn
-    else:
-        model = None
-        print("⚠️ Gemini API not configured. Using cached questions only.")
-except Exception as e:
-    print(f"Lỗi khởi tạo Gemini: {e}")
-    model = None
+@lru_cache(maxsize=1)
+def _get_api_key() -> str | None:
+    """Fetch API key from env first; fallback to Streamlit secrets lazily.
+    Avoid accessing streamlit at import time to keep set_page_config as first command.
+    """
+    key = os.getenv("GEMINI_API_KEY")
+    if key:
+        return key
+    try:
+        import streamlit as st  # imported lazily, after app has configured
+        return st.secrets.get("GEMINI_API_KEY")
+    except Exception:
+        return None
+
+
+@lru_cache(maxsize=1)
+def _get_model():
+    key = _get_api_key()
+    if not key:
+        print("GEMINI_API_KEY not found. Set in environment or Streamlit secrets.")
+        return None
+    try:
+        genai.configure(api_key=key)
+        return genai.GenerativeModel('gemma-3-12b-it')
+    except Exception as e:
+        print(f"Lỗi khởi tạo Gemini: {e}")
+        return None
 
 def generate_question_variant(seed_question):
     """Tạo 1 biến thể câu hỏi (dùng cho hàm batch bên dưới)"""
+    model = _get_model()
     if model is None: 
         print("❌ Model không được khởi tạo")
         return None
