@@ -1,0 +1,368 @@
+[
+  {
+    "id": 1,
+    "type": "math",
+    "topic": "Mixture",
+    "content": "Cần thêm bao nhiêu lít rượu nguyên chất vào một dung dịch 40 lít, trong đó có 10% là rượu theo thể tích, để làm gấp đôi tỷ lệ rượu nguyên chất trong dung dịch?"
+  },
+  {
+    "id": 2,
+    "type": "math",
+    "topic": "Average",
+    "content": "Tại cửa hàng tạp hóa, doanh thu trung bình mỗi ngày là 4 triệu đồng trong một khoảng thời gian 10 ngày. Nếu doanh thu trung bình mỗi ngày trong 6 ngày đầu tiên là 3,6 triệu đồng, vậy doanh thu trung bình mỗi ngày trong 4 ngày cuối là bao nhiêu?"
+  },
+  {
+    "id": 3,
+    "type": "math",
+    "topic": "Average",
+    "content": "Tại một nhà máy, trong x ngày vừa qua, trung bình mỗi ngày nhà máy sản xuất 40 sản phẩm. Hôm nay nhà máy sản xuất được 100 sản phẩm, điều này làm cho giá trị trung bình mới là 50 sản phẩm/ngày. Tìm giá trị x?"
+  },
+  {
+    "id": 4,
+    "type": "math",
+    "topic": "Number Sequence",
+    "content": "Số tiếp theo của dãy số: 2, 5, 9, 19, 37, (?)"
+  },
+  {
+    "id": 5,
+    "type": "math",
+    "topic": "Pattern Recognition",
+    "content": "Tìm giá trị hợp lý tại giá trị "?" tại hình số 4."
+  },
+  {
+    "id": 6,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Người đua xe đạp A tăng tốc độ từ 10 km/giờ lên 25 km/giờ trong vòng đua cuối, cũng tại vòng đua cuối này, người đua xe đạp B tăng tốc độ từ 8 km/giờ lên 24 km/giờ. Tốc độ của B tăng nhanh hơn bao nhiêu phần trăm so với tốc độ tăng của A?"
+  },
+  {
+    "id": 7,
+    "type": "math",
+    "topic": "Compound Interest",
+    "content": "Giá trị của một công ty là 100 tỷ đồng. Giá trị công ty tăng trung bình 4.8%/năm. Hỏi sau 15 năm giá trị của công ty sẽ vào khoảng bao nhiêu tỷ đồng?"
+  },
+  {
+    "id": 8,
+    "type": "math",
+    "topic": "Permutation and Combination",
+    "content": "Dùng 4 chữ số lẻ: 1, 3, 5, 7 để viết tất cả các số có 4 chữ số khác nhau thì viết được bao nhiêu số"
+  },
+  {
+    "id": 9,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Một mặt hàng bị áp thuế bán hàng 10% trên phần giá vượt quá 200 đô la. Nếu khách hàng trả 10 đô la tiền thuế bán hàng cho mặt hàng này, giá của mặt hàng đó là bao nhiêu đô la?"
+  },
+  {
+    "id": 10,
+    "type": "math",
+    "topic": "Number Theory",
+    "content": "Biết a và b là các số nguyên khác 0 và a + b = 1. Hỏi có thể nói gì về tích ab ?"
+  },
+  {
+    "id": 11,
+    "type": "math",
+    "topic": "Geometry",
+    "content": "Ba đường Lê Lợi, Nguyễn Huệ và Hàm Nghi tạo thành một tam giác vuông với góc vuông là giao giữa 2 đường Lê Lợi và Nguyễn Huệ. Đường Nguyễn Huệ dài 900m, đường Lê Lợi dài 800m. Anh A đi bộ từ đầu đường Nguyễn Huệ phía Sông Sài Gòn lên đến đường Lê Lợi quẹo trái đi tiếp đường Lê Lợi đến chợ Bến Thành. Chị B cùng xuất phát 1 chỗ nhưng đi theo đường Hàm Nghi đến chợ Bến Thành. Hỏi khoảng cách mà A phải đi nhiều hơn B khoảng bao nhiêu phần trăm?"
+  },
+  {
+    "id": 12,
+    "type": "math",
+    "topic": "Statistics",
+    "content": "Trong một lớp học, số điểm của học sinh trong kỳ thi là: {56, 78, 90, 65, 88, 72, 80, 95}. Hãy tìm trung vị của dãy số này."
+  },
+  {
+    "id": 13,
+    "type": "math",
+    "topic": "Algebra",
+    "content": "Nếu X = m – 1, công thức nào sau đây đúng với m = 1/2 ?"
+  },
+  {
+    "id": 14,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Công ty A sở hữu 40% cổ phiếu của tổng công ty XYZ. Công ty B sở hữu 15000 cổ phiếu XYZ. Công ty C sở hữu phần cổ phiếu còn lại của tổng công ty XYZ. Hỏi công ty A sở hữu bao nhiêu cổ phiếu biết rằng công ty C sở hữu nhiều hơn công ty A 25%?"
+  },
+  {
+    "id": 15,
+    "type": "math",
+    "topic": "Data Sufficiency",
+    "content": "Liệu x³ có chính xác bằng 125?"
+  },
+  {
+    "id": 16,
+    "type": "math",
+    "topic": "Algebra",
+    "content": "Các phương trình sau đây có thể bằng 0 với một vài giá trị nào đó của x?"
+  },
+  {
+    "id": 17,
+    "type": "general",
+    "topic": "Vocabulary",
+    "content": "Tìm từ thích hợp để đưa vào vị trí dấu hỏi (?)"
+  },
+  {
+    "id": 18,
+    "type": "math",
+    "topic": "Data Sufficiency",
+    "content": "Trong một công ty, tuổi bình quân của những người quản lý là 54, trong khi đó tuổi bình quân của nhân viên không quản lý là 34. Hỏi tuổi trung bình chung của toàn bộ nhân viên trong công ty là bao nhiêu?"
+  },
+  {
+    "id": 19,
+    "type": "math",
+    "topic": "Set Theory",
+    "content": "Một cuộc khảo sát 200 sinh viên mới vào trường thể thao cho thấy có 70 sinh viên thích môn cầu lông và 90 sinh viên thích môn bóng bàn. Biết rằng số sinh viên không thích môn cầu lông và cũng chẳng thích môn bóng bàn nhiều gấp đôi số sinh viên thích cả hai môn đó. Hỏi có bao nhiêu sinh viên được khảo sát không thích môn cầu lông và cũng chẳng thích môn bóng bàn?"
+  },
+  {
+    "id": 19.1,
+    "type": "math",
+    "topic": "Set Theory",
+    "content": "Một cuộc khảo sát 200 sinh viên mới vào trường thể thao cho thấy có 60 sinh viên thích môn cầu lông và 80 sinh viên thích môn bóng bàn. Biết rằng số sinh viên không thích môn cầu lông và cũng chẳng thích môn bóng bàn nhiều gấp đôi số sinh viên thích cả hai môn đó. Hỏi có bao nhiêu sinh viên được khảo sát không thích môn cầu lông và cũng chẳng thích môn bóng bàn?"
+  },
+  {
+    "id": 20,
+    "type": "math",
+    "topic": "Number Theory",
+    "content": "Một số tối thiểu muốn chia hết cho cả 18 và 24 thì số đó phải chia hết cho số nào sau đây?"
+  },
+  {
+    "id": 21,
+    "type": "general",
+    "topic": "Pattern Recognition",
+    "content": "Ký tự tiếp theo trong dãy sau đây là ký tự nào: A...C...F...J...O...U...?"
+  },
+  {
+    "id": 22,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Một loại nước ép hỗn hợp chứa 25% trái cây táo và 75% cherry theo thể tích. Nếu nước ép hỗn hợp này đắt hơn 20% so với cùng một lượng chỉ có nước ép táo, thì nước ép cherry đắt hơn nước ép táo bao nhiêu phần trăm?"
+  },
+  {
+    "id": 23,
+    "type": "math",
+    "topic": "Data Sufficiency",
+    "content": "Hãy tỉnh giá của 13 quả cam và 12 quả táo là bao nhiêu?"
+  },
+  {
+    "id": 24,
+    "type": "math",
+    "topic": "Number Theory",
+    "content": "Có 5 cái chuông lần lượt kêu mỗi chu kỳ sau 3, 6, 9, 15, và 18 giây. Hỏi sau 5 phút, chúng kêu cùng lúc bao nhiêu lần?"
+  },
+  {
+    "id": 25,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Nếu chiều dài và chiều rộng của một khu vườn hình chữ nhật tăng lên 20%, thì diện tích khu vườn sẽ tăng lên bao nhiêu %?"
+  },
+  {
+    "id": 26,
+    "type": "math",
+    "topic": "Compound Interest",
+    "content": "Công an vừa phát hiện ra một tổ chức tín dụng bất hợp pháp cho vay chợ đen với lãi suất cao, kỳ hạn 3%/tuần (lãi nhập vào vốn sau mỗi tuần). Nếu quan niệm 1 năm có chẵn 52 tuần thì lãi suất tính theo năm của khoản vay đó sau 1 năm là bao nhiêu?"
+  },
+  {
+    "id": 27,
+    "type": "math",
+    "topic": "Data Sufficiency",
+    "content": "Dàn máy tính của công ty có một số máy là của Hãng X và số còn lại là của Hãng Y. Biết rằng tỷ số máy Hãng Y trên số máy của Hãng X trong dàn máy của công ty là 5/6. Hỏi dàn máy của công ty có bao nhiêu máy Hãng Y?"
+  },
+  {
+    "id": 28,
+    "type": "math",
+    "topic": "Word Problem",
+    "content": "Một nhóm gồm 5 nhân viên bán bảo hiểm. Trong tháng trước Andy bán được nhiều gấp đôi số hợp đồng bảo hiểm so với Ellen, Bob bán được nhiều hơn Ellen 3 hợp đồng, Cary bán được gấp đôi số hợp đồng của Bob và cuối cùng, Dora bán được số hợp đồng bằng tổng số hợp đồng của Bob và Ellen cộng lại. Hỏi tháng trước ai bán được nhiều hợp đồng bảo hiểm nhất?"
+  },
+  {
+    "id": 29,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Dựa trên dữ liệu của năm trước, với số tiền y, có thể mua được x món hàng. Nếu giá trung bình của mỗi món hàng tăng lên 20% trong năm nay, thì số món hàng có thể mua với 3y là bao nhiêu? (có thể chấp nhận món hàng là số lẻ)"
+  },
+  {
+    "id": 30,
+    "type": "math",
+    "topic": "Mixture",
+    "content": "Có 60 lít dầu đựng trong hai thùng. Nếu đổ 2 lít từ thùng I sang thùng II thì lúc đó số dầu ở thùng I sẽ bằng 2/3 số dầu ở thùng II. Số dầu thùng I lúc đầu là"
+  },
+  {
+    "id": 31,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Giá trị một công ty năm 201x tăng 2%, năm 201x+1 tăng 3%, năm 201x+2 giảm 2%. Hỏi sau 3 năm giá trị công ty tăng/giảm bao nhiêu %?"
+  },
+  {
+    "id": 32,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Một ngân hàng thông báo nhận gửi tiết kiệm 5,2%/năm kỳ hạn 3 tháng. Nếu không tính đến yếu tố lạm phát và các chi phí giao dịch thì lãi suất thực tính theo năm của khoản tiết kiệm này là bao nhiêu?"
+  },
+  {
+    "id": 33,
+    "type": "math",
+    "topic": "Geometry",
+    "content": "Có bao nhiêu vị trí khác nhau khi đặt hình vuông cạnh 3x3 vào hình vuông lớn cạnh 10 x 10?"
+  },
+  {
+    "id": 34,
+    "type": "math",
+    "topic": "Set Theory",
+    "content": "Trong 1 lớp học, mọi sinh viên đều vượt qua môn này với điểm số A, B hoặc C. 22 sinh viên có điểm A, 12 sinh viên có điểm B và 21 sinh viên có điểm C trong bảng điểm của mình. Nếu tổng số sinh viên trong lớp là 36, đồng thời 5 sinh viên chỉ có 2 mức điểm là A và B, 3 sinh viên chỉ có 2 mức điểm B và C và 3 sinh viên chỉ có 2 mức điểm A và C, thì có bao nhiêu sinh viên có cả 3 mức điểm A, B, C trong bảng điểm của mình?"
+  },
+  {
+    "id": 35,
+    "type": "math",
+    "topic": "Counting",
+    "content": "Một cái khóa số có 3 chữ số từ 0 đến 9. Mã số được thiết lập với một số ràng buộc sau: số thứ nhất không thể là 0 hoặc 1; số thứ hai chỉ có thể là 0 hoặc 1; số thứ hai và số thứ ba không thể cùng là số 0. Hỏi có có thể bao nhiêu mã số?"
+  },
+  {
+    "id": 36,
+    "type": "math",
+    "topic": "Percentage",
+    "content": "Một đội bóng đá thắng 40% trong số 20 trận đầu tiên của mùa giải và thắng 70% các trận còn lại. Biết rằng đội này thắng 55% tổng số trận cả mùa. Hỏi đội bóng đã chơi tổng cộng bao nhiêu trận trong mùa giải?"
+  },
+  {
+    "id": 37,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 1, 1, 2, 3, 5, 8, 13, (?)"
+  },
+  {
+    "id": 38,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 2, 6, 12, 20, 30, (?)"
+  },
+  {
+    "id": 39,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 3, 7, 15, 31, 63, (?)"
+  },
+  {
+    "id": 40,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 1, 4, 9, 16, 25, 36, (?)"
+  },
+  {
+    "id": 41,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 100, 50, 25, 12.5, (?)"
+  },
+  {
+    "id": 42,
+    "type": "iq",
+    "topic": "Letter Pattern",
+    "content": "Tìm chữ cái tiếp theo trong dãy: B, D, G, K, P, (?)"
+  },
+  {
+    "id": 43,
+    "type": "iq",
+    "topic": "Letter Pattern",
+    "content": "Tìm chữ cái tiếp theo trong dãy: Z, Y, X, W, V, (?)"
+  },
+  {
+    "id": 44,
+    "type": "iq",
+    "topic": "Letter Pattern",
+    "content": "Tìm chữ cái tiếp theo trong dãy: A, C, E, G, I, K, (?)"
+  },
+  {
+    "id": 45,
+    "type": "iq",
+    "topic": "Letter Pattern",
+    "content": "Tìm chữ cái tiếp theo trong dãy: ACE, BDF, CEG, DFH, (?)"
+  },
+  {
+    "id": 46,
+    "type": "iq",
+    "topic": "Number Pattern",
+    "content": "Nếu 2 + 3 = 10, 6 + 5 = 66, 7 + 2 = 63, thì 9 + 7 = (?)"
+  },
+  {
+    "id": 47,
+    "type": "iq",
+    "topic": "Number Pattern",
+    "content": "Nếu 3 × 4 = 21, 5 × 6 = 55, 7 × 8 = 105, thì 9 × 10 = (?)"
+  },
+  {
+    "id": 48,
+    "type": "iq",
+    "topic": "Logic Puzzle",
+    "content": "Một người có 3 viên thuốc giống hệt nhau. Anh ta phải uống 1 viên mỗi nửa giờ. Hỏi sau bao lâu anh ta uống hết thuốc?"
+  },
+  {
+    "id": 49,
+    "type": "iq",
+    "topic": "Logic Puzzle",
+    "content": "Một chiếc đồng hồ điểm chuông mất 6 giây để điểm 5 tiếng chuông. Hỏi mất bao nhiêu giây để điểm 10 tiếng chuông?"
+  },
+  {
+    "id": 50,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 10, 9, 7, 4, 0, (?)"
+  },
+  {
+    "id": 51,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 1, 8, 27, 64, 125, (?)"
+  },
+  {
+    "id": 52,
+    "type": "iq",
+    "topic": "Pattern Recognition",
+    "content": "Trong ma trận 3×3, hàng 1: 2, 4, 8; hàng 2: 3, 9, 27; hàng 3: 4, ?, 256. Số còn thiếu là bao nhiêu?"
+  },
+  {
+    "id": 53,
+    "type": "iq",
+    "topic": "Pattern Recognition",
+    "content": "Nếu ▲ + ▲ + ▲ = 18, ● + ● = 10, và ■ = 3, thì ▲ + ● + ■ = (?)"
+  },
+  {
+    "id": 54,
+    "type": "iq",
+    "topic": "Number Pattern",
+    "content": "Tìm số khác biệt: 2, 4, 6, 8, 9, 10, 12"
+  },
+  {
+    "id": 55,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 5, 10, 20, 35, 55, (?)"
+  },
+  {
+    "id": 56,
+    "type": "iq",
+    "topic": "Letter Pattern",
+    "content": "Tìm chữ cái thay thế dấu ?: AZ, BY, CX, DW, E?"
+  },
+  {
+    "id": 57,
+    "type": "iq",
+    "topic": "Logic Puzzle",
+    "content": "Nếu tất cả A là B, và một số B là C, thì có thể kết luận gì về mối quan hệ giữa A và C?"
+  },
+  {
+    "id": 58,
+    "type": "iq",
+    "topic": "Number Pattern",
+    "content": "Trong một hình vuông ma thuật 3×3, tổng mỗi hàng, cột và đường chéo đều bằng 15. Nếu có các số: 2, ?, 8, 9, 5, 1, 4, 3, 6, số còn thiếu là bao nhiêu?"
+  },
+  {
+    "id": 59,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 1, 3, 6, 10, 15, 21, (?)"
+  },
+  {
+    "id": 60,
+    "type": "iq",
+    "topic": "Pattern Recognition",
+    "content": "Nếu MOON = 54, STAR = 81, thì PLANET = (?)"
+  }
+]

@@ -1,0 +1,56 @@
+# Environment variables
+.env
+.env.local
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Streamlit cache
+.streamlit/secrets.toml
+
+# VS Code
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Database
+*.db
+gmat.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Azure
+.azure/
+
+# Test outputs
+raw_output.txt

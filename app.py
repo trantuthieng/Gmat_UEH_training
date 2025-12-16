@@ -1,0 +1,463 @@
+import streamlit as st
+import json
+import time
+import random
+from ai_logic import generate_full_exam
+from db import init_db, get_cached_questions, save_questions
+
+# --- CẤU HÌNH TRANG ---
+st.set_page_config(
+    page_title="Hệ thống thi thử GMAT Paris 10", 
+    page_icon="📝", 
+    layout="wide",
+    initial_sidebar_state="auto"
+)
+
+# Mobile-responsive CSS
+st.markdown("""
+<style>
+    /* Mobile-first responsive design for iPhone 15 Pro and other devices */
+    @media (max-width: 768px) {
+        /* Main content adjustments */
+        .main .block-container {
+            padding: 1rem 0.5rem !important;
+            max-width: 100% !important;
+        }
+        
+        /* Title adjustments */
+        h1 {
+            font-size: 1.5rem !important;
+            line-height: 1.3 !important;
+        }
+        
+        h2 {
+            font-size: 1.25rem !important;
+        }
+        
+        h3 {
+            font-size: 1.1rem !important;
+        }
+        
+        /* Button optimizations - larger touch targets */
+        .stButton > button {
+            width: 100% !important;
+            padding: 1rem !important;
+            font-size: 1.1rem !important;
+            margin: 0.5rem 0 !important;
+            border-radius: 10px !important;
+            min-height: 44px !important;
+        }
+        
+        /* Radio buttons - larger touch areas */
+        .stRadio > div {
+            font-size: 1rem !important;
+        }
+        
+        .stRadio > div > label {
+            padding: 0.75rem !important;
+            margin: 0.5rem 0 !important;
+            border-radius: 8px !important;
+            background-color: rgba(240, 242, 246, 0.5) !important;
+            min-height: 44px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        /* Timer display */
+        #timer {
+            font-size: 2.5rem !important;
+            padding: 1rem !important;
+        }
+        
+        /* Sidebar optimizations */
+        [data-testid="stSidebar"] {
+            min-width: 280px !important;
+        }
+        
+        /* Questions - better readability */
+        .stMarkdown p {
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
+        }
+        
+        /* Images - responsive */
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 8px !important;
+        }
+        
+        /* Metrics - stack vertically */
+        [data-testid="stMetricValue"] {
+            font-size: 1.5rem !important;
+        }
+        
+        /* Progress bar */
+        .stProgress > div > div {
+            height: 8px !important;
+        }
+        
+        /* Expander */
+        .streamlit-expanderHeader {
+            font-size: 1rem !important;
+            padding: 1rem !important;
+        }
+        
+        /* Divider spacing */
+        hr {
+            margin: 1.5rem 0 !important;
+        }
+        
+        /* Info/Warning boxes */
+        .stAlert {
+            font-size: 0.95rem !important;
+            padding: 1rem !important;
+        }
+        
+        /* Column layout - stack on mobile */
+        [data-testid="column"] {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+    }
+    
+    /* Medium screens (tablets) */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .main .block-container {
+            padding: 2rem 1rem !important;
+        }
+        
+        .stButton > button {
+            min-height: 44px !important;
+        }
+    }
+    
+    /* Touch-friendly enhancements for all screen sizes */
+    .stButton > button:active {
+        transform: scale(0.98);
+        transition: transform 0.1s;
+    }
+    
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    /* Better focus states for accessibility */
+    button:focus, input:focus {
+        outline: 2px solid #1f77b4 !important;
+        outline-offset: 2px !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# --- HÀM HỖ TRỢ ---
+@st.cache_data(ttl=3600, show_spinner=False)  # Cache for 1 hour
+def load_seed_data():
+    try:
+        with open('seed_data.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except:
+        return []
+
+def format_time(seconds):
+    mins, secs = divmod(seconds, 60)
+    return f"{int(mins):02d}:{int(secs):02d}"
+
+# --- KHỞI TẠO STATE ---
+if 'exam_state' not in st.session_state:
+    st.session_state.exam_state = "READY" # READY, GENERATED, RUNNING, FINISHED
+if 'exam_questions' not in st.session_state:
+    st.session_state.exam_questions = []
+if 'user_answers' not in st.session_state:
+    st.session_state.user_answers = {}
+if 'start_time' not in st.session_state:
+    st.session_state.start_time = 0
+if 'end_time' not in st.session_state:
+    st.session_state.end_time = 0
+if 'exam_mode' not in st.session_state:
+    st.session_state.exam_mode = None
+
+# --- GIAO DIỆN CHÍNH ---
+st.title("📝 Hệ thống Thi thử GMAT tuyển sinh Thạc sĩ")
+init_db()
+
+# 1. MÀN HÌNH CHỜ (READY)
+if st.session_state.exam_state == "READY":
+    st.markdown("""
+    ### Chào mừng bạn đến với kỳ thi mô phỏng
+    Hệ thống sẽ sử dụng AI để tạo ra một bộ đề thi mới hoàn toàn dựa trên cấu trúc đề gốc.
+    
+    **Cấu trúc đề thi:**
+    - **Đề chính thức:** 30 câu - 60 phút
+    - **Thang điểm:** +1 (Đúng), -0.5 (Sai)
+    """)
+    
+# Hàm hiển thị một câu hỏi kèm hình nếu có
+@st.cache_data(show_spinner=False)
+def check_visual_keywords(text):
+    visual_keywords = ['hình', 'shape', 'ảnh', 'diagram', 'figure', 'biểu đồ']
+    return any(k in text.lower() for k in visual_keywords)
+
+def render_question(q, idx):
+    # Mobile-optimized question display
+    st.markdown(f"### Câu {idx+1}")
+    st.markdown(q.get('question', 'Câu hỏi'))
+    
+    # Hiển thị hình nếu có
+    image_url = q.get('image_url')
+    if image_url:
+        st.image(image_url, use_container_width=True, caption=f"Hình minh họa câu {idx+1}")
+    else:
+        # Nếu câu hỏi có vẻ là câu hình nhưng thiếu hình, cảnh báo nhẹ
+        text = q.get('question', '')
+        if check_visual_keywords(text):
+            st.info("⚠️ Câu hỏi yêu cầu hình ảnh nhưng không kèm hình.")
+# Khu vực khởi tạo đề thi
+if st.session_state.exam_state == "READY":
+    exam_mode = "Đề chính thức (30 câu - 60 phút)"
+    if st.button("🚀 KHỞI TẠO ĐỀ THI", type="primary"):
+        seeds = load_seed_data()
+        if not seeds:
+            st.error("Chưa có dữ liệu gốc! Hãy chạy file ingest_pdf.py trước.")
+        else:
+            num_questions = 30
+            st.session_state.exam_mode = exam_mode
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+            def update_bar(percent):
+                progress_bar.progress(percent)
+                status_text.text(f"Đang AI khởi tạo đề thi... {int(percent*100)}%")
+            with st.spinner("⏳ Đang tạo đề thi..."):
+                generated_exam = generate_full_exam(seeds, num_questions, 0, update_bar)
+            if not generated_exam:
+                st.warning("⚠️ API quota hết. Dùng ngân hàng câu hỏi đã lưu để tạo đề...")
+                cached = get_cached_questions(num_questions)
+                if cached:
+                    generated_exam = cached
+                else:
+                    st.info("📦 Ngân hàng câu hỏi trống. Sử dụng seed_data tạm thời.")
+                    generated_exam = random.choices(seeds, k=num_questions)
+                    formatted_exam = []
+                    for i, seed in enumerate(generated_exam):
+                        formatted_exam.append({
+                            'id': seed.get('id', i),
+                            'type': 'general',
+                            'question': seed['content'],
+                            'options': ['A. Chưa biết', 'B. Chưa biết', 'C. Chưa biết', 'D. Chưa biết'],
+                            'correct_answer': 'A. Chưa biết',
+                            'explanation': f"Chủ đề: {seed.get('topic', 'Chưa xác định')}"
+                        })
+                    generated_exam = formatted_exam
+            st.session_state.exam_questions = generated_exam
+            st.session_state.exam_state = "GENERATED"
+            progress_bar.empty()
+            status_text.empty()
+            st.rerun()
+
+# 1.5. MÀN HÌNH ĐỀ ĐÃ TẠO - CHỜ BẮT ĐẦU (GENERATED)
+elif st.session_state.exam_state == "GENERATED":
+    st.success("✅ Đề thi đã được khởi tạo thành công!")
+    
+    questions = st.session_state.exam_questions
+    math_count = len([q for q in questions if q['type'] == 'math'])
+    gen_count = len([q for q in questions if q['type'] == 'general'])
+    
+    # Tính thời gian dựa trên chế độ
+    exam_time = 60
+    
+    st.markdown(f"""
+    ### 📋 Thông tin đề thi
+    - **Chế độ:** {st.session_state.exam_mode}
+    - **Tổng số câu:** {len(questions)} câu
+    - **Thời gian:** {exam_time} phút
+    
+    ---
+    
+    ### 🔒 Nội dung đề thi đang được che
+    Nhấn nút bên dưới để bắt đầu làm bài. Đồng hồ đếm ngược sẽ chạy ngay khi bạn bắt đầu.
+    """)
+    
+    # Mobile-friendly button layout
+    if st.button("🎯 BẮT ĐẦU LÀM BÀI", type="primary", use_container_width=True):
+            # Tính thời gian dựa trên chế độ
+            exam_duration = 60  # 60 phút
+            st.session_state.start_time = time.time()
+            st.session_state.end_time = st.session_state.start_time + (exam_duration * 60)
+            st.session_state.exam_state = "RUNNING"
+            st.session_state.user_answers = {}
+            st.rerun()
+    
+    if st.button("🔄 Tạo đề thi mới"):
+        st.session_state.exam_state = "READY"
+        st.session_state.exam_questions = []
+        st.rerun()
+
+# 2. MÀN HÌNH LÀM BÀI (RUNNING)
+elif st.session_state.exam_state == "RUNNING":
+    # --- Sidebar: Đồng hồ đếm ngược ---
+    with st.sidebar:
+        st.header("⏳ Thời gian còn lại")
+        
+        # Tính thời gian còn lại
+        remaining_time = max(0, st.session_state.end_time - time.time())
+        
+        if remaining_time > 0:
+            # Hiển thị đồng hồ đếm ngược bằng JavaScript (không cần reload trang)
+            st.markdown(f"""
+            <div id="timer" style="font-size: 3rem; font-weight: bold; color: #1f77b4; text-align: center; padding: 1rem; background: rgba(31, 119, 180, 0.1); border-radius: 12px; margin-bottom: 1rem;">
+                {format_time(remaining_time)}
+            </div>
+            <script>
+                let endTime = {st.session_state.end_time * 1000}; // Convert to milliseconds
+                
+                function updateTimer() {{
+                    let now = Date.now();
+                    let remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+                    
+                    if (remaining > 0) {{
+                        let mins = Math.floor(remaining / 60);
+                        let secs = remaining % 60;
+                        document.getElementById('timer').innerText = 
+                            String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+                        setTimeout(updateTimer, 1000);
+                    }} else {{
+                        document.getElementById('timer').innerText = '00:00';
+                        document.getElementById('timer').style.color = 'red';
+                        // Reload trang để chuyển sang màn hình kết quả
+                        setTimeout(function() {{
+                            window.parent.location.reload();
+                        }}, 1000);
+                    }}
+                }}
+                
+                updateTimer();
+            </script>
+            """, unsafe_allow_html=True)
+            st.warning("⏰ Tự động nộp bài khi hết giờ")
+        else:
+            st.error("ĐÃ HẾT GIỜ!")
+            st.session_state.exam_state = "FINISHED"
+            st.rerun()
+            
+        if st.button("📤 Nộp bài"):
+            st.session_state.exam_state = "FINISHED"
+            st.rerun()
+
+    # --- Khu vực câu hỏi ---
+    st.subheader("📝 BÀI LÀM")
+    
+    # Progress indicator
+    answered = len(st.session_state.user_answers)
+    total_questions = len(st.session_state.exam_questions)
+    st.progress(answered / total_questions if total_questions > 0 else 0)
+    st.caption(f"Đã trả lời: {answered}/{total_questions} câu")
+    
+    questions = st.session_state.exam_questions
+    
+    if not questions:
+        st.error("❌ Không có câu hỏi! Vui lòng tạo đề thi lại.")
+    else:
+        # Hiển thị tất cả câu hỏi
+        for idx, q in enumerate(questions):
+            # Container for better mobile spacing
+            with st.container():
+                render_question(q, idx)
+                # Key phải unique để tránh lỗi duplicate widget
+                options = q.get('options', [])
+                if options:
+                    ans = st.radio(
+                        f"Chọn đáp án:", 
+                        options, 
+                        key=f"q_{idx}", 
+                        index=None,
+                        label_visibility="visible"
+                    )
+                    if ans:
+                        st.session_state.user_answers[f"q_{idx}"] = ans
+                st.divider()
+
+# 3. MÀN HÌNH KẾT QUẢ (FINISHED)
+elif st.session_state.exam_state == "FINISHED":
+    st.balloons()
+    st.header("📊 KẾT QUẢ BÀI THI")
+    
+    questions = st.session_state.exam_questions
+    answers = st.session_state.user_answers
+    
+    # --- Logic Chấm điểm (Optimized) ---
+    # Đúng +1, Sai -0.5
+    if 'score_calculated' not in st.session_state:
+        correct_count = 0
+        wrong_count = 0
+        unanswered_count = 0
+        score = 0
+        details = []
+        
+        for idx, q in enumerate(questions):
+            user_choice = answers.get(f"q_{idx}")
+            is_correct = False
+            
+            if user_choice:
+                # So sánh string (cần xử lý chuỗi cẩn thận vì AI sinh ra có thể khác format)
+                # Lấy ký tự đầu (A, B, C, D) để so sánh cho chắc chắn
+                if user_choice.split('.')[0] == q['correct_answer'].split('.')[0]:
+                    score += 1.0
+                    correct_count += 1
+                    is_correct = True
+                else:
+                    score -= 0.5
+                    wrong_count += 1
+            else:
+                unanswered_count += 1
+            
+            details.append({
+                "question": q['question'],
+                "user_ans": user_choice if user_choice else "Không trả lời",
+                "correct_ans": q['correct_answer'],
+                "explanation": q['explanation'],
+                "is_correct": is_correct
+            })
+        
+        # Cache results to avoid recalculation
+        st.session_state.score_calculated = {
+            'score': score,
+            'correct_count': correct_count,
+            'wrong_count': wrong_count,
+            'unanswered_count': unanswered_count,
+            'details': details
+        }
+    else:
+        # Use cached results
+        cached = st.session_state.score_calculated
+        score = cached['score']
+        correct_count = cached['correct_count']
+        wrong_count = cached['wrong_count']
+        unanswered_count = cached['unanswered_count']
+        details = cached['details']
+    
+    # Hiển thị Dashboard - responsive columns
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col1:
+        st.metric("TỔNG ĐIỂM", f"{score:.2f}", delta=None, help="Đúng +1, Sai -0.5")
+    with col2:
+        st.metric("Số câu đúng", f"{correct_count}/{len(questions)}", delta=None)
+    with col3:
+        st.metric("Số câu sai", f"{wrong_count}", delta=None)
+    
+    st.divider()
+    
+    # Chi tiết lời giải
+    with st.expander("🔍 XEM CHI TIẾT LỜI GIẢI VÀ ĐÁP ÁN"):
+        for idx, d in enumerate(details):
+            color = "green" if d['is_correct'] else "red"
+            st.markdown(f"**Câu {idx+1}:** :{color}[{d['question']}]")
+            st.write(f"Bạn chọn: {d['user_ans']} | Đáp án: {d['correct_ans']}")
+            st.info(f"Giải thích: {d['explanation']}")
+            st.markdown("---")
+            
+    if st.button("🔄 Làm bài thi mới"):
+        st.session_state.exam_state = "READY"
+        if 'score_calculated' in st.session_state:
+            del st.session_state.score_calculated
+        st.rerun()

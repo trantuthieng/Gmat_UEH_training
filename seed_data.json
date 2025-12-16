@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "type": "math",
+    "topic": "Mixture",
+    "content": "Cần thêm bao nhiêu lít rượu nguyên chất vào một dung dịch 40 lít, trong đó có 10% là rượu theo thể tích, để làm gấp đôi tỷ lệ rượu nguyên chất trong dung dịch?"
+  },
+  {
+    "id": 2,
+    "type": "math",
+    "topic": "Average",
+    "content": "Tại cửa hàng tạp hóa, doanh thu trung bình mỗi ngày là 4 triệu đồng trong một khoảng thời gian 10 ngày. Nếu doanh thu trung bình mỗi ngày trong 6 ngày đầu tiên là 3,6 triệu đồng, vậy doanh thu trung bình mỗi ngày trong 4 ngày cuối là bao nhiêu?"
+  },
+  {
+    "id": 3,
+    "type": "math",
+    "topic": "Average",
+    "content": "Tại một nhà máy, trong x ngày vừa qua, trung bình mỗi ngày nhà máy sản xuất 40 sản phẩm. Hôm nay nhà máy sản xuất được 100 sản phẩm, điều này làm cho giá trị trung bình mới là 50 sản phẩm/ngày. Tìm giá trị x?"
+  },
+  {
+    "id": 37,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 1, 1, 2, 3, 5, 8, 13, (?)",
+    "image_url": "assets/pattern_1.svg"
+  },
+  {
+    "id": 40,
+    "type": "iq",
+    "topic": "Number Sequence",
+    "content": "Tìm số tiếp theo trong dãy: 1, 4, 9, 16, 25, 36, (?)",
+    "image_url": "assets/pattern_2.svg"
+  },
+  {
+    "id": 52,
+    "type": "iq",
+    "topic": "Pattern Recognition",
+    "content": "Trong ma trận 3×3, hàng 1: 2, 4, 8; hàng 2: 3, 9, 27; hàng 3: 4, ?, 256. Số còn thiếu là bao nhiêu?",
+    "image_url": "assets/pattern_4.svg"
+  },
+  {
+    "id": 53,
+    "type": "iq",
+    "topic": "Pattern Recognition",
+    "content": "Nếu ▲ + ▲ + ▲ = 18, ● + ● = 10, và ■ = 3, thì ▲ + ● + ■ = (?)",
+    "image_url": "assets/pattern_3.svg"
+  }
+]

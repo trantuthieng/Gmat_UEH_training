@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 150" width="400" height="150">
+  <!-- Title -->
+  <text x="200" y="20" font-size="16" font-weight="bold" text-anchor="middle">Quy luật: Ma trận số</text>
+  
+  <!-- Grid 3x3 -->
+  <!-- Row 1 -->
+  <rect x="50" y="40" width="30" height="30" fill="#3F51B5" stroke="#333" stroke-width="1"/>
+  <text x="65" y="62" font-size="12" font-weight="bold" text-anchor="middle" fill="white">2</text>
+  
+  <rect x="90" y="40" width="30" height="30" fill="#3F51B5" stroke="#333" stroke-width="1"/>
+  <text x="105" y="62" font-size="12" font-weight="bold" text-anchor="middle" fill="white">4</text>
+  
+  <rect x="130" y="40" width="30" height="30" fill="#3F51B5" stroke="#333" stroke-width="1"/>
+  <text x="145" y="62" font-size="12" font-weight="bold" text-anchor="middle" fill="white">8</text>
+  
+  <!-- Row 2 -->
+  <rect x="50" y="80" width="30" height="30" fill="#3F51B5" stroke="#333" stroke-width="1"/>
+  <text x="65" y="102" font-size="12" font-weight="bold" text-anchor="middle" fill="white">3</text>
+  
+  <rect x="90" y="80" width="30" height="30" fill="#FF9800" stroke="#333" stroke-width="2"/>
+  <text x="105" y="102" font-size="12" font-weight="bold" text-anchor="middle" fill="white">?</text>
+  
+  <rect x="130" y="80" width="30" height="30" fill="#3F51B5" stroke="#333" stroke-width="1"/>
+  <text x="145" y="102" font-size="12" font-weight="bold" text-anchor="middle" fill="white">27</text>
+  
+  <!-- Row 3 -->
+  <rect x="50" y="120" width="30" height="30" fill="#3F51B5" stroke="#333" stroke-width="1"/>
+  <text x="65" y="142" font-size="11" font-weight="bold" text-anchor="middle" fill="white">4</text>
+  
+  <rect x="90" y="120" width="30" height="30" fill="#3F51B5" stroke="#333" stroke-width="1"/>
+  <text x="105" y="142" font-size="10" font-weight="bold" text-anchor="middle" fill="white">16</text>
+  
+  <rect x="130" y="120" width="30" height="30" fill="#3F51B5" stroke="#333" stroke-width="1"/>
+  <text x="145" y="142" font-size="10" font-weight="bold" text-anchor="middle" fill="white">64</text>
+  
+  <!-- Pattern description -->
+  <text x="230" y="50" font-size="11" text-anchor="start" fill="#333">Hàng 1: n^1</text>
+  <text x="230" y="70" font-size="11" text-anchor="start" fill="#333">Hàng 2: n^2</text>
+  <text x="230" y="90" font-size="11" text-anchor="start" fill="#333">Hàng 3: n^3</text>
+  
+  <text x="230" y="130" font-size="12" font-weight="bold" text-anchor="start" fill="#FF9800">Đáp án: 9 (3²)</text>
+</svg>
