@@ -4,8 +4,16 @@ import os
 import time
 
 # --- CẤU HÌNH API ---
-# Thay bằng API Key của bạn
-API_KEY = "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg" 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+# Try multiple sources for API key
+try:
+    import streamlit as st
+    API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg"))
+except:
+    API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg") 
 genai.configure(api_key=API_KEY)
 
 def process_pdf_to_json(pdf_path, output_path):

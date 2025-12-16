@@ -12,7 +12,12 @@ from functools import lru_cache
 load_dotenv()
 
 # --- CẤU HÌNH ---
-API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg") # Thay Key của bạn
+# Try Streamlit secrets first, then env variable, then fallback
+try:
+    import streamlit as st
+    API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg"))
+except:
+    API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyDRkwgwveGS3sgyJIn77Qh3MW0wo79GfHg")
 try:
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemma-3-12b-it') # Dùng Gemma 3 12B Instruction-Tuned
