@@ -12,18 +12,24 @@ from functools import lru_cache
 load_dotenv()
 
 # --- CẤU HÌNH ---
-# Try Streamlit secrets first, then env variable
+# Try Streamlit secrets first, then env variable, with fallback for testing
 try:
     import streamlit as st
     API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY"))
-except:
+except Exception as e:
     API_KEY = os.getenv("GEMINI_API_KEY")
 
+# Fallback warning if no API key (will use cached questions)
 if not API_KEY:
-    raise ValueError("GEMINI_API_KEY not found. Please set it in Streamlit secrets or .env file")
+    print("⚠️ Warning: GEMINI_API_KEY not found. Using cached questions only.")
+    API_KEY = None
 try:
-    genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel('gemma-3-12b-it') # Dùng Gemma 3 12B Instruction-Tuned
+    if API_KEY:
+        genai.configure(api_key=API_KEY)
+        model = genai.GenerativeModel('gemini-1.5-flash')  # Dùng model ổn định hơn
+    else:
+        model = None
+        print("⚠️ Gemini API not configured. Using cached questions only.")
 except Exception as e:
     print(f"Lỗi khởi tạo Gemini: {e}")
     model = None
