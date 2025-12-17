@@ -128,6 +128,25 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
     """Generate multiple questions concurrently"""
     results = []
     visual_keywords = ['hình', 'shape', 'ảnh', 'diagram', 'figure', 'biểu đồ']
+
+    def _is_valid(q: dict) -> bool:
+        """Basic sanity checks to avoid garbage answers."""
+        if not q:
+            return False
+        options = q.get('options') or []
+        if len(options) < 2:
+            return False
+        correct = q.get('correct_answer') or ''
+        # Accept if exact match to an option
+        if correct in options:
+            return True
+        # Accept if the letter prefix matches one option's prefix (e.g., 'A.' or 'A ')
+        if correct:
+            letter = correct.strip()[:2]  # e.g., "A." or "A "
+            for opt in options:
+                if opt.strip().startswith(letter):
+                    return True
+        return False
     
     with ThreadPoolExecutor(max_workers=3) as executor:
         # Submit all tasks
@@ -144,6 +163,8 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
                     has_image = bool(new_q.get('image_url'))
                     if any(k in text for k in visual_keywords) and not has_image:
                         print(f"🚫 Bỏ qua câu hỏi thiếu hình ảnh: {text[:60]}...")
+                    elif not _is_valid(new_q):
+                        print(f"🚫 Bỏ qua câu hỏi sai định dạng đáp án")
                     else:
                         results.append(new_q)
                         print(f"✅ Câu {start_idx + idx + 1} - Tạo thành công")
