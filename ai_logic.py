@@ -42,7 +42,7 @@ def _get_model():
         return None
 
 def _clean_response_text(response) -> str:
-    """Extracts the first text part and strips code fences/whitespace."""
+    """Extracts the first text part and strips code fences/whitespace/control chars."""
     text = None
     try:
         text = response.text
@@ -55,11 +55,14 @@ def _clean_response_text(response) -> str:
         except Exception:
             text = ""
 
-    return (
-        text.replace('```json', '')
-            .replace('```', '')
-            .strip()
-    )
+    # Remove markdown code fences
+    text = text.replace('```json', '').replace('```', '').strip()
+    
+    # Remove control characters that break JSON (except \n, \r, \t)
+    import re
+    text = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', text)
+    
+    return text
 
 
 def generate_question_variant(seed_question, max_attempts: int = 3):
@@ -97,7 +100,15 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
 
     for attempt in range(1, max_attempts + 1):
         try:
-            response = model.generate_content(prompt)
+            # Add generation config for better JSON output
+            response = model.generate_content(
+                prompt,
+                generation_config={
+                    'temperature': 0.7,
+                    'max_output_tokens': 1024,
+                    'response_mime_type': 'application/json'
+                }
+            )
             clean_text = _clean_response_text(response)
             data = json.loads(clean_text)
             data['type'] = 'general'  # Tất cả đều là câu hỏi chung
@@ -105,8 +116,12 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
         except json.JSONDecodeError as e:
             print(f"❌ Lỗi JSON (attempt {attempt}/{max_attempts}): {e}")
             print(f"Response text: {clean_text[:200]}")
+            if attempt < max_attempts:
+                time.sleep(1 * attempt)  # Exponential backoff
         except Exception as e:
             print(f"❌ Lỗi khi tạo câu (attempt {attempt}/{max_attempts}): {e}")
+            if attempt < max_attempts:
+                time.sleep(2 * attempt)  # Exponential backoff
 
     return None
 
@@ -115,7 +130,7 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
     results = []
     visual_keywords = ['hình', 'shape', 'ảnh', 'diagram', 'figure', 'biểu đồ']
     
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         # Submit all tasks
         future_to_idx = {executor.submit(generate_question_variant, seed): (idx, seed) 
                         for idx, seed in enumerate(seeds)}
