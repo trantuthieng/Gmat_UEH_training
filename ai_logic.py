@@ -3,6 +3,7 @@ import json
 import os
 import random
 import re
+from difflib import SequenceMatcher
 from dotenv import load_dotenv
 import time
 from db import save_questions, get_cached_questions
@@ -64,6 +65,66 @@ def _clean_response_text(response) -> str:
     text = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', text)
     
     return text
+def _align_correct_answer(options: list, correct_answer: str) -> str | None:
+    """Best-effort map correct_answer to one of the provided options.
+
+    - Accept exact match
+    - Accept letter prefix match (A/B/C/D)
+    - Accept content match after stripping prefixes like "A." or "A)"
+    - Fallback to similarity score to handle minor variations
+    """
+    if not options or not correct_answer:
+        return None
+
+    cleaned_opts = []
+    seen = set()
+    for opt in options:
+        if not isinstance(opt, str):
+            continue
+        opt_clean = opt.strip()
+        if opt_clean and opt_clean not in seen:
+            cleaned_opts.append(opt_clean)
+            seen.add(opt_clean)
+
+    if not cleaned_opts:
+        return None
+
+    correct_clean = correct_answer.strip()
+
+    # 1) Exact match
+    for opt in cleaned_opts:
+        if correct_clean == opt:
+            return opt
+
+    # Helper to strip letter prefix
+    def strip_prefix(val: str) -> str:
+        return re.sub(r'^[A-D][\.\)]\s*', '', (val or '').strip(), flags=re.IGNORECASE)
+
+    # 2) Match by letter prefix (A/B/C/D)
+    if correct_clean:
+        letter = correct_clean[:1].upper()
+        if letter in "ABCD":
+            for opt in cleaned_opts:
+                if opt.upper().startswith(letter):
+                    return opt
+
+    # 3) Match by content after removing prefix
+    normalized_correct = strip_prefix(correct_clean).lower()
+    if normalized_correct:
+        for opt in cleaned_opts:
+            if strip_prefix(opt).lower() == normalized_correct:
+                return opt
+
+    # 4) Fallback: similarity match
+    best_opt, best_ratio = None, 0.0
+    for opt in cleaned_opts:
+        ratio = SequenceMatcher(None, strip_prefix(opt).lower(), normalized_correct).ratio()
+        if ratio > best_ratio:
+            best_opt, best_ratio = opt, ratio
+    if best_opt and best_ratio >= 0.8:
+        return best_opt
+
+    return None
 
 
 def generate_question_variant(seed_question, max_attempts: int = 3):
@@ -117,6 +178,27 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
             clean_text = _clean_response_text(response)
             data = json.loads(clean_text)
             data['type'] = 'general'  # Tất cả đều là câu hỏi chung
+
+            # Đảm bảo đáp án khớp với một lựa chọn
+            options = data.get('options') or []
+            correct = data.get('correct_answer') or ''
+            aligned = _align_correct_answer(options, correct)
+            if not aligned:
+                raise ValueError("Correct answer does not align with options")
+
+            # Chuẩn hóa lại danh sách lựa chọn và đáp án để hiển thị nhất quán
+            cleaned_opts = []
+            seen = set()
+            for opt in options:
+                if not isinstance(opt, str):
+                    continue
+                opt_clean = opt.strip()
+                if opt_clean and opt_clean not in seen:
+                    cleaned_opts.append(opt_clean)
+                    seen.add(opt_clean)
+
+            data['options'] = cleaned_opts
+            data['correct_answer'] = aligned
             return data
         except json.JSONDecodeError as e:
             print(f"❌ Lỗi JSON (attempt {attempt}/{max_attempts}): {e}")
