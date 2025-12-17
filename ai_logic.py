@@ -41,45 +41,74 @@ def _get_model():
         print(f"Lỗi khởi tạo Gemini: {e}")
         return None
 
-def generate_question_variant(seed_question):
-    """Tạo 1 biến thể câu hỏi (dùng cho hàm batch bên dưới)"""
+def _clean_response_text(response) -> str:
+    """Extracts the first text part and strips code fences/whitespace."""
+    text = None
+    try:
+        text = response.text
+    except Exception:
+        pass
+
+    if not text:
+        try:
+            text = response.candidates[0].content.parts[0].text  # best-effort fallback
+        except Exception:
+            text = ""
+
+    return (
+        text.replace('```json', '')
+            .replace('```', '')
+            .strip()
+    )
+
+
+def generate_question_variant(seed_question, max_attempts: int = 3):
+    """Tạo 1 biến thể câu hỏi (dùng cho hàm batch bên dưới) với retry khi JSON lỗi."""
     model = _get_model()
-    if model is None: 
+    if model is None:
         print("❌ Model không được khởi tạo")
         return None
-    
+
     prompt = f"""
     Đóng vai người ra đề thi GMAT.
     Chủ đề: {seed_question.get('topic', 'Kiến thức tổng hợp')}
     Câu mẫu: "{seed_question['content']}"
-    
+
     Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI:
     - Nếu là toán/logic: giữ nguyên dạng toán/logic nhưng thay số liệu/bối cảnh
     - Nếu là kiến thức: cùng chủ đề nhưng hỏi khía cạnh khác
-    
-    OUTPUT JSON (Không Markdown):
+
+    Ràng buộc định dạng:
+    - Chỉ dùng ký tự ASCII, không ký tự đặc biệt, không emoji.
+    - Không xuống dòng trong giá trị chuỗi.
+    - Không dùng Markdown, không bao các block ```json.
+    - Trả về DUY NHẤT một JSON object hợp lệ.
+
+    OUTPUT JSON duy nhất:
     {{
         "id": "new_id",
         "type": "general",
-        "question": "Nội dung câu hỏi...",
+        "question": "No newline. Short and clear.",
         "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
-        "correct_answer": "Chép y nguyên nội dung đáp án đúng",
-        "explanation": "Giải thích ngắn gọn"
+        "correct_answer": "Copy exact text of the correct option",
+        "explanation": "Brief reasoning"
     }}
     """
-    try:
-        response = model.generate_content(prompt)
-        clean_text = response.text.replace('```json', '').replace('```', '').strip()
-        data = json.loads(clean_text)
-        data['type'] = 'general'  # Tất cả đều là câu hỏi chung
-        return data
-    except json.JSONDecodeError as e:
-        print(f"❌ Lỗi JSON: {e}")
-        print(f"Response text: {response.text[:200]}")
-        return None
-    except Exception as e:
-        print(f"❌ Lỗi khi tạo câu: {e}")
-        return None
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = model.generate_content(prompt)
+            clean_text = _clean_response_text(response)
+            data = json.loads(clean_text)
+            data['type'] = 'general'  # Tất cả đều là câu hỏi chung
+            return data
+        except json.JSONDecodeError as e:
+            print(f"❌ Lỗi JSON (attempt {attempt}/{max_attempts}): {e}")
+            print(f"Response text: {clean_text[:200]}")
+        except Exception as e:
+            print(f"❌ Lỗi khi tạo câu (attempt {attempt}/{max_attempts}): {e}")
+
+    return None
 
 def generate_question_batch(seeds, start_idx=0, progress_callback=None):
     """Generate multiple questions concurrently"""
@@ -114,7 +143,7 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
     
     return results
 
-def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_callback=None, max_retries_per_question=2):
+def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_callback=None, max_retries_per_question=4):
     """
     Tạo bộ đề thi hoàn chỉnh với cơ chế concurrent execution và retry để tăng tốc độ.
     - num_questions: Tổng số câu hỏi cần tạo
