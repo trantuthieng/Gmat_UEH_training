@@ -73,18 +73,22 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
         print("❌ Model không được khởi tạo")
         return None
 
+    topic = seed_question.get('topic', 'Kiến thức tổng hợp')
+    is_visual = topic.lower() in ['pattern recognition', 'letter pattern', 'logic puzzle', 'number pattern']
+    
     prompt = f"""
     Đóng vai người ra đề thi GMAT.
-    Chủ đề: {seed_question.get('topic', 'Kiến thức tổng hợp')}
+    Chủ đề: {topic}
     Câu mẫu: "{seed_question['content']}"
 
     Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI:
     - Nếu là toán/logic: giữ nguyên dạng toán/logic nhưng thay số liệu/bối cảnh
     - Nếu là kiến thức: cùng chủ đề nhưng hỏi khía cạnh khác
+    - Nếu là IQ/pattern (dãy số, chữ cái, hình học): tạo dãy logic mới, MÔ TẢ bằng text thuần, KHÔNG cần hình ảnh thực
     - TÍNH TOÁN CẨN THẬN: với bài tính phần trăm tăng/giảm, dùng công thức (giá_mới - giá_cũ)/giá_cũ * 100 và kiểm tra lại kết quả trước khi trả lời.
 
     Ràng buộc định dạng:
-    - Chỉ dùng ký tự ASCII, không ký tự đặc biệt, không emoji.
+    - Chỉ dùng ký tự ASCII, không ký tự đặc biệt phức tạp, không emoji.
     - Không xuống dòng trong giá trị chuỗi.
     - Không dùng Markdown, không bao các block ```json.
     - Trả về DUY NHẤT một JSON object hợp lệ.
@@ -93,10 +97,10 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
     {{
         "id": "new_id",
         "type": "general",
-        "question": "No newline. Short and clear.",
+        "question": "No newline. Short and clear. For pattern/sequence questions, describe the pattern in text (e.g. 1,2,4,7,11,... (?)).",
         "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
         "correct_answer": "Copy exact text of the correct option",
-        "explanation": "Brief reasoning (show key calculation if any, e.g., delta/old*100)"
+        "explanation": "Brief reasoning (show key calculation or pattern rule)"
     }}
     """
 
@@ -255,7 +259,24 @@ def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_call
         print(f"✅ Sử dụng {num_questions} câu từ cache")
         return cached[:num_questions]
     
-    selected_seeds = random.choices(seed_data, k=num_questions)
+    # Diversify seed selection: group by topic, pick from each bucket
+    topic_buckets = {}
+    for s in seed_data:
+        t = s.get('topic', 'general')
+        topic_buckets.setdefault(t, []).append(s)
+    
+    selected_seeds = []
+    bucket_list = list(topic_buckets.values())
+    random.shuffle(bucket_list)
+    while len(selected_seeds) < num_questions and bucket_list:
+        for bucket in bucket_list:
+            if bucket:
+                selected_seeds.append(random.choice(bucket))
+                if len(selected_seeds) >= num_questions:
+                    break
+    # Fallback if not enough
+    if len(selected_seeds) < num_questions:
+        selected_seeds.extend(random.choices(seed_data, k=num_questions - len(selected_seeds)))
     total_tasks = len(selected_seeds)
 
     # Concurrent generation - batch processing
@@ -271,11 +292,15 @@ def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_call
         exam_questions.extend(retry_results[:remaining])
 
     # Kiểm tra câu trùng lặp dựa trên nội dung câu hỏi (optimized)
+    def normalize(txt: str) -> str:
+        import string
+        return txt.lower().translate(str.maketrans('', '', string.punctuation)).strip()
+    
     seen_questions = set()
     unique_questions = []
     
     for q in exam_questions:
-        question_text = q.get('question', '').strip().lower()
+        question_text = normalize(q.get('question', ''))
         if question_text and question_text not in seen_questions:
             unique_questions.append(q)
             seen_questions.add(question_text)
@@ -298,15 +323,16 @@ def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_call
         
         cached = get_cached_questions(need_fill * 2, randomize=True)
         for q in cached:
-            q_text = q.get('question', '').strip().lower()
-            if q_text not in seen_questions:
+            q_text = normalize(q.get('question', ''))
+            if q_text and q_text not in seen_questions:
                 exam_questions.append(q)
                 seen_questions.add(q_text)
                 if len(exam_questions) >= num_questions:
                     break
 
-    # Xáo trộn thứ tự câu hỏi để đảm bảo ngẫu nhiên hoàn toàn
+    # Xáo trộn thứ tự câu hỏi NHIỀU LẦN để đảm bảo ngẫu nhiên hoàn toàn
     random.shuffle(exam_questions)
+    random.shuffle(exam_questions)  # double shuffle for extra randomness
     
     if len(exam_questions) < num_questions:
         print(f"⚠️ Cảnh báo: Chỉ tạo được {len(exam_questions)}/{num_questions} câu. Vui lòng kiểm tra API key hoặc thử lại.")
