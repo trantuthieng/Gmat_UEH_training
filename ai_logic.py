@@ -80,6 +80,7 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
     Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI:
     - Nếu là toán/logic: giữ nguyên dạng toán/logic nhưng thay số liệu/bối cảnh
     - Nếu là kiến thức: cùng chủ đề nhưng hỏi khía cạnh khác
+    - TÍNH TOÁN CẨN THẬN: với bài tính phần trăm tăng/giảm, dùng công thức (giá_mới - giá_cũ)/giá_cũ * 100 và kiểm tra lại kết quả trước khi trả lời.
 
     Ràng buộc định dạng:
     - Chỉ dùng ký tự ASCII, không ký tự đặc biệt, không emoji.
@@ -94,7 +95,7 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
         "question": "No newline. Short and clear.",
         "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
         "correct_answer": "Copy exact text of the correct option",
-        "explanation": "Brief reasoning"
+        "explanation": "Brief reasoning (show key calculation if any, e.g., delta/old*100)"
     }}
     """
 
