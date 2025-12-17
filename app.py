@@ -20,8 +20,13 @@ st.markdown("""
     @media (max-width: 768px) {
         /* Main content adjustments */
         .main .block-container {
-            padding: 1rem 1rem 1.25rem 1.1rem !important; /* thêm lề trái/phải để không dính mép */
+            padding: max(1rem, env(safe-area-inset-top)) 1.25rem max(1.25rem, env(safe-area-inset-bottom)) 1.25rem !important;
             max-width: 100% !important;
+        }
+        
+        /* Prevent horizontal scroll */
+        body {
+            overflow-x: hidden !important;
         }
 
         /* Ngăn sidebar đè lên nội dung khi mở trên mobile */
@@ -33,24 +38,33 @@ st.markdown("""
         h1 {
             font-size: 1.5rem !important;
             line-height: 1.3 !important;
+            margin-bottom: 1rem !important;
+            word-wrap: break-word !important;
         }
         
         h2 {
             font-size: 1.25rem !important;
+            margin-top: 1.5rem !important;
+            margin-bottom: 0.75rem !important;
         }
         
         h3 {
             font-size: 1.1rem !important;
+            margin-top: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            font-weight: 600 !important;
         }
         
         /* Button optimizations - larger touch targets */
         .stButton > button {
             width: 100% !important;
-            padding: 1rem !important;
+            padding: 1rem 1.25rem !important;
             font-size: 1.1rem !important;
-            margin: 0.5rem 0 !important;
-            border-radius: 10px !important;
-            min-height: 44px !important;
+            font-weight: 600 !important;
+            margin: 0.75rem 0 !important;
+            border-radius: 12px !important;
+            min-height: 48px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
         }
         
         /* Radio buttons - larger touch areas */
@@ -60,16 +74,23 @@ st.markdown("""
         }
         
         .stRadio > div > label {
-            padding: 0.85rem 0.95rem !important;
-            margin: 0.45rem 0 !important;
-            border-radius: 10px !important;
-            background-color: rgba(240, 242, 246, 0.08) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            min-height: 48px !important;
+            padding: 1rem 1rem !important;
+            margin: 0.5rem 0 !important;
+            border-radius: 12px !important;
+            background-color: rgba(240, 242, 246, 0.15) !important;
+            border: 2px solid rgba(49, 51, 63, 0.2) !important;
+            min-height: 52px !important;
             display: flex !important;
             align-items: center !important;
             width: 100% !important;
             box-sizing: border-box !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        .stRadio > div > label:hover {
+            background-color: rgba(240, 242, 246, 0.25) !important;
+            border-color: rgba(49, 51, 63, 0.4) !important;
         }
         
         /* Timer display */
@@ -87,6 +108,13 @@ st.markdown("""
         .stMarkdown p {
             font-size: 1rem !important;
             line-height: 1.6 !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+        
+        /* Question containers */
+        .element-container {
+            margin-bottom: 1rem !important;
         }
         
         /* Images - responsive */
@@ -99,6 +127,15 @@ st.markdown("""
         /* Metrics - stack vertically */
         [data-testid="stMetricValue"] {
             font-size: 1.5rem !important;
+        }
+        
+        [data-testid="stMetricLabel"] {
+            font-size: 0.9rem !important;
+        }
+        
+        /* Metric container spacing */
+        [data-testid="metric-container"] {
+            padding: 0.75rem !important;
         }
         
         /* Progress bar */
