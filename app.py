@@ -20,8 +20,13 @@ st.markdown("""
     @media (max-width: 768px) {
         /* Main content adjustments */
         .main .block-container {
-            padding: 1rem 0.5rem !important;
+            padding: 1rem 1rem 1.25rem 1.1rem !important; /* thêm lề trái/phải để không dính mép */
             max-width: 100% !important;
+        }
+
+        /* Ngăn sidebar đè lên nội dung khi mở trên mobile */
+        [data-testid="stSidebar"] {
+            max-width: 80vw !important;
         }
         
         /* Title adjustments */
@@ -51,16 +56,20 @@ st.markdown("""
         /* Radio buttons - larger touch areas */
         .stRadio > div {
             font-size: 1rem !important;
+            gap: 0.5rem !important;
         }
         
         .stRadio > div > label {
-            padding: 0.75rem !important;
-            margin: 0.5rem 0 !important;
-            border-radius: 8px !important;
-            background-color: rgba(240, 242, 246, 0.5) !important;
-            min-height: 44px !important;
+            padding: 0.85rem 0.95rem !important;
+            margin: 0.45rem 0 !important;
+            border-radius: 10px !important;
+            background-color: rgba(240, 242, 246, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            min-height: 48px !important;
             display: flex !important;
             align-items: center !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
         
         /* Timer display */
