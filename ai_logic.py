@@ -2,6 +2,7 @@ import google.generativeai as genai
 import json
 import os
 import random
+import re
 from dotenv import load_dotenv
 import time
 from db import save_questions, get_cached_questions
@@ -130,6 +131,54 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
     results = []
     visual_keywords = ['hình', 'shape', 'ảnh', 'diagram', 'figure', 'biểu đồ']
 
+    def _extract_number(text: str) -> float | None:
+        nums = re.findall(r"\d+(?:[.,]\d+)?", text or "")
+        if len(nums) < 2:
+            return None
+        try:
+            old_v = float(nums[0].replace(',', '.'))
+            new_v = float(nums[1].replace(',', '.'))
+            if old_v == 0:
+                return None
+            pct = round((new_v - old_v) / old_v * 100, 2)
+            return pct
+        except Exception:
+            return None
+
+    def _is_percent_increase_question(text: str) -> bool:
+        t = (text or '').lower()
+        return 'tăng' in t and 'từ' in t and ('lên' in t or 'thành' in t)
+
+    def _percent_answer_matches(q: dict) -> bool:
+        question = q.get('question', '')
+        if not _is_percent_increase_question(question):
+            return True  # not a percent-change question
+        expected = _extract_number(question)
+        if expected is None:
+            return True
+
+        def _first_number(val: str) -> float | None:
+            m = re.search(r"-?\d+(?:[.,]\d+)?", val or "")
+            if not m:
+                return None
+            try:
+                return float(m.group(0).replace(',', '.'))
+            except Exception:
+                return None
+
+        options = q.get('options') or []
+        correct = q.get('correct_answer') or ''
+        correct_num = _first_number(correct)
+        # Accept if correct_answer has number close to expected
+        if correct_num is not None and abs(correct_num - expected) <= 0.6:
+            return True
+        # Else check if any option matches expected closely
+        for opt in options:
+            num = _first_number(opt)
+            if num is not None and abs(num - expected) <= 0.6:
+                return True
+        return False
+
     def _is_valid(q: dict) -> bool:
         """Basic sanity checks to avoid garbage answers."""
         if not q:
@@ -138,16 +187,22 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
         if len(options) < 2:
             return False
         correct = q.get('correct_answer') or ''
+        has_option_match = False
         # Accept if exact match to an option
         if correct in options:
-            return True
+            has_option_match = True
         # Accept if the letter prefix matches one option's prefix (e.g., 'A.' or 'A ')
         if correct:
             letter = correct.strip()[:2]  # e.g., "A." or "A "
             for opt in options:
                 if opt.strip().startswith(letter):
-                    return True
-        return False
+                    has_option_match = True
+        if not has_option_match:
+            return False
+        # Additional semantic check for percent-increase questions
+        if not _percent_answer_matches(q):
+            return False
+        return True
     
     with ThreadPoolExecutor(max_workers=3) as executor:
         # Submit all tasks
