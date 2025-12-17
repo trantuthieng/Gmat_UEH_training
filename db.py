@@ -6,7 +6,11 @@ from typing import List, Dict, Any
 from contextlib import contextmanager
 import threading
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'gmat.db')
+# Use Render persistent disk if available, otherwise local
+if os.path.exists('/data'):
+    DB_PATH = '/data/gmat.db'
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), 'gmat.db')
 
 # Connection pool for better performance
 _local = threading.local()
@@ -15,8 +19,12 @@ _local = threading.local()
 def get_conn():
     """Context manager for database connections with connection reuse"""
     if not hasattr(_local, 'conn') or _local.conn is None:
-        _local.conn = sqlite3.connect(DB_PATH, check_same_thread=False)
-        _local.conn.row_factory = sqlite3.Row
+        try:
+            _local.conn = sqlite3.connect(DB_PATH, check_same_thread=False, timeout=5.0)
+            _local.conn.row_factory = sqlite3.Row
+        except sqlite3.OperationalError as e:
+            print(f"⚠️ DB connection error: {e}. Path: {DB_PATH}")
+            raise
     try:
         yield _local.conn
     except Exception:

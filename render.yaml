@@ -12,3 +12,7 @@ services:
         sync: false
       - key: PYTHON_VERSION
         value: 3.11.0
+    disk:
+      name: gmat-db
+      mountPath: /data
+      sizeGB: 10
