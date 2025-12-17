@@ -105,8 +105,7 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
                 prompt,
                 generation_config={
                     'temperature': 0.7,
-                    'max_output_tokens': 1024,
-                    'response_mime_type': 'application/json'
+                    'max_output_tokens': 1024
                 }
             )
             clean_text = _clean_response_text(response)
