@@ -259,7 +259,7 @@ if st.session_state.exam_state == "READY":
     
     **Cấu trúc đề thi:**
     - **Đề chính thức:** 30 câu - 60 phút
-    - **Thang điểm:** +1 (Đúng), -0.5 (Sai)
+    - **Thang điểm:** Thang 10 điểm (tính theo tỷ lệ câu đúng)
     """)
     
 # Hàm hiển thị một câu hỏi kèm hình nếu có
@@ -459,13 +459,12 @@ elif st.session_state.exam_state == "FINISHED":
     questions = st.session_state.exam_questions
     answers = st.session_state.user_answers
     
-    # --- Logic Chấm điểm (Optimized) ---
-    # Đúng +1, Sai -0.5
+    # --- Logic Chấm điểm (Thang 10) ---
+    # Điểm = (Số câu đúng / Tổng số câu) * 10
     if 'score_calculated' not in st.session_state:
         correct_count = 0
         wrong_count = 0
         unanswered_count = 0
-        score = 0
         details = []
         
         for idx, q in enumerate(questions):
@@ -476,11 +475,9 @@ elif st.session_state.exam_state == "FINISHED":
                 # So sánh string (cần xử lý chuỗi cẩn thận vì AI sinh ra có thể khác format)
                 # Lấy ký tự đầu (A, B, C, D) để so sánh cho chắc chắn
                 if user_choice.split('.')[0] == q['correct_answer'].split('.')[0]:
-                    score += 1.0
                     correct_count += 1
                     is_correct = True
                 else:
-                    score -= 0.5
                     wrong_count += 1
             else:
                 unanswered_count += 1
@@ -492,6 +489,10 @@ elif st.session_state.exam_state == "FINISHED":
                 "explanation": q['explanation'],
                 "is_correct": is_correct
             })
+        
+        # Tính điểm theo thang 10
+        total_questions = len(questions)
+        score = (correct_count / total_questions * 10) if total_questions > 0 else 0
         
         # Cache results to avoid recalculation
         st.session_state.score_calculated = {
@@ -513,7 +514,7 @@ elif st.session_state.exam_state == "FINISHED":
     # Hiển thị Dashboard - responsive columns
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
-        st.metric("TỔNG ĐIỂM", f"{score:.2f}", delta=None, help="Đúng +1, Sai -0.5")
+        st.metric("TỔNG ĐIỂM", f"{score:.2f}/10", delta=None, help="Thang điểm 10")
     with col2:
         st.metric("Số câu đúng", f"{correct_count}/{len(questions)}", delta=None)
     with col3:
