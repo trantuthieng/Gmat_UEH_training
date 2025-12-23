@@ -354,13 +354,13 @@ elif st.session_state.exam_state == "GENERATED":
     
     # Mobile-friendly button layout
     if st.button("🎯 BẮT ĐẦU LÀM BÀI", type="primary", use_container_width=True):
-            # Tính thời gian dựa trên chế độ
-            exam_duration = 60  # 60 phút
-            st.session_state.start_time = time.time()
-            st.session_state.end_time = st.session_state.start_time + (exam_duration * 60)
-            st.session_state.exam_state = "RUNNING"
-            st.session_state.user_answers = {}
-            st.rerun()
+        # Tính thời gian dựa trên chế độ
+        exam_duration = 60  # 60 phút
+        st.session_state.start_time = time.time()
+        st.session_state.end_time = st.session_state.start_time + (exam_duration * 60)
+        st.session_state.exam_state = "RUNNING"
+        st.session_state.user_answers = {}
+        st.rerun()
     
     if st.button("🔄 Tạo đề thi mới"):
         st.session_state.exam_state = "READY"
