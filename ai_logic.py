@@ -197,6 +197,7 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
             )
             clean_text = _clean_response_text(response)
             data = json.loads(clean_text)
+            print(f"✅ Tạo câu hỏi thành công (attempt {attempt})")
             
             # --- SỬA LỖI: Giữ nguyên metadata từ câu gốc ---
             data['type'] = seed_question.get('type', 'general')  # Giữ nguyên type của câu gốc (math/logic)
@@ -207,9 +208,11 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
             # Đảm bảo đáp án khớp với một lựa chọn
             options = data.get('options') or []
             correct = data.get('correct_answer') or ''
+            print(f"🔍 Đang kiểm tra đáp án: {correct[:50]}...")
             aligned = _align_correct_answer(options, correct)
             if not aligned:
                 raise ValueError("Correct answer does not align with options")
+            print(f"✓ Đáp án hợp lệ và khớp với lựa chọn")
 
             # Chuẩn hóa lại danh sách lựa chọn và đáp án để hiển thị nhất quán
             cleaned_opts = []
@@ -224,6 +227,7 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
 
             data['options'] = cleaned_opts
             data['correct_answer'] = aligned
+            print(f"✅ Hoàn tất kiểm tra câu hỏi - Topic: {topic}, Số lựa chọn: {len(cleaned_opts)}")
             return data
         except json.JSONDecodeError as e:
             print(f"❌ Lỗi JSON (attempt {attempt}/{max_attempts}): {e}")
@@ -341,9 +345,10 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
             except Exception as e:
                 print(f"❌ Lỗi khi tạo câu {start_idx + idx + 1}: {e}")
 
-            # Tăng lên 10s để an toàn tuyệt đối với giới hạn 7 RPM
-            # 60s / 10s = 6 requests/phút (An toàn dưới mức 7)
-            time.sleep(10)
+            # Tăng lên 15s để an toàn hơn với giới hạn API
+            # 60s / 15s = 4 requests/phút (rất an toàn, tránh quá tải)
+            print(f"⏳ Chờ 15s trước khi tạo câu tiếp theo...")
+            time.sleep(15)
             
             if progress_callback:
                 progress_callback((start_idx + idx + 1) / (start_idx + len(seeds)))
@@ -377,6 +382,7 @@ def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_call
     
     if actual_needed_new > 0:
         print(f"🤖 Đang AI tạo mới {actual_needed_new} câu...")
+        print(f"⏱️  Thời gian ước tính: ~{actual_needed_new * 15 / 60:.1f} phút (15s/câu)")
         
         # --- CHỌN SEED DATA ---
         # (Giữ nguyên logic chọn seed đa dạng topic như cũ)
