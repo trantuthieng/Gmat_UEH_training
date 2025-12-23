@@ -369,87 +369,138 @@ elif st.session_state.exam_state == "GENERATED":
 
 # 2. MÀN HÌNH LÀM BÀI (RUNNING)
 elif st.session_state.exam_state == "RUNNING":
-    # --- Sidebar: Đồng hồ đếm ngược ---
+    
+    # --- LOGIC KIỂM TRA THỜI GIAN (SERVER SIDE) ---
+    # Tính toán chính xác thời gian còn lại dựa trên giờ hệ thống
+    remaining_seconds = st.session_state.end_time - time.time()
+    
+    # Nếu hết giờ trên server -> Thu bài ngay lập tức
+    if remaining_seconds <= 0:
+        st.error("⏰ ĐÃ HẾT GIỜ LÀM BÀI!")
+        st.session_state.exam_state = "FINISHED"
+        st.rerun()
+
+    # --- SIDEBAR: ĐỒNG HỒ ĐẾM NGƯỢC (CLIENT SIDE - JAVASCRIPT) ---
     with st.sidebar:
         st.header("⏳ Thời gian còn lại")
         
-        # Tính thời gian còn lại
-        remaining_time = max(0, st.session_state.end_time - time.time())
+        # Chuyển đổi thời gian kết thúc sang milliseconds cho JS
+        end_time_ms = st.session_state.end_time * 1000
         
-        if remaining_time > 0:
-            # Hiển thị đồng hồ đếm ngược bằng JavaScript (không cần reload trang)
-            st.markdown(f"""
-            <div id="timer" style="font-size: 3rem; font-weight: bold; color: #1f77b4; text-align: center; padding: 1rem; background: rgba(31, 119, 180, 0.1); border-radius: 12px; margin-bottom: 1rem;">
-                {format_time(remaining_time)}
+        # HTML & JS cho đồng hồ
+        # Script này chạy độc lập trên trình duyệt, không làm phiền server
+        timer_html = f"""
+        <div style="
+            text-align: center; 
+            padding: 15px; 
+            background-color: #f0f2f6; 
+            border: 2px solid #1f77b4; 
+            border-radius: 10px; 
+            margin-bottom: 20px;">
+            <div style="font-size: 1.2rem; color: #555;">Còn lại</div>
+            <div id="countdown" style="
+                font-size: 2.8rem; 
+                font-weight: bold; 
+                color: #1f77b4; 
+                font-family: monospace;">
+                --:--
             </div>
-            <script>
-                let endTime = {st.session_state.end_time * 1000}; // Convert to milliseconds
-                
-                function updateTimer() {{
-                    let now = Date.now();
-                    let remaining = Math.max(0, Math.floor((endTime - now) / 1000));
-                    
-                    if (remaining > 0) {{
-                        let mins = Math.floor(remaining / 60);
-                        let secs = remaining % 60;
-                        document.getElementById('timer').innerText = 
-                            String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
-                        setTimeout(updateTimer, 1000);
-                    }} else {{
-                        document.getElementById('timer').innerText = '00:00';
-                        document.getElementById('timer').style.color = 'red';
-                        // Reload trang để chuyển sang màn hình kết quả
-                        setTimeout(function() {{
-                            window.parent.location.reload();
-                        }}, 1000);
-                    }}
-                }}
-                
-                updateTimer();
-            </script>
-            """, unsafe_allow_html=True)
-            st.warning("⏰ Tự động nộp bài khi hết giờ")
-        else:
-            st.error("ĐÃ HẾT GIỜ!")
-            st.session_state.exam_state = "FINISHED"
-            st.rerun()
+        </div>
+        
+        <script>
+            // Lấy thời gian đích từ Python
+            var dest = {end_time_ms};
             
-        if st.button("📤 Nộp bài"):
-            st.session_state.exam_state = "FINISHED"
-            st.rerun()
+            var x = setInterval(function() {{
+                var now = new Date().getTime();
+                var diff = dest - now;
+                
+                // Tính toán phút và giây
+                var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                var s = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                // Thêm số 0 ở đầu nếu < 10
+                m = m < 10 ? "0" + m : m;
+                s = s < 10 ? "0" + s : s;
+                
+                var elem = document.getElementById("countdown");
+                
+                if (diff > 0) {{
+                    if(elem) {{
+                        elem.innerHTML = m + ":" + s;
+                        // Đổi màu khi còn dưới 5 phút (300000ms)
+                        if (diff < 300000) {{
+                            elem.style.color = "#ff4b4b"; // Màu đỏ báo động
+                        }}
+                    }}
+                }} else {{
+                    clearInterval(x);
+                    if(elem) {{
+                        elem.innerHTML = "00:00";
+                        elem.style.color = "red";
+                    }}
+                    // Tự động reload trang khi hết giờ để Server xử lý nộp bài
+                    // window.parent.location.reload(); 
+                }}
+            }}, 1000);
+        </script>
+        """
+        
+        # Render đồng hồ (chiều cao cố định để không bị nhảy layout)
+        st.components.v1.html(timer_html, height=150)
+        
+        st.info("⚠️ Hệ thống sẽ tự động thu bài khi đồng hồ về 00:00.")
 
-    # --- Khu vực câu hỏi ---
+    # --- KHU VỰC LÀM BÀI (DÙNG FORM ĐỂ KHÔNG BỊ RELOAD KHI CHỌN) ---
     st.subheader("📝 BÀI LÀM")
     
-    # Progress indicator
-    answered = len(st.session_state.user_answers)
-    total_questions = len(st.session_state.exam_questions)
-    st.progress(answered / total_questions if total_questions > 0 else 0)
-    st.caption(f"Đã trả lời: {answered}/{total_questions} câu")
-    
     questions = st.session_state.exam_questions
-    
     if not questions:
         st.error("❌ Không có câu hỏi! Vui lòng tạo đề thi lại.")
     else:
-        # Hiển thị tất cả câu hỏi
-        for idx, q in enumerate(questions):
-            # Container for better mobile spacing
-            with st.container():
-                render_question(q, idx)
-                # Key phải unique để tránh lỗi duplicate widget
-                options = q.get('options', [])
-                if options:
-                    ans = st.radio(
-                        f"Chọn đáp án:", 
-                        options, 
-                        key=f"q_{idx}", 
+        # Progress indicator
+        answered = len(st.session_state.user_answers)
+        total_questions = len(questions)
+        st.progress(answered / total_questions if total_questions > 0 else 0)
+        st.caption(f"Đã trả lời: {answered}/{total_questions} câu")
+        
+        # --- BẮT ĐẦU FORM ---
+        # Mọi thao tác trong khối này sẽ KHÔNG gửi về server cho đến khi bấm Submit
+        with st.form(key='exam_form'):
+            for idx, q in enumerate(questions):
+                # Container for better mobile spacing
+                with st.container():
+                    st.markdown(f"**Câu {idx+1}:** {q['question']}")
+                    
+                    if q.get('image_url'):
+                        st.image(q.get('image_url'), use_container_width=True)
+                    
+                    options = q.get('options', [])
+                    
+                    # Widget Radio: Key unique giúp Streamlit tự nhớ trạng thái
+                    st.radio(
+                        "Chọn đáp án:",
+                        options,
+                        key=f"radio_{idx}", 
                         index=None,
                         label_visibility="visible"
                     )
-                    if ans:
-                        st.session_state.user_answers[f"q_{idx}"] = ans
-                st.divider()
+                    st.divider()
+            
+            # --- NÚT NỘP BÀI (Duy nhất) ---
+            # Khi bấm nút này, toàn bộ đáp án mới được gửi đi 1 lần
+            submit_button = st.form_submit_button("📤 NỘP BÀI THI", type="primary", use_container_width=True)
+            
+            if submit_button:
+                # 1. Lưu đáp án từ các widget vào session_state chính
+                for i in range(len(questions)):
+                    answer = st.session_state.get(f"radio_{i}")
+                    if answer:
+                        st.session_state.user_answers[f"q_{i}"] = answer
+                
+                # 2. Kết thúc bài thi
+                st.session_state.exam_state = "FINISHED"
+                st.rerun()
 
 # 3. MÀN HÌNH KẾT QUẢ (FINISHED)
 elif st.session_state.exam_state == "FINISHED":
