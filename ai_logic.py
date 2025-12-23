@@ -1,4 +1,4 @@
-import google.generativeai as genai
+from google import genai
 import json
 import os
 import random
@@ -37,8 +37,30 @@ def _get_model():
         print("GEMINI_API_KEY not found. Set in environment or Streamlit secrets.")
         return None
     try:
-        genai.configure(api_key=key)
-        return genai.GenerativeModel('gemini-2.5-flash')
+        # Wrap the google.genai client to keep existing call sites unchanged
+        client = genai.Client(api_key=key)
+
+        class _ModelWrapper:
+            def __init__(self, client, model_name: str):
+                self._client = client
+                self._model = model_name
+
+            def generate_content(self, prompt, generation_config=None):
+                # Map dict config to types.GenerateContentConfig when available
+                cfg = None
+                if generation_config:
+                    try:
+                        from google.genai import types as genai_types
+                        cfg = genai_types.GenerateContentConfig(**generation_config)
+                    except Exception:
+                        cfg = generation_config
+                return self._client.models.generate_content(
+                    model=self._model,
+                    contents=prompt,
+                    config=cfg,
+                )
+
+        return _ModelWrapper(client, 'gemini-2.5-flash')
     except Exception as e:
         print(f"Lỗi khởi tạo Gemini: {e}")
         return None

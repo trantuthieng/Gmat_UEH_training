@@ -1,4 +1,4 @@
-import google.generativeai as genai
+from google import genai
 import json
 import os
 import time
@@ -16,20 +16,20 @@ except:
     API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not API_KEY:
-    raise ValueError("GEMINI_API_KEY not found. Please set it in .env file") 
-genai.configure(api_key=API_KEY)
+    raise ValueError("GEMINI_API_KEY not found. Please set it in .env file")
+client = genai.Client(api_key=API_KEY)
 
 def process_pdf_to_json(pdf_path, output_path):
     print(f"🚀 Đang tải file '{pdf_path}' lên Gemini...")
     
     # 1. Upload file PDF lên Gemini
-    sample_file = genai.upload_file(path=pdf_path, display_name="GMAT Exam Data")
+    sample_file = client.files.upload(file=pdf_path, display_name="GMAT Exam Data")
     
     # Đợi file xử lý xong (thường mất 1-2 giây)
     while sample_file.state.name == "PROCESSING":
         print("... Đang xử lý file ...")
         time.sleep(2)
-        sample_file = genai.get_file(sample_file.name)
+        sample_file = client.files.get(sample_file.name)
 
     if sample_file.state.name == "FAILED":
         print("❌ Lỗi khi xử lý file PDF.")
@@ -60,7 +60,7 @@ def process_pdf_to_json(pdf_path, output_path):
     """
 
     # 3. Gọi model Gemini 2.0 Flash (chuyên xử lý văn bản dài)
-    model = genai.GenerativeModel('gemini-2.5-flash-lite')   
+    model_name = 'gemini-2.5-flash-lite'
     # Thử gửi request với retry
     max_retries = 3
     retry_count = 0
@@ -70,9 +70,13 @@ def process_pdf_to_json(pdf_path, output_path):
         try:
             print(f"Đang gửi request đến Gemini... (Lần thử {retry_count + 1}/{max_retries})")
             # Tăng max_output_tokens để đảm bảo không bị cắt giữa chừng vì file dài
-            response = model.generate_content(
-                [sample_file, prompt],
-                generation_config={"response_mime_type": "application/json"}
+            from google.genai import types as genai_types
+            response = client.models.generate_content(
+                model=model_name,
+                contents=[sample_file, prompt],
+                config=genai_types.GenerateContentConfig(
+                    response_mime_type="application/json"
+                )
             )
             break  # Thành công thì thoát vòng lặp
         except Exception as e:
