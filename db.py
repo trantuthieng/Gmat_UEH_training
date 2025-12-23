@@ -25,11 +25,21 @@ def _get_db_type():
     if _db_type is not None:
         return _db_type
     
-    # Kiểm tra nếu có DATABASE_URL trong secrets và psycopg2 available
-    if PSYCOPG2_AVAILABLE and "DATABASE_URL" in st.secrets:
+    # Helper để lấy biến từ os.environ hoặc st.secrets
+    def get_config(key):
+        return os.getenv(key) or st.secrets.get(key)
+    
+    # Kiểm tra nếu có DB_HOST và psycopg2 available
+    if PSYCOPG2_AVAILABLE and get_config("DB_HOST"):
         try:
             # Test connection
-            conn = psycopg2.connect(st.secrets["DATABASE_URL"])
+            conn = psycopg2.connect(
+                host=get_config("DB_HOST"),
+                database=get_config("DB_NAME"),
+                user=get_config("DB_USER"),
+                password=get_config("DB_PASSWORD"),
+                port=get_config("DB_PORT")
+            )
             conn.close()
             _db_type = "postgresql"
             return _db_type
@@ -42,13 +52,23 @@ def _get_db_type():
 
 def get_db_connection():
     """Lấy kết nối database (PostgreSQL hoặc SQLite)"""
+    # Helper để lấy biến từ os.environ (Azure) hoặc st.secrets (Streamlit Cloud)
+    def get_config(key):
+        return os.getenv(key) or st.secrets.get(key)
+    
     db_type = _get_db_type()
     
     if db_type == "postgresql":
         try:
-            return psycopg2.connect(st.secrets["DATABASE_URL"])
+            return psycopg2.connect(
+                host=get_config("DB_HOST"),
+                database=get_config("DB_NAME"),
+                user=get_config("DB_USER"),
+                password=get_config("DB_PASSWORD"),
+                port=get_config("DB_PORT")
+            )
         except Exception as e:
-            print(f"❌ PostgreSQL Connection Error: {e}")
+            print(f"❌ DB Connection Error: {e}")
             raise e
     else:
         # SQLite fallback
