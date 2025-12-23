@@ -150,7 +150,8 @@ def save_questions(questions: List[Dict[str, Any]]) -> int:
                         q.get('type')
                     )
                 )
-                if c.statusmessage.startswith("INSERT"):
+                # psycopg2: kiểm tra rowcount để xác định insert thành công
+                if c.rowcount > 0:
                     saved += 1
             else:
                 # SQLite: dùng ? và INSERT OR IGNORE
