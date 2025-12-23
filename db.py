@@ -1,60 +1,64 @@
 import os
-import sqlite3
 import json
 import hashlib
+import psycopg2
+from psycopg2 import pool, extras
 from typing import List, Dict, Any
 from contextlib import contextmanager
-import threading
+import streamlit as st
 
-# Use Render persistent disk if available, otherwise local
-if os.path.exists('/data'):
-    DB_PATH = '/data/gmat.db'
-else:
-    DB_PATH = os.path.join(os.path.dirname(__file__), 'gmat.db')
-
-# Connection pool for better performance
-_local = threading.local()
+# --- CẤU HÌNH KẾT NỐI SUPABASE ---
+# Lấy thông tin từ Streamlit Secrets (sẽ cấu hình ở bước 4)
+def get_db_connection():
+    try:
+        return psycopg2.connect(
+            host=st.secrets["DB_HOST"],
+            database=st.secrets["DB_NAME"],
+            user=st.secrets["DB_USER"],
+            password=st.secrets["DB_PASSWORD"],
+            port=st.secrets["DB_PORT"]
+        )
+    except Exception as e:
+        print(f"❌ DB Connection Error: {e}")
+        raise e
 
 @contextmanager
 def get_conn():
-    """Context manager for database connections with connection reuse"""
-    if not hasattr(_local, 'conn') or _local.conn is None:
-        try:
-            _local.conn = sqlite3.connect(DB_PATH, check_same_thread=False, timeout=5.0)
-            _local.conn.row_factory = sqlite3.Row
-        except sqlite3.OperationalError as e:
-            print(f"⚠️ DB connection error: {e}. Path: {DB_PATH}")
-            raise
+    """Context manager for database connections"""
+    conn = get_db_connection()
     try:
-        yield _local.conn
+        yield conn
     except Exception:
-        _local.conn.rollback()
+        conn.rollback()
         raise
+    finally:
+        conn.close()
 
 def init_db():
+    """Khởi tạo bảng trên PostgreSQL (Supabase)"""
     with get_conn() as conn:
-        c = conn.cursor()
-        c.execute(
-            """
-            CREATE TABLE IF NOT EXISTS questions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                qhash TEXT UNIQUE,
-                question TEXT NOT NULL,
-                options TEXT,
-                correct_answer TEXT,
-                explanation TEXT,
-                image_url TEXT,
-                topic TEXT,
-                qtype TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        with conn.cursor() as c:
+            # PostgreSQL dùng SERIAL cho auto-increment thay vì AUTOINCREMENT
+            c.execute(
+                """
+                CREATE TABLE IF NOT EXISTS questions (
+                    id SERIAL PRIMARY KEY,
+                    qhash TEXT UNIQUE,
+                    question TEXT NOT NULL,
+                    options TEXT,
+                    correct_answer TEXT,
+                    explanation TEXT,
+                    image_url TEXT,
+                    topic TEXT,
+                    qtype TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+                """
             )
-            """
-        )
-        # Add indexes for better query performance
-        c.execute("CREATE INDEX IF NOT EXISTS idx_qhash ON questions(qhash)")
-        c.execute("CREATE INDEX IF NOT EXISTS idx_created_at ON questions(created_at DESC)")
-        c.execute("CREATE INDEX IF NOT EXISTS idx_qtype ON questions(qtype)")
-        conn.commit()
+            # Tạo index (Postgres tự tạo index cho Primary Key và Unique)
+            c.execute("CREATE INDEX IF NOT EXISTS idx_created_at ON questions(created_at DESC);")
+            c.execute("CREATE INDEX IF NOT EXISTS idx_qtype ON questions(qtype);")
+            conn.commit()
 
 def _hash_question(q: Dict[str, Any]) -> str:
     base = (q.get('question','') + '|' + q.get('correct_answer','')).strip().lower()
@@ -63,66 +67,72 @@ def _hash_question(q: Dict[str, Any]) -> str:
 def save_questions(questions: List[Dict[str, Any]]) -> int:
     if not questions:
         return 0
+    
+    saved = 0
     with get_conn() as conn:
-        saved = 0
-        c = conn.cursor()
-        # Batch insert for better performance
-        batch_data = []
-        for q in questions:
-            qhash = _hash_question(q)
-            options_json = json.dumps(q.get('options', []), ensure_ascii=False)
-            batch_data.append((
-                qhash,
-                q.get('question', ''),
-                options_json,
-                q.get('correct_answer'),
-                q.get('explanation'),
-                q.get('image_url'),
-                q.get('topic'),
-                q.get('type')
-            ))
-        
-        # Use executemany with INSERT OR IGNORE for better performance
-        c.executemany(
-            """
-            INSERT OR IGNORE INTO questions (qhash, question, options, correct_answer, explanation, image_url, topic, qtype)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            batch_data
-        )
-        saved = c.rowcount
-        conn.commit()
-        return saved
+        with conn.cursor() as c:
+            for q in questions:
+                qhash = _hash_question(q)
+                options_json = json.dumps(q.get('options', []), ensure_ascii=False)
+                
+                # Postgres dùng cú pháp %s thay vì ?
+                # Dùng ON CONFLICT DO NOTHING thay cho INSERT OR IGNORE
+                c.execute(
+                    """
+                    INSERT INTO questions (qhash, question, options, correct_answer, explanation, image_url, topic, qtype)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (qhash) DO NOTHING
+                    """,
+                    (
+                        qhash,
+                        q.get('question', ''),
+                        options_json,
+                        q.get('correct_answer'),
+                        q.get('explanation'),
+                        q.get('image_url'),
+                        q.get('topic'),
+                        q.get('type')
+                    )
+                )
+                # Rowcount trong ON CONFLICT hơi khác, nhưng ta tạm tính đơn giản
+                if c.statusmessage.startswith("INSERT"):
+                     saved += 1
+            conn.commit()
+    return saved
 
 def get_cached_questions(limit: int = 30, randomize: bool = True) -> List[Dict[str, Any]]:
     with get_conn() as conn:
-        c = conn.cursor()
-        # Use RANDOM() for better variety in cached questions
-        order_by = "RANDOM()" if randomize else "created_at DESC"
-        c.execute(
-            f"""
-            SELECT question, options, correct_answer, explanation, image_url, topic, qtype
-            FROM questions
-            ORDER BY {order_by}
-            LIMIT ?
-            """,
-            (limit,)
-        )
-        rows = c.fetchall()
-        result: List[Dict[str, Any]] = []
-        for row in rows:
-            opts = []
-            try:
-                opts = json.loads(row[1]) if row[1] else []
-            except json.JSONDecodeError:
+        # Sử dụng RealDictCursor để lấy kết quả dạng Dictionary giống SQLite Row
+        with conn.cursor(cursor_factory=extras.RealDictCursor) as c:
+            order_by = "RANDOM()" if randomize else "created_at DESC"
+            
+            c.execute(
+                f"""
+                SELECT question, options, correct_answer, explanation, image_url, topic, qtype
+                FROM questions
+                ORDER BY {order_by}
+                LIMIT %s
+                """,
+                (limit,)
+            )
+            rows = c.fetchall()
+            
+            result: List[Dict[str, Any]] = []
+            for row in rows:
                 opts = []
-            result.append({
-                'type': row[6] or 'general',
-                'question': row[0],
-                'options': opts,
-                'correct_answer': row[2],
-                'explanation': row[3],
-                'image_url': row[4],
-                'topic': row[5]
-            })
-        return result
+                try:
+                    # Postgres trả về string, cần parse JSON
+                    opts = json.loads(row['options']) if row['options'] else []
+                except json.JSONDecodeError:
+                    opts = []
+                
+                result.append({
+                    'type': row['qtype'] or 'general',
+                    'question': row['question'],
+                    'options': opts,
+                    'correct_answer': row['correct_answer'],
+                    'explanation': row['explanation'],
+                    'image_url': row['image_url'],
+                    'topic': row['topic']
+                })
+            return result

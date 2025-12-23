@@ -7,7 +7,7 @@ from db import init_db, get_cached_questions, save_questions
 
 # --- CẤU HÌNH TRANG ---
 st.set_page_config(
-    page_title="Hệ thống thi thử GMAT Paris 10", 
+    page_title="Hệ thống thi thử GMAT", 
     page_icon="📝", 
     layout="wide",
     initial_sidebar_state="auto"
@@ -225,7 +225,7 @@ if 'exam_mode' not in st.session_state:
     st.session_state.exam_mode = None
 
 # --- GIAO DIỆN CHÍNH ---
-st.title("📝 Hệ thống Thi thử GMAT Paris 10")
+st.title("📝 Hệ thống Thi thử GMAT")
 
 # --- KẾT NỐI DB AN TOÀN ---
 try:
