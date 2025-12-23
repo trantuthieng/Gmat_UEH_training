@@ -2,16 +2,33 @@ import streamlit as st
 import json
 import time
 import random
-from ai_logic import generate_full_exam
-from db import init_db, get_cached_questions, save_questions
 
-# --- CẤU HÌNH TRANG ---
+# --- CẤU HÌNH TRANG (Phải để đầu tiên) ---
 st.set_page_config(
-    page_title="Hệ thống thi thử GMAT", 
+    page_title="Hệ thống thi thử GMAT Paris 10", 
     page_icon="📝", 
     layout="wide",
     initial_sidebar_state="auto"
 )
+
+# --- IMPORT CÁC MODULE KHÁC ---
+# Đặt trong try-except để bắt lỗi thiếu thư viện hoặc lỗi code
+try:
+    from ai_logic import generate_full_exam
+    from db import init_db, get_cached_questions, save_questions
+except Exception as e:
+    st.error(f"❌ Lỗi Import module: {e}")
+    st.stop()
+
+# --- KHỞI TẠO DB AN TOÀN ---
+# Đây là đoạn quan trọng nhất giúp app không bị connection refused
+try:
+    init_db()
+except Exception as e:
+    st.error(f"⚠️ KHÔNG THỂ KẾT NỐI DATABASE (SUPABASE)")
+    st.error(f"Chi tiết lỗi: {e}")
+    st.info("👉 Hãy kiểm tra lại Streamlit Secrets (Password, Host, User...)")
+    # Không gọi st.stop() để app vẫn hiện giao diện (dù không lưu được DB)
 
 # Mobile-responsive CSS
 st.markdown("""
