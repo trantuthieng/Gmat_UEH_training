@@ -60,7 +60,7 @@ def _get_model():
                     config=cfg,
                 )
 
-        return _ModelWrapper(client, 'gemini-2.5-flash')
+        return _ModelWrapper(client, 'gemini-1.5-flash')
     except Exception as e:
         print(f"Lỗi khởi tạo Gemini: {e}")
         return None
@@ -192,7 +192,7 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
                 prompt,
                 generation_config={
                     'temperature': 0.7,
-                    'max_output_tokens': 1024
+                    'max_output_tokens': 8192
                 }
             )
             clean_text = _clean_response_text(response)

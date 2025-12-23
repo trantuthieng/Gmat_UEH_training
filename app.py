@@ -5,7 +5,7 @@ import random
 
 # --- CẤU HÌNH TRANG (Phải để đầu tiên) ---
 st.set_page_config(
-    page_title="Hệ thống thi thử GMAT Paris 10", 
+    page_title="Hệ thống thi thử GMAT", 
     page_icon="📝", 
     layout="wide",
     initial_sidebar_state="auto"
