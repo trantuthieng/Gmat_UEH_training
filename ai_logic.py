@@ -38,7 +38,7 @@ def _get_model():
         return None
     try:
         genai.configure(api_key=key)
-        return genai.GenerativeModel('gemma-3-12b-it')
+        return genai.GenerativeModel('gemini-2.5-flash')
     except Exception as e:
         print(f"Lỗi khởi tạo Gemini: {e}")
         return None
@@ -65,6 +65,7 @@ def _clean_response_text(response) -> str:
     text = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', text)
     
     return text
+
 def _align_correct_answer(options: list, correct_answer: str) -> str | None:
     """Best-effort map correct_answer to one of the provided options.
 
@@ -138,30 +139,27 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
     is_visual = topic.lower() in ['pattern recognition', 'letter pattern', 'logic puzzle', 'number pattern']
     
     prompt = f"""
-    Đóng vai người ra đề thi GMAT.
+    Bạn là chuyên gia ra đề thi GMAT cao cấp.
     Chủ đề: {topic}
     Câu mẫu: "{seed_question['content']}"
 
-    Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI:
-    - Nếu là toán/logic: giữ nguyên dạng toán/logic nhưng thay số liệu/bối cảnh
-    - Nếu là kiến thức: cùng chủ đề nhưng hỏi khía cạnh khác
-    - Nếu là IQ/pattern (dãy số, chữ cái, hình học): tạo dãy logic mới, MÔ TẢ bằng text thuần, KHÔNG cần hình ảnh thực
-    - TÍNH TOÁN CẨN THẬN: với bài tính phần trăm tăng/giảm, dùng công thức (giá_mới - giá_cũ)/giá_cũ * 100 và kiểm tra lại kết quả trước khi trả lời.
+    Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI dựa trên logic của câu mẫu:
+    1. Toán học: Thay đổi số liệu nhưng PHẢI TỰ TÍNH TOÁN LẠI ĐÁP ÁN chính xác.
+    2. Logic: Giữ cấu trúc suy luận, thay đổi ngữ cảnh.
+    3. Pattern: Tạo quy luật mới rõ ràng.
 
-    Ràng buộc định dạng:
-    - Chỉ dùng ký tự ASCII, không ký tự đặc biệt phức tạp, không emoji.
-    - Không xuống dòng trong giá trị chuỗi.
-    - Không dùng Markdown, không bao các block ```json.
-    - Trả về DUY NHẤT một JSON object hợp lệ.
+    YÊU CẦU QUAN TRỌNG:
+    - Hãy suy nghĩ từng bước (Chain of Thought) để đảm bảo đáp án đúng tuyệt đối.
+    - Đáp án đúng (correct_answer) PHẢI nằm trong danh sách lựa chọn (options).
+    - Trả về kết quả dưới dạng JSON thuần túy, không có markdown.
 
-    OUTPUT JSON duy nhất:
+    OUTPUT JSON FORMAT (Tuân thủ đúng thứ tự này để tính toán trước khi chọn đáp án):
     {{
-        "id": "new_id",
-        "type": "general",
-        "question": "No newline. Short and clear. For pattern/sequence questions, describe the pattern in text (e.g. 1,2,4,7,11,... (?)).",
+        "question": "Nội dung câu hỏi...",
         "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
-        "correct_answer": "Copy exact text of the correct option",
-        "explanation": "Brief reasoning (show key calculation or pattern rule)"
+        "step_by_step_thinking": "Bước 1: ..., Bước 2: ... (Thực hiện tính toán nháp ở đây)",
+        "correct_answer": "Chép y nguyên text của lựa chọn đúng vào đây",
+        "explanation": "Giải thích vắn tắt cho người dùng (dựa trên phần thinking)"
     }}
     """
 
@@ -290,7 +288,8 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
             return False
         return True
     
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    # Giảm concurrency để tránh lỗi 429 (giới hạn ~7 RPM tài khoản hiện tại)
+    with ThreadPoolExecutor(max_workers=1) as executor:
         # Submit all tasks
         future_to_idx = {executor.submit(generate_question_variant, seed): (idx, seed) 
                         for idx, seed in enumerate(seeds)}
@@ -314,6 +313,10 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
                     print(f"⚠️ Câu {start_idx + idx + 1} - Thất bại")
             except Exception as e:
                 print(f"❌ Lỗi khi tạo câu {start_idx + idx + 1}: {e}")
+
+            # Tăng lên 10s để an toàn tuyệt đối với giới hạn 7 RPM
+            # 60s / 10s = 6 requests/phút (An toàn dưới mức 7)
+            time.sleep(10)
             
             if progress_callback:
                 progress_callback((start_idx + idx + 1) / (start_idx + len(seeds)))
@@ -322,10 +325,7 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
 
 def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_callback=None, max_retries_per_question=4):
     """
-    Tạo bộ đề thi hoàn chỉnh với cơ chế concurrent execution và retry để tăng tốc độ.
-    - num_questions: Tổng số câu hỏi cần tạo
-    - num_general: Tham số cũ để tương thích, bỏ qua
-    - max_retries_per_question: Số lần thử lại tối đa cho mỗi câu thất bại
+    Tạo bộ đề thi: Trộn 50% câu hỏi cũ từ Cache và 50% câu hỏi mới từ AI.
     """
     exam_questions = []
 
@@ -333,92 +333,82 @@ def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_call
         print("❌ Không có seed data")
         return exam_questions
 
-    print(f"📋 Bắt đầu tạo {num_questions} câu hỏi từ {len(seed_data)} câu mẫu (concurrent mode)...")
+    # 1. CẤU HÌNH TỈ LỆ (50% cũ - 50% mới)
+    target_cached = int(num_questions * 0.5)  # 15 câu cũ
+    target_new = num_questions - target_cached # 15 câu mới
 
-    # Try to get from cache first
-    cached = get_cached_questions(num_questions, randomize=True)
-    if len(cached) >= num_questions:
-        print(f"✅ Sử dụng {num_questions} câu từ cache")
-        return cached[:num_questions]
+    print(f"📋 Kế hoạch tạo đề: {target_cached} câu cũ (DB) + {target_new} câu mới (AI)")
+
+    # 2. LẤY CÂU HỎI TỪ CACHE (DB)
+    cached_part = get_cached_questions(target_cached, randomize=True)
+    if cached_part:
+        print(f"✅ Đã lấy {len(cached_part)} câu từ Cache")
+        exam_questions.extend(cached_part)
     
-    # Diversify seed selection: group by topic, pick from each bucket
-    topic_buckets = {}
-    for s in seed_data:
-        t = s.get('topic', 'general')
-        topic_buckets.setdefault(t, []).append(s)
+    # Tính số câu thực sự cần tạo mới (phòng trường hợp DB chưa có gì thì phải tạo hết)
+    actual_needed_new = num_questions - len(exam_questions)
     
-    selected_seeds = []
-    bucket_list = list(topic_buckets.values())
-    random.shuffle(bucket_list)
-    while len(selected_seeds) < num_questions and bucket_list:
-        for bucket in bucket_list:
-            if bucket:
-                selected_seeds.append(random.choice(bucket))
-                if len(selected_seeds) >= num_questions:
-                    break
-    # Fallback if not enough
-    if len(selected_seeds) < num_questions:
-        selected_seeds.extend(random.choices(seed_data, k=num_questions - len(selected_seeds)))
-    total_tasks = len(selected_seeds)
-
-    # Concurrent generation - batch processing
-    exam_questions = generate_question_batch(selected_seeds, 0, progress_callback)
-
-    # Retry with concurrent processing for failed questions
-    if len(exam_questions) < num_questions:
-        remaining = num_questions - len(exam_questions)
-        print(f"🔁 Bắt đầu thử lại cho {remaining} câu lỗi (concurrent retry)...")
-        retry_pool = random.choices(seed_data, k=remaining * 2)  # Generate more to increase success rate
+    if actual_needed_new > 0:
+        print(f"🤖 Đang AI tạo mới {actual_needed_new} câu...")
         
-        retry_results = generate_question_batch(retry_pool, len(exam_questions), progress_callback)
-        exam_questions.extend(retry_results[:remaining])
-
-    # Kiểm tra câu trùng lặp dựa trên nội dung câu hỏi (optimized)
-    def normalize(txt: str) -> str:
-        import string
-        return txt.lower().translate(str.maketrans('', '', string.punctuation)).strip()
-    
-    seen_questions = set()
-    unique_questions = []
-    
-    for q in exam_questions:
-        question_text = normalize(q.get('question', ''))
-        if question_text and question_text not in seen_questions:
-            unique_questions.append(q)
-            seen_questions.add(question_text)
-    
-    exam_questions = unique_questions
-    print(f"✅ Loại bỏ trùng lặp: còn {len(exam_questions)} câu duy nhất")
-    
-    # Save to cache for future use
-    if exam_questions:
-        try:
-            saved_count = save_questions(exam_questions)
-            print(f"💾 Đã lưu {saved_count} câu vào DB cache")
-        except Exception as e:
-            print(f"⚠️ Không thể lưu DB: {e}")
-    
-    # Fallback: use cache if still not enough
-    if len(exam_questions) < num_questions:
-        need_fill = num_questions - len(exam_questions)
-        print(f"⚠️ Còn thiếu {need_fill} câu, sử dụng cache để bổ sung...")
+        # --- CHỌN SEED DATA ---
+        # (Giữ nguyên logic chọn seed đa dạng topic như cũ)
+        topic_buckets = {}
+        for s in seed_data:
+            t = s.get('topic', 'general')
+            topic_buckets.setdefault(t, []).append(s)
         
-        cached = get_cached_questions(need_fill * 2, randomize=True)
-        for q in cached:
-            q_text = normalize(q.get('question', ''))
-            if q_text and q_text not in seen_questions:
+        selected_seeds = []
+        bucket_list = list(topic_buckets.values())
+        random.shuffle(bucket_list)
+        
+        while len(selected_seeds) < actual_needed_new and bucket_list:
+            for bucket in bucket_list:
+                if bucket:
+                    selected_seeds.append(random.choice(bucket))
+                    if len(selected_seeds) >= actual_needed_new:
+                        break
+        # Fallback
+        if len(selected_seeds) < actual_needed_new:
+            selected_seeds.extend(random.choices(seed_data, k=actual_needed_new - len(selected_seeds)))
+
+        # --- GỌI API TẠO CÂU MỚI (Dùng hàm batch đã tối ưu ở bước trước) ---
+        # Lưu ý: generate_question_batch đã có logic sleep(10) và max_workers=1 bạn đã sửa
+        newly_generated = generate_question_batch(selected_seeds, 0, progress_callback)
+        
+        # Lưu câu MỚI vào DB ngay lập tức
+        if newly_generated:
+            try:
+                saved = save_questions(newly_generated)
+                print(f"💾 Đã lưu {saved} câu mới vào DB")
+            except Exception as e:
+                print(f"⚠️ Lỗi lưu DB: {e}")
+            
+            exam_questions.extend(newly_generated)
+
+    # 3. KIỂM TRA VÀ BỔ SUNG NẾU THIẾU (FALLBACK)
+    # Nếu AI tạo lỗi, lấy thêm từ Cache để bù vào cho đủ 30 câu
+    if len(exam_questions) < num_questions:
+        missing = num_questions - len(exam_questions)
+        print(f"⚠️ Vẫn thiếu {missing} câu, lấy thêm từ Cache bù vào...")
+        extra_cached = get_cached_questions(limit=100, randomize=True) # Lấy dư ra để lọc
+        
+        # Lọc trùng lặp (tránh lấy lại những câu đã có trong exam_questions)
+        existing_hashes = set()
+        for q in exam_questions:
+            # Tạo hash đơn giản từ nội dung câu hỏi để so sánh
+            h = (q.get('question', '') + q.get('correct_answer', '')).strip().lower()
+            existing_hashes.add(h)
+            
+        for q in extra_cached:
+            h = (q.get('question', '') + q.get('correct_answer', '')).strip().lower()
+            if h not in existing_hashes:
                 exam_questions.append(q)
-                seen_questions.add(q_text)
                 if len(exam_questions) >= num_questions:
                     break
 
-    # Xáo trộn thứ tự câu hỏi NHIỀU LẦN để đảm bảo ngẫu nhiên hoàn toàn
+    # 4. XÁO TRỘN CUỐI CÙNG
     random.shuffle(exam_questions)
-    random.shuffle(exam_questions)  # double shuffle for extra randomness
     
-    if len(exam_questions) < num_questions:
-        print(f"⚠️ Cảnh báo: Chỉ tạo được {len(exam_questions)}/{num_questions} câu. Vui lòng kiểm tra API key hoặc thử lại.")
-    else:
-        print(f"🎉 Tạo xong {len(exam_questions)} câu hỏi (không trùng lặp, thứ tự ngẫu nhiên)")
-    
-    return exam_questions
+    print(f"🎉 Hoàn tất đề thi: {len(exam_questions)} câu.")
+    return exam_questions[:num_questions]
