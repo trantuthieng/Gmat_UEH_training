@@ -225,8 +225,14 @@ if 'exam_mode' not in st.session_state:
     st.session_state.exam_mode = None
 
 # --- GIAO DIỆN CHÍNH ---
-st.title("📝 Hệ thống Thi thử GMAT tuyển sinh Thạc sĩ")
-init_db()
+st.title("📝 Hệ thống Thi thử GMAT Paris 10")
+
+# --- KẾT NỐI DB AN TOÀN ---
+try:
+    init_db()
+except Exception as e:
+    st.error(f"⚠️ Không thể kết nối Database: {e}")
+    st.info("Kiểm tra lại Streamlit Secrets (DB_PASSWORD, DB_HOST...)")
 
 # 1. MÀN HÌNH CHỜ (READY)
 if st.session_state.exam_state == "READY":
