@@ -298,7 +298,12 @@ if st.session_state.exam_state == "READY":
                 progress_bar.progress(percent)
                 status_text.text(f"Đang AI khởi tạo đề thi... {int(percent*100)}%")
             with st.spinner("⏳ Đang tạo đề thi..."):
-                generated_exam = generate_full_exam(seeds, num_questions, 0, update_bar)
+                # SỬA LẠI CÁCH GỌI HÀM CHO RÕ RÀNG
+                generated_exam = generate_full_exam(
+                    seed_data=seeds, 
+                    num_questions=num_questions, 
+                    progress_callback=update_bar
+                )
             if not generated_exam:
                 st.warning("⚠️ API quota hết. Dùng ngân hàng câu hỏi đã lưu để tạo đề...")
                 cached = get_cached_questions(num_questions)

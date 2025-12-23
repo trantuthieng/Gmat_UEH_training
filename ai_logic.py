@@ -175,7 +175,12 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
             )
             clean_text = _clean_response_text(response)
             data = json.loads(clean_text)
-            data['type'] = 'general'  # Tất cả đều là câu hỏi chung
+            
+            # --- SỬA LỖI: Giữ nguyên metadata từ câu gốc ---
+            data['type'] = seed_question.get('type', 'general')  # Giữ nguyên type của câu gốc (math/logic)
+            data['topic'] = topic  # QUAN TRỌNG: Gán lại topic để lưu vào DB
+            data['image_url'] = seed_question.get('image_url')  # Giữ link ảnh nếu câu gốc có
+            # -------------------------------------------
 
             # Đảm bảo đáp án khớp với một lựa chọn
             options = data.get('options') or []
