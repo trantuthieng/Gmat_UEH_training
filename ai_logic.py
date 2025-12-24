@@ -60,7 +60,7 @@ def _get_model():
                     config=cfg,
                 )
 
-        return _ModelWrapper(client, 'gemini-1.5-flash')
+        return _ModelWrapper(client, 'gemini-2.5-flash-lite')
     except Exception as e:
         print(f"Lỗi khởi tạo Gemini: {e}")
         return None
