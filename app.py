@@ -296,7 +296,7 @@ if st.session_state.exam_state == "READY":
             status_text = st.empty()
             def update_bar(percent):
                 progress_bar.progress(percent)
-                status_text.text(f"Đang AI khởi tạo đề thi... {int(percent*100)}%")
+                status_text.text(f"Đang khởi tạo đề thi... {int(percent*100)}%")
             with st.spinner("⏳ Đang tạo đề thi..."):
                 # SỬA LẠI CÁCH GỌI HÀM CHO RÕ RÀNG
                 generated_exam = generate_full_exam(
