@@ -112,6 +112,22 @@ def init_db():
             )
             c.execute("CREATE INDEX IF NOT EXISTS idx_created_at ON questions(created_at DESC);")
             c.execute("CREATE INDEX IF NOT EXISTS idx_qtype ON questions(qtype);")
+            
+            # Bảng thống kê câu trả lời sai của user
+            c.execute(
+                """
+                CREATE TABLE IF NOT EXISTS user_wrong_answers (
+                    id SERIAL PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    topic TEXT NOT NULL,
+                    qtype TEXT,
+                    wrong_count INTEGER DEFAULT 1,
+                    last_wrong_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(user_id, topic)
+                );
+                """
+            )
+            c.execute("CREATE INDEX IF NOT EXISTS idx_user_topic ON user_wrong_answers(user_id, topic);")
         else:
             # SQLite
             c.execute(
@@ -132,6 +148,22 @@ def init_db():
             )
             c.execute("CREATE INDEX IF NOT EXISTS idx_created_at ON questions(created_at DESC);")
             c.execute("CREATE INDEX IF NOT EXISTS idx_qtype ON questions(qtype);")
+            
+            # Bảng thống kê câu trả lời sai của user
+            c.execute(
+                """
+                CREATE TABLE IF NOT EXISTS user_wrong_answers (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id TEXT NOT NULL,
+                    topic TEXT NOT NULL,
+                    qtype TEXT,
+                    wrong_count INTEGER DEFAULT 1,
+                    last_wrong_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(user_id, topic)
+                );
+                """
+            )
+            c.execute("CREATE INDEX IF NOT EXISTS idx_user_topic ON user_wrong_answers(user_id, topic);")
         conn.commit()
 
 def _hash_question(q: Dict[str, Any]) -> str:
@@ -248,3 +280,76 @@ def get_cached_questions(limit: int = 30, randomize: bool = True) -> List[Dict[s
                 'topic': row['topic']
             })
         return result
+
+def save_wrong_answer(user_id: str, topic: str, qtype: str = None):
+    """Lưu thống kê câu trả lời sai của user theo topic"""
+    if not user_id or not topic:
+        return
+    
+    db_type = _get_db_type()
+    
+    with get_conn() as conn:
+        c = conn.cursor()
+        if db_type == "postgresql":
+            c.execute(
+                """
+                INSERT INTO user_wrong_answers (user_id, topic, qtype, wrong_count, last_wrong_at)
+                VALUES (%s, %s, %s, 1, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_id, topic) 
+                DO UPDATE SET 
+                    wrong_count = user_wrong_answers.wrong_count + 1,
+                    last_wrong_at = CURRENT_TIMESTAMP
+                """,
+                (user_id, topic, qtype)
+            )
+        else:
+            # SQLite
+            c.execute(
+                """
+                INSERT INTO user_wrong_answers (user_id, topic, qtype, wrong_count, last_wrong_at)
+                VALUES (?, ?, ?, 1, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_id, topic) 
+                DO UPDATE SET 
+                    wrong_count = wrong_count + 1,
+                    last_wrong_at = CURRENT_TIMESTAMP
+                """,
+                (user_id, topic, qtype)
+            )
+        conn.commit()
+
+def get_weak_topics(user_id: str, limit: int = 5) -> List[Dict[str, Any]]:
+    """Lấy danh sách các topic mà user hay trả lời sai nhất"""
+    if not user_id:
+        return []
+    
+    db_type = _get_db_type()
+    
+    with get_conn() as conn:
+        if db_type == "postgresql":
+            c = conn.cursor(cursor_factory=extras.RealDictCursor)
+            c.execute(
+                """
+                SELECT topic, qtype, wrong_count, last_wrong_at
+                FROM user_wrong_answers
+                WHERE user_id = %s
+                ORDER BY wrong_count DESC, last_wrong_at DESC
+                LIMIT %s
+                """,
+                (user_id, limit)
+            )
+        else:
+            conn.row_factory = sqlite3.Row
+            c = conn.cursor()
+            c.execute(
+                """
+                SELECT topic, qtype, wrong_count, last_wrong_at
+                FROM user_wrong_answers
+                WHERE user_id = ?
+                ORDER BY wrong_count DESC, last_wrong_at DESC
+                LIMIT ?
+                """,
+                (user_id, limit)
+            )
+        
+        rows = c.fetchall()
+        return [dict(row) for row in rows]

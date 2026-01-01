@@ -11,6 +11,14 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
+# --- META TAGS ĐỂ CHỐNG SAFARI iOS SLEEP ---
+st.markdown("""
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+""", unsafe_allow_html=True)
+
 # --- IMPORT CÁC MODULE KHÁC ---
 # Đặt trong try-except để bắt lỗi thiếu thư viện hoặc lỗi code
 try:
@@ -212,6 +220,93 @@ st.markdown("""
         outline-offset: 2px !important;
     }
 </style>
+
+<!-- Safari iOS Session Persistence Script -->
+<script>
+(function() {
+    // 1. BACKUP STATE TO LOCALSTORAGE khi chuyển tab
+    function saveStateToLocalStorage() {
+        try {
+            const streamlitData = {
+                timestamp: Date.now(),
+                examRunning: document.querySelector('#countdown') !== null,
+                scrollPosition: window.scrollY
+            };
+            localStorage.setItem('gmat_backup_state', JSON.stringify(streamlitData));
+        } catch(e) {
+            console.log('Cannot save to localStorage:', e);
+        }
+    }
+
+    // 2. PAGE VISIBILITY API - Phát hiện khi chuyển tab
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            saveStateToLocalStorage();
+        } else {
+            try {
+                const saved = localStorage.getItem('gmat_backup_state');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data.scrollPosition) {
+                        window.scrollTo(0, data.scrollPosition);
+                    }
+                }
+            } catch(e) {}
+        }
+    });
+
+    // 3. BEFORE UNLOAD - Lưu state trước khi page bị unload
+    window.addEventListener('beforeunload', saveStateToLocalStorage);
+
+    // 4. KEEPALIVE PING - Gửi signal nhỏ mỗi 30s để duy trì kết nối
+    let keepAliveInterval = null;
+    
+    function startKeepAlive() {
+        if (keepAliveInterval) return;
+        keepAliveInterval = setInterval(function() {
+            if (!document.hidden) {
+                const ping = document.createElement('div');
+                ping.style.display = 'none';
+                ping.setAttribute('data-keepalive', Date.now());
+                document.body.appendChild(ping);
+                setTimeout(() => ping.remove(), 100);
+            }
+        }, 30000);
+    }
+
+    // 5. PREVENT SAFARI AGGRESSIVE MEMORY CLEANUP
+    function preventSafariSleep() {
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            const silentAudio = document.createElement('audio');
+            silentAudio.loop = true;
+            silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+            silentAudio.volume = 0;
+            
+            document.addEventListener('touchstart', function playOnce() {
+                silentAudio.play().catch(e => console.log('Audio play failed:', e));
+                document.removeEventListener('touchstart', playOnce);
+            }, { once: true });
+        }
+    }
+
+    // 6. INIT ON LOAD
+    window.addEventListener('load', function() {
+        startKeepAlive();
+        preventSafariSleep();
+        
+        try {
+            const saved = localStorage.getItem('gmat_backup_state');
+            if (saved) {
+                const data = JSON.parse(saved);
+                const timeSinceBackup = Date.now() - data.timestamp;
+                if (timeSinceBackup < 300000 && data.examRunning) {
+                    console.log('Detected previous exam session');
+                }
+            }
+        } catch(e) {}
+    });
+})();
+</script>
 """, unsafe_allow_html=True)
 
 # --- HÀM HỖ TRỢ ---
@@ -240,6 +335,22 @@ if 'end_time' not in st.session_state:
     st.session_state.end_time = 0
 if 'exam_mode' not in st.session_state:
     st.session_state.exam_mode = None
+if 'session_id' not in st.session_state:
+    import uuid
+    st.session_state.session_id = str(uuid.uuid4())
+    
+# --- HIỂN THỊ CẢNH BÁO SAFARI iOS ---
+st.markdown("""
+<script>
+if (/iPhone|iPad|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS/.test(navigator.userAgent)) {
+    const warning = document.createElement('div');
+    warning.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ff9800;color:white;padding:8px;text-align:center;z-index:9999;font-size:12px;';
+    warning.innerHTML = '⚠️ Safari iOS: Tránh chuyển tab khi đang làm bài để không bị mất dữ liệu';
+    document.body.appendChild(warning);
+    setTimeout(() => warning.remove(), 5000);
+}
+</script>
+""", unsafe_allow_html=True)
 
 # --- GIAO DIỆN CHÍNH ---
 st.title("📝 Hệ thống Thi thử GMAT")
@@ -298,11 +409,12 @@ if st.session_state.exam_state == "READY":
                 progress_bar.progress(percent)
                 status_text.text(f"Đang khởi tạo đề thi... {int(percent*100)}%")
             with st.spinner("⏳ Đang tạo đề thi..."):
-                # SỬA LẠI CÁCH GỌI HÀM CHO RÕ RÀNG
+                # Truyền user_id để ưu tiên weak topics
                 generated_exam = generate_full_exam(
                     seed_data=seeds, 
                     num_questions=num_questions, 
-                    progress_callback=update_bar
+                    progress_callback=update_bar,
+                    user_id=st.session_state.session_id
                 )
             if not generated_exam:
                 st.warning("⚠️ API quota hết. Dùng ngân hàng câu hỏi đã lưu để tạo đề...")
@@ -511,25 +623,27 @@ elif st.session_state.exam_state == "FINISHED":
     answers = st.session_state.user_answers
     
     # --- Logic Chấm điểm (Thang 10) ---
-    # Điểm = (Số câu đúng / Tổng số câu) * 10
     if 'score_calculated' not in st.session_state:
         correct_count = 0
         wrong_count = 0
         unanswered_count = 0
         details = []
+        wrong_topics = []  # Lưu các topic trả lời sai
         
         for idx, q in enumerate(questions):
             user_choice = answers.get(f"q_{idx}")
             is_correct = False
             
             if user_choice:
-                # So sánh string (cần xử lý chuỗi cẩn thận vì AI sinh ra có thể khác format)
-                # Lấy ký tự đầu (A, B, C, D) để so sánh cho chắc chắn
                 if user_choice.split('.')[0] == q['correct_answer'].split('.')[0]:
                     correct_count += 1
                     is_correct = True
                 else:
                     wrong_count += 1
+                    # Lưu topic trả lời sai
+                    topic = q.get('topic', 'General')
+                    qtype = q.get('type', 'general')
+                    wrong_topics.append({'topic': topic, 'qtype': qtype})
             else:
                 unanswered_count += 1
             
@@ -544,6 +658,17 @@ elif st.session_state.exam_state == "FINISHED":
         # Tính điểm theo thang 10
         total_questions = len(questions)
         score = (correct_count / total_questions * 10) if total_questions > 0 else 0
+        
+        # Lưu thống kê câu sai vào DB
+        if wrong_topics:
+            try:
+                from db import save_wrong_answer
+                user_id = st.session_state.session_id
+                for item in wrong_topics:
+                    save_wrong_answer(user_id, item['topic'], item['qtype'])
+                print(f"✅ Đã lưu {len(wrong_topics)} câu sai vào thống kê")
+            except Exception as e:
+                print(f"⚠️ Lỗi lưu thống kê: {e}")
         
         # Cache results to avoid recalculation
         st.session_state.score_calculated = {
@@ -574,16 +699,132 @@ elif st.session_state.exam_state == "FINISHED":
     st.divider()
     
     # Chi tiết lời giải
-    with st.expander("🔍 XEM CHI TIẾT LỜI GIẢI VÀ ĐÁP ÁN"):
-        for idx, d in enumerate(details):
-            color = "green" if d['is_correct'] else "red"
-            st.markdown(f"**Câu {idx+1}:** :{color}[{d['question']}]")
-            st.write(f"Bạn chọn: {d['user_ans']} | Đáp án: {d['correct_ans']}")
-            st.info(f"Giải thích: {d['explanation']}")
-            st.markdown("---")
+    with st.expander("🔍 XEM CHI TIẾT LỜI GIẢI VÀ ĐÁP ÁN", expanded=True):
+        for idx, q in enumerate(questions):
+            user_choice = answers.get(f"q_{idx}")
+            is_correct = details[idx]['is_correct']
             
-    if st.button("🔄 Làm bài thi mới"):
-        st.session_state.exam_state = "READY"
-        if 'score_calculated' in st.session_state:
-            del st.session_state.score_calculated
-        st.rerun()
+            # Header với màu sắc
+            if is_correct:
+                st.success(f"✅ **Câu {idx+1}: ĐÚNG**")
+            else:
+                st.error(f"❌ **Câu {idx+1}: SAI**")
+            
+            # Hiển thị câu hỏi đầy đủ
+            st.markdown(f"**Đề bài:** {q['question']}")
+            
+            # Hiển thị hình ảnh nếu có
+            if q.get('image_url'):
+                st.image(q.get('image_url'), use_container_width=True)
+            
+            # Hiển thị tất cả các lựa chọn với đánh dấu
+            st.markdown("**Các lựa chọn:**")
+            options = q.get('options', [])
+            correct_ans = q.get('correct_answer', '')
+            
+            for option in options:
+                # Kiểm tra xem đây có phải là lựa chọn của user không
+                is_user_choice = (user_choice == option) if user_choice else False
+                # Kiểm tra xem đây có phải là đáp án đúng không
+                is_correct_option = (option == correct_ans or option.split('.')[0] == correct_ans.split('.')[0])
+                
+                # Tạo prefix cho mỗi lựa chọn
+                prefix = ""
+                if is_correct_option and is_user_choice:
+                    prefix = "✅ 👤 "  # Đúng và là lựa chọn của user
+                    st.markdown(f"**:green[{prefix}{option}]** ← _Bạn đã chọn đúng!_")
+                elif is_correct_option:
+                    prefix = "✅ "  # Đáp án đúng
+                    st.markdown(f"**:green[{prefix}{option}]** ← _Đáp án đúng_")
+                elif is_user_choice:
+                    prefix = "❌ 👤 "  # Lựa chọn sai của user
+                    st.markdown(f"**:red[{prefix}{option}]** ← _Bạn đã chọn (sai)_")
+                else:
+                    st.markdown(f"{option}")
+            
+            # Hiển thị thông tin tóm tắt
+            if not user_choice:
+                st.warning("⚠️ **Bạn chưa trả lời câu này**")
+            
+            # Giải thích chi tiết
+            st.info(f"**💡 Giải thích:** {q.get('explanation', 'Không có giải thích')}")
+            
+            st.markdown("---")
+    
+    # --- NÚT ÔN BÀI ---
+    st.divider()
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("📚 ÔN BÀI", type="secondary", use_container_width=True):
+            st.session_state.show_study_guide = True
+            st.rerun()
+    
+    with col2:
+        if st.button("🔄 Làm bài thi mới", type="primary", use_container_width=True):
+            st.session_state.exam_state = "READY"
+            # Xóa toàn bộ cache khi làm bài mới
+            if 'score_calculated' in st.session_state:
+                del st.session_state.score_calculated
+            if 'show_study_guide' in st.session_state:
+                del st.session_state.show_study_guide
+            if 'cached_study_guide' in st.session_state:
+                del st.session_state.cached_study_guide
+            st.rerun()
+    
+    # --- HIỂN THỊ TÀI LIỆU ÔN TẬP ---
+    if st.session_state.get('show_study_guide', False):
+        st.divider()
+        st.header("📚 TÀI LIỆU ÔN TẬP")
+        
+        # CACHE: Kiểm tra xem đã tạo study guide chưa để tránh gọi API lại
+        if 'cached_study_guide' not in st.session_state:
+            with st.spinner("🤖 AI đang phân tích và tạo tài liệu ôn tập chi tiết... (chỉ 1 lần duy nhất)"):
+                try:
+                    from study_guide import generate_study_guide, format_study_guide_html
+                    
+                    # GỌI API DUY NHẤT - Kết quả sẽ được cache
+                    study_data = generate_study_guide(questions, answers)
+                    
+                    # Lưu vào cache để không phải gọi lại
+                    st.session_state.cached_study_guide = study_data
+                    print("✅ Đã cache study guide vào session_state")
+                    
+                except Exception as e:
+                    st.error(f"❌ Lỗi khi tạo tài liệu ôn tập: {e}")
+                    st.info("Vui lòng kiểm tra kết nối mạng và API key")
+                    st.session_state.cached_study_guide = {
+                        "error": f"Lỗi hệ thống: {str(e)}",
+                        "topics": []
+                    }
+        
+        # Lấy data từ cache (đã có sẵn hoặc vừa tạo ở trên)
+        study_data = st.session_state.cached_study_guide
+        
+        if 'error' not in study_data:
+            # Hiển thị HTML đẹp
+            from study_guide import format_study_guide_html
+            html_content = format_study_guide_html(study_data)
+            st.markdown(html_content, unsafe_allow_html=True)
+            
+            # Hiển thị thông tin về cache
+            st.success("✅ Tài liệu đã được cache - không tốn thêm API quota khi xem lại!")
+            
+            # Thêm nút download JSON
+            import json
+            study_json = json.dumps(study_data, ensure_ascii=False, indent=2)
+            st.download_button(
+                label="💾 Tải tài liệu ôn tập (JSON)",
+                data=study_json,
+                file_name=f"study_guide_{st.session_state.session_id[:8]}.json",
+                mime="application/json"
+            )
+        else:
+            st.error(study_data['error'])
+            if 'debug_info' in study_data:
+                with st.expander("🔍 Thông tin debug"):
+                    st.code(study_data['debug_info'])
+            st.info("💡 Mẹo: Đảm bảo GEMINI_API_KEY hợp lệ và chưa hết hạn")
+            if 'help' in study_data:
+                st.info(study_data['help'])

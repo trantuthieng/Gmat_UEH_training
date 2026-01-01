@@ -1184,5 +1184,152 @@
     "type": "math",
     "topic": "Inventory",
     "content": "Trong mùa cao điểm, cửa hàng mỗi ngày bán được 20% số hàng còn lại trong kho. Hỏi sau 4 ngày số hàng đã bán được là bao nhiêu phần so với ban đầu?"
+  },
+  {
+    "id": 192,
+    "type": "math",
+    "topic": "Mixture Problem",
+    "content": "Cần thêm bao nhiêu lít rượu nguyên chất vào một dung dịch 40 lít, trong đó có 10% là rượu theo thể tích, để làm gấp đôi tỷ lệ rượu nguyên chất trong dung dịch?",
+    "options": ["1", "3", "5", "7"]
+  },
+  {
+    "id": 193,
+    "type": "math",
+    "topic": "Average",
+    "content": "Tại cửa hàng tạp hóa, doanh thu trung bình mỗi ngày là 4 triệu đồng trong một khoảng thời gian 10 ngày. Nếu doanh thu trung bình mỗi ngày trong 6 ngày đầu tiên là 3,6 triệu đồng, vậy doanh thu trung bình mỗi ngày trong 4 ngày cuối là bao nhiêu?",
+    "options": ["4,600,000", "3,800,000", "4,440,000", "4,500,000"]
+  },
+  {
+    "id": 194,
+    "type": "math",
+    "topic": "Average/Algebra",
+    "content": "Tại một nhà máy, trong x ngày vừa qua, trung bình mỗi ngày nhà máy sản xuất 40 sản phẩm. Hôm nay nhà máy sản xuất được 100 sản phẩm, điều này làm cho giá trị trung bình mới là 50 sản phẩm/ngày. Tìm giá trị x?",
+    "options": ["5", "8", "9", "10", "15"]
+  },
+  {
+    "id": 195,
+    "type": "logic",
+    "topic": "Number Sequence",
+    "content": "Số tiếp theo của dãy số: 2, 5, 9, 19, 37, (?)",
+    "options": ["73", "75", "76", "78"]
+  },
+  {
+    "id": 196,
+    "type": "logic",
+    "topic": "Visual Pattern",
+    "content": "Tìm giá trị hợp lý tại giá trị “?” tại hình số 4 (trong bảng dữ liệu hình ảnh tương ứng với câu 5).",
+    "options": ["1", "3", "5", "7"]
+  },
+  {
+    "id": 197,
+    "type": "math",
+    "topic": "Percentage Change",
+    "content": "Người đua xe đạp A tăng tốc độ từ 10 km/h lên 25 km/h trong vòng đua cuối. Cũng tại vòng đua cuối này, người đua xe đạp B tăng tốc độ từ 8 km/h lên 24 km/h. Tốc độ của B tăng nhanh hơn bao nhiêu phần trăm so với tốc độ tăng của A?",
+    "options": ["33.33%", "50%", "66.67%", "75%"]
+  },
+  {
+    "id": 198,
+    "type": "math",
+    "topic": "Compound Growth",
+    "content": "Giá trị của một công ty là 100 tỷ đồng. Giá trị công ty tăng trung bình 4.8%/năm. Hỏi sau 15 năm giá trị của công ty sẽ vào khoảng bao nhiêu tỷ đồng?",
+    "options": ["202 tỷ", "180 tỷ", "220 tỷ", "172 tỷ"]
+  },
+  {
+    "id": 199,
+    "type": "math",
+    "topic": "Permutation",
+    "content": "Dùng 4 chữ số lẻ: 1, 3, 5, 7 để viết tất cả các số có 4 chữ số khác nhau thì viết được bao nhiêu số?",
+    "options": ["24", "30", "18", "12"]
+  },
+  {
+    "id": 200,
+    "type": "math",
+    "topic": "Tax Calculation",
+    "content": "Một mặt hàng bị áp thuế bán hàng 10% trên phần giá vượt quá 200 đô la. Nếu khách hàng trả 10 đô la tiền thuế bán hàng cho mặt hàng này, giá của mặt hàng đó là bao nhiêu đô la?",
+    "options": ["200", "250", "300", "360"]
+  },
+  {
+    "id": 201,
+    "type": "math",
+    "topic": "Integers Properties",
+    "content": "Biết a và b là các số nguyên khác 0 và a + b = 1. Hỏi có thể nói gì về tích ab?",
+    "options": ["Tích ab là số lẻ và dương", "Tích ab là số lẻ và âm", "Tích ab là số chẵn và dương", "Tích ab là số chẵn và âm"]
+  },
+  {
+    "id": 202,
+    "type": "math",
+    "topic": "Geometry/Distance",
+    "content": "Ba đường Lê Lợi, Nguyễn Huệ và Hàm Nghi tạo thành một tam giác vuông (góc vuông giao giữa Lê Lợi và Nguyễn Huệ). Nguyễn Huệ dài 900m, Lê Lợi dài 800m. A đi từ đầu Nguyễn Huệ -> Lê Lợi -> Bến Thành. B đi đường Hàm Nghi -> Bến Thành. Hỏi khoảng cách A đi nhiều hơn B khoảng bao nhiêu phần trăm?",
+    "options": ["30%", "40%", "50%", "60%"]
+  },
+  {
+    "id": 203,
+    "type": "math",
+    "topic": "Statistics (Median)",
+    "content": "Trong một lớp học, số điểm của học sinh trong kỳ thi là: {56, 78, 90, 65, 88, 72, 80, 95). Hãy tìm trung vị của dãy số này.",
+    "options": ["76", "78", "79", "80"]
+  },
+  {
+    "id": 204,
+    "type": "math",
+    "topic": "Exponents/Inequality",
+    "content": "Nếu X = m - 1, công thức nào sau đây đúng với m = 1/2?",
+    "options": ["X^0 > X^2 > X^3 > X^1", "X^0 > X^2 > X^1 > X^3", "X^0 > X^1 > X^2 > X^3", "X^3 > X^2 > X^1 > X^0"]
+  },
+  {
+    "id": 205,
+    "type": "math",
+    "topic": "Percentages/Shares",
+    "content": "Công ty A sở hữu 40% cổ phiếu XYZ. Công ty B sở hữu 15000 cổ phiếu XYZ. Công ty C sở hữu phần còn lại. Hỏi công ty A sở hữu bao nhiêu cổ phiếu biết rằng công ty C sở hữu nhiều hơn công ty A 25% (tức C = 1.25 * A)?",
+    "options": ["45000", "50000", "60000", "75000"]
+  },
+  {
+    "id": 206,
+    "type": "data_sufficiency",
+    "topic": "Exponents",
+    "content": "Liệu x^3 có chính xác bằng 125? (1) x > 4; (2) x < 6.",
+    "options": ["Một mình (1) đủ, (2) không đủ", "Một mình (2) đủ, (1) không đủ", "Bất cứ 1 trong 2 đủ", "Cả 2 mới đủ", "Cả 2 vẫn không đủ"]
+  },
+  {
+    "id": 207,
+    "type": "math",
+    "topic": "Equation Roots",
+    "content": "Các phương trình sau đây có thể bằng 0 với một vài giá trị nào đó của x? (1) 3x^2 - 12; (2) x^2 + x^4 + 1; (3) x^2 + 7x + 6.",
+    "options": ["Cả (1), (2), và (3)", "Chỉ trường hợp (3)", "Chỉ trường hợp (1)", "Chỉ (1) và (3)"]
+  },
+  {
+    "id": 208,
+    "type": "logic",
+    "topic": "Verbal Pattern",
+    "content": "Tìm từ thích hợp để đưa vào vị trí dấu hỏi (?): IMAGINATION - DEDICATION; OPERATION - MOVEMENT - ?",
+    "options": ["LAIDIES", "CENTER", "LEFT", "RIGHT"]
+  },
+  {
+    "id": 209,
+    "type": "data_sufficiency",
+    "topic": "Weighted Average",
+    "content": "Tuổi bình quân quản lý là 54, nhân viên không quản lý là 34. Hỏi tuổi trung bình chung? (1) Có 10 quản lý; (2) Số nhân viên không quản lý gấp 4 lần quản lý.",
+    "options": ["Một mình (1) đủ, (2) không đủ", "Một mình (2) đủ, (1) không đủ", "Bất cứ 1 trong 2 đủ", "Cả 2 mới đủ", "Cả 2 vẫn không đủ"]
+  },
+  {
+    "id": 210,
+    "type": "math",
+    "topic": "Venn Diagram",
+    "content": "Khảo sát 200 sinh viên: 70 thích cầu lông, 90 thích bóng bàn. Số SV không thích cả hai môn gấp đôi số SV thích cả hai môn. Hỏi có bao nhiêu SV không thích cả hai môn?",
+    "options": ["20", "40", "50", "80", "120"]
+  },
+  {
+    "id": 211,
+    "type": "math",
+    "topic": "LCM/Divisibility",
+    "content": "Số nhỏ nhất trong các số bên dưới số nào chia hết cho cả 18 và 24?",
+    "options": ["288", "72", "216", "360"]
+  },
+  {
+    "id": 212,
+    "type": "logic",
+    "topic": "Letter Sequence",
+    "content": "Ký tự tiếp theo trong dãy sau đây là ký tự nào: A...C...F...J...O...U...?",
+    "options": ["V", "X", "Y", "B"]
   }
 ]
