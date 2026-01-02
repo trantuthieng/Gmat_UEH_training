@@ -233,6 +233,26 @@ LƯU Ý: Đây là LẦN DUY NHẤT tôi gọi API, hãy trả về ĐẦY ĐỦ
         text = text[start:end+1]
         print(f"✅ Extracted JSON: {len(text)} characters")
         
+        # Fix common invalid escape sequences before parsing
+        # Replace invalid escapes like \x (where x is not a valid escape char) with \\x
+        def fix_escapes(match):
+            escape_char = match.group(1)
+            # Valid JSON escapes: " \ / b f n r t u
+            if escape_char in ['"', '\\', '/', 'b', 'f', 'n', 'r', 't']:
+                return match.group(0)  # Keep valid escapes
+            elif escape_char == 'u':
+                # Check if followed by 4 hex digits
+                if len(match.group(0)) >= 6 and re.match(r'\\u[0-9a-fA-F]{4}', match.group(0)):
+                    return match.group(0)  # Valid unicode escape
+                else:
+                    return '\\\\u'  # Invalid unicode escape, fix it
+            else:
+                # Invalid escape, double the backslash
+                return '\\\\' + escape_char
+        
+        text = re.sub(r'\\(.)', fix_escapes, text)
+        print(f"✅ Fixed escape sequences")
+        
         # Try to parse JSON
         try:
             study_data = json.loads(text)
@@ -240,12 +260,14 @@ LƯU Ý: Đây là LẦN DUY NHẤT tôi gọi API, hãy trả về ĐẦY ĐỦ
         except json.JSONDecodeError as parse_error:
             # Attempt basic repair: remove trailing comma before } or ]
             print(f"⚠️ First parse failed at position {parse_error.pos}, attempting repair...")
+            print(f"   Error: {parse_error.msg}")
             text = re.sub(r',\s*([}\]])', r'\1', text)
             try:
                 study_data = json.loads(text)
                 print(f"✅ JSON repair successful")
-            except json.JSONDecodeError:
-                print(f"❌ JSON repair failed, using fallback")
+            except json.JSONDecodeError as second_error:
+                print(f"❌ JSON repair failed: {second_error.msg}")
+                print(f"   Context: {text[max(0, second_error.pos-50):second_error.pos+50]}")
                 return _create_fallback_study_guide(topic_analysis)
         
         # Validate data structure
