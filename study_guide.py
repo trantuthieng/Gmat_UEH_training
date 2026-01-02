@@ -1,6 +1,7 @@
 from google import genai
 import os
 import json
+import re
 from typing import List, Dict, Any
 from functools import lru_cache
 
@@ -202,39 +203,61 @@ LƯU Ý: Đây là LẦN DUY NHẤT tôi gọi API, hãy trả về ĐẦY ĐỦ
         response = model.generate_content(
             prompt,
             generation_config={
-                'temperature': 0.8,
+                'temperature': 0.7,  # Giảm temperature để ổn định hơn
                 'max_output_tokens': 16384,  # Tăng lên tối đa để đảm bảo không bị cắt
-                'top_p': 0.95,
+                'top_p': 0.9,
                 'top_k': 40
             }
         )
         
         # Clean response - xử lý kỹ để đảm bảo JSON hợp lệ
         text = response.text if hasattr(response, 'text') else str(response)
+        print(f"📝 Raw response length: {len(text)} characters")
+        print(f"📝 First 300 chars: {text[:300]}")
+        
+        # Remove markdown code fences
         text = text.replace('```json', '').replace('```', '').strip()
         
-        # Remove any leading/trailing characters that might break JSON
-        import re
+        # Remove common unwanted prefixes/suffixes
+        text = re.sub(r'^[^{]*', '', text)  # Xóa text trước dấu {
+        text = text.lstrip()
+        text = re.sub(r'[^}]*$', '}', text)  # Giữ chỉ tới dấu } cuối
+        
         # Find JSON object boundaries
         start = text.find('{')
         end = text.rfind('}')
-        if start != -1 and end != -1:
-            text = text[start:end+1]
+        if start == -1 or end == -1:
+            print(f"❌ Không tìm thấy JSON object delimiters")
+            return _create_fallback_study_guide(topic_analysis)
         
-        print(f"✅ Nhận được response từ AI: {len(text)} characters")
+        text = text[start:end+1]
+        print(f"✅ Extracted JSON: {len(text)} characters")
         
-        # Parse JSON
-        study_data = json.loads(text)
+        # Try to parse JSON
+        try:
+            study_data = json.loads(text)
+            print(f"✅ JSON parse successful on first attempt")
+        except json.JSONDecodeError as parse_error:
+            # Attempt basic repair: remove trailing comma before } or ]
+            print(f"⚠️ First parse failed at position {parse_error.pos}, attempting repair...")
+            text = re.sub(r',\s*([}\]])', r'\1', text)
+            try:
+                study_data = json.loads(text)
+                print(f"✅ JSON repair successful")
+            except json.JSONDecodeError:
+                print(f"❌ JSON repair failed, using fallback")
+                return _create_fallback_study_guide(topic_analysis)
         
         # Validate data structure
         if 'topics' not in study_data or not isinstance(study_data['topics'], list):
-            raise ValueError("Invalid study data structure - missing 'topics' array")
+            print(f"⚠️ Invalid structure (missing topics array), using fallback")
+            return _create_fallback_study_guide(topic_analysis)
         
-        print(f"✅ Parse JSON thành công: {len(study_data['topics'])} topics")
+        print(f"✅ Study guide hoàn chỉnh: {len(study_data['topics'])} topics")
         
         # Thêm thông tin chi tiết từ topic_analysis
         for topic_guide in study_data.get('topics', []):
-            topic_name = topic_guide['topic']
+            topic_name = topic_guide.get('topic', '')
             if topic_name in topic_analysis:
                 topic_guide['stats'] = {
                     'total': topic_analysis[topic_name]['total'],
@@ -242,32 +265,76 @@ LƯU Ý: Đây là LẦN DUY NHẤT tôi gọi API, hãy trả về ĐẦY ĐỦ
                     'wrong': topic_analysis[topic_name]['wrong']
                 }
         
-        print(f"✅ Tài liệu ôn tập hoàn chỉnh - Cache vào session để tránh gọi lại!")
         return study_data
         
-    except json.JSONDecodeError as e:
-        print(f"❌ Lỗi parse JSON: {e}")
-        print(f"Response text preview: {text[:500] if 'text' in locals() else 'N/A'}")
-        return {
-            "error": "Không thể tạo tài liệu ôn tập. AI response không đúng format JSON.",
-            "topics": [],
-            "debug_info": f"JSON Error at position {e.pos}: {str(e)}"
-        }
-    except ValueError as e:
-        print(f"❌ Lỗi validation: {e}")
-        return {
-            "error": f"Dữ liệu không hợp lệ: {str(e)}",
-            "topics": []
-        }
     except Exception as e:
         print(f"❌ Lỗi tạo study guide: {e}")
         import traceback
         traceback.print_exc()
-        return {
-            "error": f"Lỗi hệ thống: {str(e)}",
-            "topics": [],
-            "help": "Vui lòng kiểm tra API key và kết nối mạng"
+        # Fallback to simple guide if anything fails
+        return _create_fallback_study_guide(topic_analysis)
+
+
+def _create_fallback_study_guide(topic_analysis: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Tạo study guide đơn giản khi AI parse JSON fail hoặc API error
+    """
+    print(f"📊 Creating fallback study guide...")
+    topics = []
+    
+    for topic_name, data in sorted(
+        topic_analysis.items(),
+        key=lambda x: x[1]['wrong'],
+        reverse=True
+    ):
+        accuracy = (data['correct'] / data['total'] * 100) if data['total'] > 0 else 0
+        importance = 'high' if accuracy < 60 else ('medium' if accuracy < 80 else 'low')
+        
+        topic_guide = {
+            'topic': topic_name,
+            'accuracy': round(accuracy, 0),
+            'importance': importance,
+            'priority_level': 1 if importance == 'high' else (2 if importance == 'medium' else 3),
+            'key_concepts': [
+                f"Khái niệm cơ bản của {topic_name}",
+                f"Ứng dụng thực tế trong bài thi GMAT",
+                f"Liên kết với các chủ đề khác"
+            ],
+            'common_mistakes': [
+                f"Bạn trả lời sai {data['wrong']} câu ({100-accuracy:.0f}% tỷ lệ sai)",
+                f"Các lỗi phổ biến: nhầm lẫn định nghĩa, tính toán sai, hiểu sai đề",
+                f"Cách tránh: đọc kỹ đề, kiểm tra lại, ôn lại công thức"
+            ],
+            'study_tips': [
+                f"Ôn tập lại {topic_name} từ sách cơ bản",
+                f"Làm thêm {max(5, data['wrong'] * 2)} bài tập thực hành",
+                f"Ghi chép lại các lỗi sai và cách giải quyết"
+            ],
+            'practice_approach': f"Khi gặp câu {topic_name}: (1) Đọc đề kỹ lưỡng, (2) Xác định dạng bài, (3) Áp dụng công thức/quy tắc, (4) Kiểm tra lại kết quả. Tập trung vào các câu sai trước đây để hiểu rõ lý do.",
+            'formulas_or_rules': [
+                f"Quy tắc chính: Ôn lại định nghĩa cơ bản",
+                f"Công thức quan trọng: Xem lại sách giáo khoa"
+            ],
+            'time_management_tip': f"Dành {max(1, 30 // len(topic_analysis))} phút để làm các câu {topic_name}. Nếu quá khó, bỏ qua và quay lại sau.",
+            'stats': {
+                'total': data['total'],
+                'correct': data['correct'],
+                'wrong': data['wrong']
+            }
         }
+        topics.append(topic_guide)
+    
+    return {
+        'overall_summary': f"Bạn cần ôn tập {sum(d['wrong'] for d in topic_analysis.values())} câu sai. Hãy tập trung vào các topic có tỷ lệ sai cao. Với sự kiên trì và luyện tập thêm, bạn sẽ cải thiện điểm số!",
+        'topics': topics,
+        'recommended_focus': [f"{t['topic']}" for t in topics[:3]],
+        'next_steps': f"Ngày 1-2: Ôn lại lý thuyết các topic dễ sai. Ngày 3-4: Làm bài tập thực hành. Ngày 5-6: Làm lại các câu sai. Ngày 7: Kiểm tra toàn diện.",
+        'practice_resources': [
+            "Sách GMAT chính thức: Luyện tập các dạng bài",
+            "Bài tập online: Làm thêm 50+ bài tập theo topic"
+        ],
+        'motivation_message': "Hãy nhớ rằng mỗi lần sai là cơ hội để học. Tiếp tục cố gắng và bạn sẽ đạt điểm cao!"
+    }
 
 def format_study_guide_html(study_data: Dict[str, Any]) -> str:
     """
