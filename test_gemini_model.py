@@ -7,7 +7,7 @@ load_dotenv()
 # Lấy API key
 try:
     import streamlit as st
-    API_KEY = "AIzaSyC3gCECOXEMoj4OVMEEvPDTOJVL93EyES4"
+    API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY"))
 except:
     API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -20,13 +20,11 @@ print(f"✅ API Key found: {API_KEY[:10]}...")
 # Khởi tạo client
 client = genai.Client(api_key=API_KEY)
 
-# Danh sách model cần test (theo quota bạn cung cấp)
-# Ưu tiên text-out models cho generate_content
+# Test các model đang sử dụng
 models_to_test = [
-    'gemini-2.5-flash-lite',  # text-out, 14 RPM, 2.77k TPM
-    'gemini-2.5-flash',       # text-out, 5 RPM, 2.42k TPM
-    'gemma-3-27b-it',         # other model, 30 RPM, 2.4k TPM
-    'gemini-3-flash'          # text-out, 5 RPM, 250k TPM
+    'gemini-3-flash',      # study guide
+    'gemma-3-27b-it',      # question generation
+    'gemini-2.5-flash-lite'  # ingest_pdf fallback / long text
 ]
 
 print("\n🧪 Testing Gemini Models...\n")
