@@ -170,19 +170,21 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
     2. Logic: Giữ cấu trúc suy luận, thay đổi ngữ cảnh.
     3. Pattern: Tạo quy luật mới rõ ràng.
 
-    YÊU CẦU QUAN TRỌNG:
-    - Hãy suy nghĩ từng bước (Chain of Thought) để đảm bảo đáp án đúng tuyệt đối.
+    YÊU CẦU QUAN TRỌNG (bắt buộc):
+    - Hãy suy nghĩ từng bước (Chain of Thought) và ghi rõ phép tính số học cụ thể (không nói chung chung).
+    - step_by_step_thinking phải có dạng "Bước 1: ... Bước 2: ..." kèm số liệu, công thức và kết quả trung gian.
+    - explanation phải tóm tắt ngắn gọn kết quả, nêu rõ công thức/suy luận chính và số cuối cùng.
     - Đáp án đúng (correct_answer) PHẢI nằm trong danh sách lựa chọn (options).
     - Trả về kết quả dưới dạng JSON thuần túy, không có markdown.
 
     OUTPUT JSON FORMAT (Tuân thủ đúng thứ tự này để tính toán trước khi chọn đáp án):
-    {{
+    {
         "question": "Nội dung câu hỏi...",
         "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
-        "step_by_step_thinking": "Bước 1: ..., Bước 2: ... (Thực hiện tính toán nháp ở đây)",
+        "step_by_step_thinking": "Bước 1: ...; Bước 2: ... (ghi rõ phép tính và kết quả trung gian)",
         "correct_answer": "Chép y nguyên text của lựa chọn đúng vào đây",
-        "explanation": "Giải thích vắn tắt cho người dùng (dựa trên phần thinking)"
-    }}
+        "explanation": "Tóm tắt vì sao đáp án đúng, nhắc lại công thức/suy luận chính và số kết quả"
+    }
     """
 
     for attempt in range(1, max_attempts + 1):

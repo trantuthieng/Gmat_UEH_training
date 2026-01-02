@@ -746,8 +746,14 @@ elif st.session_state.exam_state == "FINISHED":
             if not user_choice:
                 st.warning("⚠️ **Bạn chưa trả lời câu này**")
             
-            # Giải thích chi tiết
-            st.info(f"**💡 Giải thích:** {q.get('explanation', 'Không có giải thích')}")
+            # Giải thích chi tiết kèm bước tính toán (nếu có)
+            reasoning = q.get('step_by_step_thinking') or q.get('steps')
+            if reasoning:
+                st.markdown("**🔢 Các bước tính/diễn giải:**")
+                st.code(reasoning, language="text")
+            
+            explanation_text = q.get('explanation', 'Không có giải thích')
+            st.info(f"**💡 Giải thích:** {explanation_text}")
             
             st.markdown("---")
     

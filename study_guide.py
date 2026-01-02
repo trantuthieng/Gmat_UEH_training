@@ -46,8 +46,8 @@ def _get_study_model():
                     config=cfg,
                 )
         
-        # Sử dụng gemini-3-flash-it - model tối ưu cho text generation
-        return _StudyModelWrapper(client, 'gemini-3-flash-it')
+        # Dùng gemini-2.5-flash-lite (model hỗ trợ generateContent, chi phí thấp)
+        return _StudyModelWrapper(client, 'gemini-2.5-flash-lite')
     except Exception as e:
         print(f"Lỗi khởi tạo Study Model: {e}")
         return None
