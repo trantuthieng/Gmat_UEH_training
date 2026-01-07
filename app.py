@@ -2,6 +2,10 @@ import streamlit as st
 import json
 import time
 import random
+from dotenv import load_dotenv
+
+# Load environment variables FIRST (before any other imports)
+load_dotenv()
 
 # --- CẤU HÌNH TRANG (Phải để đầu tiên) ---
 st.set_page_config(
