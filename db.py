@@ -4,7 +4,11 @@ import hashlib
 import sqlite3
 from typing import List, Dict, Any, Optional
 from contextlib import contextmanager
+from dotenv import load_dotenv
 import streamlit as st
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Biến global để track database type
 _db_type: Optional[str] = None
