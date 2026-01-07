@@ -17,20 +17,20 @@ except:
 if not API_KEY:
     raise ValueError("GEMINI_API_KEY not found. Please set it in .env file")
 
-# Configure genai
-genai.configure(api_key=API_KEY)
+# Create client with google-genai
+client = genai.Client(api_key=API_KEY)
 
 def process_pdf_to_json(pdf_path, output_path):
     print(f"🚀 Đang tải file '{pdf_path}' lên Gemini...")
     
     # 1. Upload file PDF lên Gemini
-    sample_file = genai.upload_file(path=pdf_path, display_name="GMAT Exam Data")
+    sample_file = client.files.upload(file=open(pdf_path, 'rb'), display_name="GMAT Exam Data")
     
     # Đợi file xử lý xong (thường mất 1-2 giây)
     while sample_file.state.name == "PROCESSING":
         print("... Đang xử lý file ...")
         time.sleep(2)
-        sample_file = genai.get_file(sample_file.name)
+        sample_file = client.files.get(sample_file.name)
 
     if sample_file.state.name == "FAILED":
         print("❌ Lỗi khi xử lý file PDF.")
@@ -60,7 +60,6 @@ def process_pdf_to_json(pdf_path, output_path):
     """
 
     # 3. Sử dụng model Gemini 2.5 Pro
-    model = genai.GenerativeModel('gemini-2.5-pro')
     
     # Thử gửi request với retry
     max_retries = 3
@@ -71,13 +70,13 @@ def process_pdf_to_json(pdf_path, output_path):
         try:
             print(f"Đang gửi request đến Gemini... (Lần thử {retry_count + 1}/{max_retries})")
             
-            generation_config = genai.GenerationConfig(
-                response_mime_type="application/json"
-            )
-            
-            response = model.generate_content(
-                [sample_file, prompt],
-                generation_config=generation_config
+            # Call generate_content with google-genai Client API
+            response = client.models.generate_content(
+                model='gemini-2.5-pro',
+                contents=[sample_file, prompt],
+                config={
+                    'response_mime_type': 'application/json'
+                }
             )
             break  # Thành công thì thoát vòng lặp
         except Exception as e:

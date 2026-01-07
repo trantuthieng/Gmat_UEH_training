@@ -26,12 +26,9 @@ def _get_study_model():
         return None
     
     try:
-        # Configure the API
-        genai.configure(api_key=key)
-        
-        # Use GenerativeModel with gemini-2.5-pro
-        model = genai.GenerativeModel('gemini-2.5-pro')
-        return model
+        # Create client with API key for google-genai v1.56+
+        client = genai.Client(api_key=key)
+        return client
     except Exception as e:
         print(f"Lỗi khởi tạo Study Model: {e}")
         return None
@@ -182,10 +179,11 @@ LƯU Ý: Đây là LẦN DUY NHẤT tôi gọi API, hãy trả về ĐẦY ĐỦ
 """
 
     try:
-        # GỌI API DUY NHẤT với config tối ưu
-        response = model.generate_content(
-            prompt,
-            generation_config={
+        # Call generate_content with google-genai Client API
+        response = model.models.generate_content(
+            model='gemini-2.5-pro',
+            contents=prompt,
+            config={
                 'temperature': 0.7,  # Giảm temperature để ổn định hơn
                 'max_output_tokens': 16384,  # Tăng lên tối đa để đảm bảo không bị cắt
                 'top_p': 0.9,

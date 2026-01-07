@@ -37,12 +37,9 @@ def _get_model():
         print("GEMINI_API_KEY not found. Set in environment or Streamlit secrets.")
         return None
     try:
-        # Configure the API
-        genai.configure(api_key=key)
-        
-        # Use GenerativeModel with gemini-2.5-pro
-        model = genai.GenerativeModel('gemini-2.5-pro')
-        return model
+        # Create client with API key for google-genai v1.56+
+        client = genai.Client(api_key=key)
+        return client
     except Exception as e:
         print(f"Lỗi khởi tạo Gemini: {e}")
         return None
@@ -171,10 +168,11 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
 
     for attempt in range(1, max_attempts + 1):
         try:
-            # Add generation config for better JSON output
-            response = model.generate_content(
-                prompt,
-                generation_config={
+            # Call generate_content with google-genai Client API
+            response = model.models.generate_content(
+                model='gemini-2.5-pro',
+                contents=prompt,
+                config={
                     'temperature': 0.7,
                     'max_output_tokens': 8192
                 }
