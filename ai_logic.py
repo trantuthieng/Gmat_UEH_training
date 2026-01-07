@@ -1,4 +1,4 @@
-import google.generativeai as genai
+import google.genai as genai
 import json
 import os
 import random
@@ -160,13 +160,13 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
     - Trả về kết quả dưới dạng JSON thuần túy, không có markdown.
 
     OUTPUT JSON FORMAT (Tuân thủ đúng thứ tự này để tính toán trước khi chọn đáp án):
-    {
+    {{
         "question": "Nội dung câu hỏi...",
         "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
         "step_by_step_thinking": "Bước 1: ...; Bước 2: ... (ghi rõ phép tính và kết quả trung gian)",
         "correct_answer": "Chép y nguyên text của lựa chọn đúng vào đây",
         "explanation": "Tóm tắt vì sao đáp án đúng, nhắc lại công thức/suy luận chính và số kết quả"
-    }
+    }}
     """
 
     for attempt in range(1, max_attempts + 1):
