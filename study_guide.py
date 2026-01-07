@@ -1,4 +1,4 @@
-from google import genai
+import google.generativeai as genai
 import os
 import json
 import re
@@ -19,36 +19,19 @@ def _get_api_key() -> str | None:
 
 @lru_cache(maxsize=1)
 def _get_study_model():
-    """Khởi tạo model Gemini cho ôn tập (dùng model nhanh hơn)"""
+    """Khởi tạo model Gemini cho ôn tập"""
     key = _get_api_key()
     if not key:
         print("GEMINI_API_KEY not found")
         return None
     
     try:
-        client = genai.Client(api_key=key)
+        # Configure the API
+        genai.configure(api_key=key)
         
-        class _StudyModelWrapper:
-            def __init__(self, client, model_name: str):
-                self._client = client
-                self._model = model_name
-            
-            def generate_content(self, prompt, generation_config=None):
-                cfg = None
-                if generation_config:
-                    try:
-                        from google.genai import types as genai_types
-                        cfg = genai_types.GenerateContentConfig(**generation_config)
-                    except Exception:
-                        cfg = generation_config
-                return self._client.models.generate_content(
-                    model=self._model,
-                    contents=prompt,
-                    config=cfg,
-                )
-        
-        # Dùng gemini-2.5-pro (model hỗ trợ generateContent, chất lượng cao nhất)
-        return _StudyModelWrapper(client, 'gemini-2.5-pro')
+        # Use GenerativeModel with gemini-2.5-pro
+        model = genai.GenerativeModel('gemini-2.5-pro')
+        return model
     except Exception as e:
         print(f"Lỗi khởi tạo Study Model: {e}")
         return None

@@ -1,10 +1,9 @@
-from google import genai
+import google.generativeai as genai
 import json
 import os
 import time
 
 # --- CẤU HÌNH API ---
-import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -17,19 +16,21 @@ except:
 
 if not API_KEY:
     raise ValueError("GEMINI_API_KEY not found. Please set it in .env file")
-client = genai.Client(api_key=API_KEY)
+
+# Configure genai
+genai.configure(api_key=API_KEY)
 
 def process_pdf_to_json(pdf_path, output_path):
     print(f"🚀 Đang tải file '{pdf_path}' lên Gemini...")
     
     # 1. Upload file PDF lên Gemini
-    sample_file = client.files.upload(file=pdf_path, display_name="GMAT Exam Data")
+    sample_file = genai.upload_file(path=pdf_path, display_name="GMAT Exam Data")
     
     # Đợi file xử lý xong (thường mất 1-2 giây)
     while sample_file.state.name == "PROCESSING":
         print("... Đang xử lý file ...")
         time.sleep(2)
-        sample_file = client.files.get(sample_file.name)
+        sample_file = genai.get_file(sample_file.name)
 
     if sample_file.state.name == "FAILED":
         print("❌ Lỗi khi xử lý file PDF.")
@@ -38,7 +39,6 @@ def process_pdf_to_json(pdf_path, output_path):
     print("✅ Upload thành công! Đang trích xuất câu hỏi...")
 
     # 2. Tạo Prompt để trích xuất dữ liệu
-    # Chúng ta yêu cầu Gemini trả về JSON list
     prompt = """
     Hãy đóng vai trò là một chuyên gia xử lý dữ liệu.
     Nhiệm vụ: Đọc toàn bộ file PDF này và trích xuất TẤT CẢ các câu hỏi trắc nghiệm.
@@ -59,8 +59,9 @@ def process_pdf_to_json(pdf_path, output_path):
     - Chỉ trả về JSON thuần, không có markdown formatting (```json).
     """
 
-    # 3. Gửi model Gemini 2.5 Pro (chuyên xử lý văn bản dài, chất lượng cao)
-    model_name = 'gemini-2.5-pro'
+    # 3. Sử dụng model Gemini 2.5 Pro
+    model = genai.GenerativeModel('gemini-2.5-pro')
+    
     # Thử gửi request với retry
     max_retries = 3
     retry_count = 0
@@ -69,14 +70,14 @@ def process_pdf_to_json(pdf_path, output_path):
     while retry_count < max_retries:
         try:
             print(f"Đang gửi request đến Gemini... (Lần thử {retry_count + 1}/{max_retries})")
-            # Tăng max_output_tokens để đảm bảo không bị cắt giữa chừng vì file dài
-            from google.genai import types as genai_types
-            response = client.models.generate_content(
-                model=model_name,
-                contents=[sample_file, prompt],
-                config=genai_types.GenerateContentConfig(
-                    response_mime_type="application/json"
-                )
+            
+            generation_config = genai.GenerationConfig(
+                response_mime_type="application/json"
+            )
+            
+            response = model.generate_content(
+                [sample_file, prompt],
+                generation_config=generation_config
             )
             break  # Thành công thì thoát vòng lặp
         except Exception as e:
