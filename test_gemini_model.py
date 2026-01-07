@@ -40,7 +40,14 @@ for model_name in models_to_test:
         )
         
         result_text = response.text if hasattr(response, 'text') else str(response)
-        print(f"✅ SUCCESS: {result_text[:100]}")
+        
+        # Xóa HTML tags nếu có
+        import re
+        clean_text = re.sub(r'<[^>]+>', '', result_text)
+        clean_text = clean_text.strip()
+        
+        print(f"✅ SUCCESS:")
+        print(f"   {clean_text[:200]}")
         
     except Exception as e:
         error_msg = str(e)
