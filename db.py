@@ -36,13 +36,19 @@ def _get_db_type():
     # Kiểm tra nếu có DB_HOST và psycopg2 available
     if PSYCOPG2_AVAILABLE and get_config("DB_HOST"):
         try:
-            # Test connection
+            # Path to Supabase CA certificate
+            import pathlib
+            ca_cert_path = pathlib.Path(__file__).parent / "supabase-ca.crt"
+            
+            # Test connection with SSL
             conn = psycopg2.connect(
                 host=get_config("DB_HOST"),
                 database=get_config("DB_NAME"),
                 user=get_config("DB_USER"),
                 password=get_config("DB_PASSWORD"),
-                port=get_config("DB_PORT")
+                port=get_config("DB_PORT"),
+                sslmode='require',
+                sslrootcert=str(ca_cert_path)
             )
             conn.close()
             _db_type = "postgresql"
@@ -64,12 +70,18 @@ def get_db_connection():
     
     if db_type == "postgresql":
         try:
+            # Path to Supabase CA certificate
+            import pathlib
+            ca_cert_path = pathlib.Path(__file__).parent / "supabase-ca.crt"
+            
             return psycopg2.connect(
                 host=get_config("DB_HOST"),
                 database=get_config("DB_NAME"),
                 user=get_config("DB_USER"),
                 password=get_config("DB_PASSWORD"),
-                port=get_config("DB_PORT")
+                port=get_config("DB_PORT"),
+                sslmode='require',
+                sslrootcert=str(ca_cert_path)
             )
         except Exception as e:
             print(f"❌ DB Connection Error: {e}")

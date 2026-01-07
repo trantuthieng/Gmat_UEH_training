@@ -2,13 +2,17 @@
 """Xóa bảng user_wrong_answers từ Supabase"""
 import psycopg2
 import sys
+from dotenv import load_dotenv
+import os
 
-# Thông tin kết nối
-db_host = "aws-1-ap-south-1.pooler.supabase.com"
-db_name = "postgres"
-db_user = "postgres.gtlojusiykbjvuzsrgdi"
-db_password = "6yFHqCMg9ATcCRZt"
-db_port = "5432"
+load_dotenv()
+
+# Thông tin kết nối - từ .env
+db_host = os.getenv("DB_HOST", "db.gtlojusiykbjvuzsrgdi.supabase.co")
+db_name = os.getenv("DB_NAME", "postgres")
+db_user = os.getenv("DB_USER", "postgres")
+db_password = os.getenv("DB_PASSWORD")
+db_port = os.getenv("DB_PORT", "5432")
 
 try:
     conn = psycopg2.connect(

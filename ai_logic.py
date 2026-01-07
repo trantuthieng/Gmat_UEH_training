@@ -155,8 +155,9 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
     - explanation phải tóm tắt ngắn gọn kết quả, nêu rõ công thức/suy luận chính và số cuối cùng.
     - Đáp án đúng (correct_answer) PHẢI nằm trong danh sách lựa chọn (options).
     - Trả về kết quả dưới dạng JSON thuần túy, không có markdown.
+    - CHỈ trả về 4 trường: question, options, step_by_step_thinking, correct_answer, explanation. KHÔNG thêm bất kỳ trường hay phần giải thích nào khác.
 
-    OUTPUT JSON FORMAT (Tuân thủ đúng thứ tự này để tính toán trước khi chọn đáp án):
+    OUTPUT JSON FORMAT (Bắt buộc tuân thủ chính xác):
     {{
         "question": "Nội dung câu hỏi...",
         "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
