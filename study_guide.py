@@ -47,8 +47,8 @@ def _get_study_model():
                     config=cfg,
                 )
         
-        # Dùng gemini-2.5-flash-lite (model hỗ trợ generateContent, chi phí thấp)
-        return _StudyModelWrapper(client, 'gemini-2.5-flash-lite')
+        # Dùng gemini-2.5-pro (model hỗ trợ generateContent, chất lượng cao nhất)
+        return _StudyModelWrapper(client, 'gemini-2.5-pro')
     except Exception as e:
         print(f"Lỗi khởi tạo Study Model: {e}")
         return None
@@ -365,144 +365,212 @@ def format_study_guide_html(study_data: Dict[str, Any]) -> str:
     if 'error' in study_data:
         return f"<div style='color:red;'>❌ {study_data['error']}</div>"
     
-    html = "<div style='font-family: system-ui;'>"
+    html = "<div style='font-family: system-ui; max-width: 1200px;'>"
     
-    # Overall Summary
+    # Overall Summary - Improved styling
     summary = study_data.get('overall_summary', '')
     if summary:
         html += f"""
         <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                    color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
-            <h2 style='margin:0 0 10px 0;'>📊 Tổng quan kết quả</h2>
-            <p style='margin:0; font-size: 16px; line-height: 1.6;'>{summary}</p>
+                    color: white; padding: 25px; border-radius: 15px; margin-bottom: 25px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+            <h2 style='margin:0 0 15px 0; font-size: 24px;'>📊 Tổng quan kết quả</h2>
+            <p style='margin:0; font-size: 16px; line-height: 1.8; opacity: 0.95;'>{summary}</p>
         </div>
         """
     
-    # Topics
+    # Topics with improved design
     topics = study_data.get('topics', [])
-    for topic in topics:
+    for idx, topic in enumerate(topics, 1):
         importance = topic.get('importance', 'medium')
         color_map = {
-            'high': '#ff4444',
-            'medium': '#ffa500',
-            'low': '#4CAF50'
+            'high': '#dc3545',
+            'medium': '#fd7e14',
+            'low': '#28a745'
         }
+        bg_color_map = {
+            'high': '#fff5f5',
+            'medium': '#fff8f0',
+            'low': '#f0f9f4'
+        }
+        icon_map = {
+            'high': '🔴',
+            'medium': '🟡',
+            'low': '🟢'
+        }
+        
         color = color_map.get(importance, '#666')
+        bg_color = bg_color_map.get(importance, '#f8f9fa')
+        icon = icon_map.get(importance, '⭕')
         
         stats = topic.get('stats', {})
         accuracy = (stats.get('correct', 0) / stats.get('total', 1) * 100) if stats.get('total', 1) > 0 else 0
         
         html += f"""
-        <div style='border: 2px solid {color}; border-radius: 10px; 
-                    padding: 20px; margin-bottom: 20px; background: white;'>
-            <h3 style='color: {color}; margin-top: 0;'>
-                📚 {topic['topic']}
-                <span style='font-size: 14px; font-weight: normal;'>
-                    ({stats.get('correct', 0)}/{stats.get('total', 0)} đúng - {accuracy:.0f}%)
-                </span>
-            </h3>
+        <div style='border: 2px solid {color}; border-radius: 12px; 
+                    padding: 25px; margin-bottom: 25px; background: {bg_color};
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);'>
+            <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;'>
+                <h3 style='color: {color}; margin: 0; font-size: 20px;'>
+                    {icon} {topic['topic']}
+                </h3>
+                <div style='background: white; padding: 8px 15px; border-radius: 20px; 
+                           border: 2px solid {color}; font-weight: bold; color: {color};'>
+                    {stats.get('correct', 0)}/{stats.get('total', 0)} đúng ({accuracy:.0f}%)
+                </div>
+            </div>
         """
         
-        # Key Concepts
-        concepts = topic.get('key_concepts', [])
-        if concepts:
-            html += "<h4>💡 Kiến thức cốt lõi:</h4><ul>"
-            for concept in concepts:
-                html += f"<li style='margin-bottom: 10px;'>{concept}</li>"
-            html += "</ul>"
-        
-        # Common Mistakes
-        mistakes = topic.get('common_mistakes', [])
-        if mistakes:
-            html += "<h4>⚠️ Lỗi thường gặp:</h4><ul>"
-            for mistake in mistakes:
-                html += f"<li style='margin-bottom: 10px; color: #d32f2f;'>{mistake}</li>"
-            html += "</ul>"
-        
-        # Study Tips
-        tips = topic.get('study_tips', [])
-        if tips:
-            html += "<h4>✨ Mẹo học tập:</h4><ul>"
-            for tip in tips:
-                html += f"<li style='margin-bottom: 10px; color: #2e7d32;'>{tip}</li>"
-            html += "</ul>"
-        
-        # Practice Approach
-        approach = topic.get('practice_approach', '')
-        if approach:
-            html += f"""
-            <div style='background: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 10px;'>
-                <h4 style='margin-top: 0;'>🎯 Cách tiếp cận:</h4>
-                <p style='margin: 0; line-height: 1.6;'>{approach}</p>
+        # Priority badge
+        priority = topic.get('priority_level', 2)
+        if priority == 1:
+            html += """
+            <div style='background: #ff4444; color: white; display: inline-block; 
+                       padding: 5px 15px; border-radius: 15px; font-size: 12px; 
+                       font-weight: bold; margin-bottom: 15px;'>
+                ⚡ ƯU TIÊN CAO
             </div>
             """
         
-        # Formulas or Rules (NEW)
+        # Key Concepts - Improved
+        concepts = topic.get('key_concepts', [])
+        if concepts:
+            html += """
+            <div style='background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;'>
+                <h4 style='margin: 0 0 10px 0; color: #495057; font-size: 16px;'>💡 Kiến thức cốt lõi</h4>
+                <ul style='margin: 0; padding-left: 20px;'>
+            """
+            for concept in concepts:
+                html += f"<li style='margin-bottom: 8px; line-height: 1.6;'>{concept}</li>"
+            html += "</ul></div>"
+        
+        # Common Mistakes - Improved
+        mistakes = topic.get('common_mistakes', [])
+        if mistakes:
+            html += """
+            <div style='background: #fff5f5; padding: 15px; border-radius: 8px; 
+                       margin-bottom: 15px; border-left: 4px solid #dc3545;'>
+                <h4 style='margin: 0 0 10px 0; color: #dc3545; font-size: 16px;'>⚠️ Lỗi thường gặp</h4>
+                <ul style='margin: 0; padding-left: 20px;'>
+            """
+            for mistake in mistakes:
+                html += f"<li style='margin-bottom: 8px; line-height: 1.6; color: #721c24;'>{mistake}</li>"
+            html += "</ul></div>"
+        
+        # Study Tips - Improved
+        tips = topic.get('study_tips', [])
+        if tips:
+            html += """
+            <div style='background: #f0f9f4; padding: 15px; border-radius: 8px; 
+                       margin-bottom: 15px; border-left: 4px solid #28a745;'>
+                <h4 style='margin: 0 0 10px 0; color: #28a745; font-size: 16px;'>✨ Mẹo học tập</h4>
+                <ul style='margin: 0; padding-left: 20px;'>
+            """
+            for tip in tips:
+                html += f"<li style='margin-bottom: 8px; line-height: 1.6; color: #155724;'>{tip}</li>"
+            html += "</ul></div>"
+        
+        # Practice Approach - Improved
+        approach = topic.get('practice_approach', '')
+        if approach:
+            html += f"""
+            <div style='background: linear-gradient(to right, #e3f2fd, #bbdefb); 
+                       padding: 15px; border-radius: 8px; margin-bottom: 15px;
+                       border-left: 4px solid #2196f3;'>
+                <h4 style='margin: 0 0 10px 0; color: #0d47a1; font-size: 16px;'>🎯 Cách tiếp cận</h4>
+                <p style='margin: 0; line-height: 1.7; color: #1565c0;'>{approach}</p>
+            </div>
+            """
+        
+        # Formulas or Rules - Improved
         formulas = topic.get('formulas_or_rules', [])
         if formulas:
-            html += "<h4>📐 Công thức/Quy tắc:</h4><ul>"
+            html += """
+            <div style='background: #fff8e1; padding: 15px; border-radius: 8px; 
+                       margin-bottom: 15px; border-left: 4px solid #ffa726;'>
+                <h4 style='margin: 0 0 10px 0; color: #e65100; font-size: 16px;'>📐 Công thức/Quy tắc</h4>
+                <ul style='margin: 0; padding-left: 20px;'>
+            """
             for formula in formulas:
-                html += f"<li style='margin-bottom: 10px; font-family: monospace; background: #fff3cd; padding: 5px; border-radius: 3px;'>{formula}</li>"
-            html += "</ul>"
+                html += f"""
+                <li style='margin-bottom: 8px; font-family: "Courier New", monospace; 
+                          background: white; padding: 8px; border-radius: 4px; 
+                          font-size: 14px; border: 1px solid #ffe0b2;'>{formula}</li>
+                """
+            html += "</ul></div>"
         
-        # Time Management Tip (NEW)
+        # Time Management Tip - Improved
         time_tip = topic.get('time_management_tip', '')
         if time_tip:
             html += f"""
-            <div style='background: #e3f2fd; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #2196f3;'>
+            <div style='background: white; padding: 12px 15px; border-radius: 8px; 
+                       border: 2px dashed #17a2b8; color: #0c5460;'>
                 <strong>⏱️ Quản lý thời gian:</strong> {time_tip}
             </div>
             """
         
-        html += "</div>"
+        html += "</div>"  # Close topic card
     
-    # Recommended Focus
+    # Recommended Focus - Improved
     focus = study_data.get('recommended_focus', [])
     if focus:
         html += """
-        <div style='background: #fff3cd; border: 2px solid #ffc107; 
-                    padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
-            <h3 style='margin-top: 0; color: #856404;'>🎯 Ưu tiên ôn tập:</h3>
-            <ol style='margin: 0;'>
+        <div style='background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); 
+                    padding: 25px; border-radius: 15px; margin-bottom: 25px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+            <h3 style='margin: 0 0 15px 0; color: #6c3483; font-size: 20px;'>
+                🎯 Ưu tiên ôn tập ngay
+            </h3>
+            <ol style='margin: 0; padding-left: 20px; font-size: 16px;'>
         """
         for item in focus:
-            html += f"<li style='margin-bottom: 10px;'>{item}</li>"
+            html += f"<li style='margin-bottom: 10px; color: #6c3483; font-weight: 500;'>{item}</li>"
         html += "</ol></div>"
     
-    # Next Steps
+    # Next Steps - Improved
     next_steps = study_data.get('next_steps', '')
     if next_steps:
         html += f"""
-        <div style='background: #d1f2eb; border: 2px solid #1abc9c; 
-                    padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
-            <h3 style='margin-top: 0; color: #117a65;'>📅 Kế hoạch tiếp theo:</h3>
-            <p style='margin: 0; line-height: 1.8;'>{next_steps}</p>
+        <div style='background: linear-gradient(135deg, #a8e6cf 0%, #56ccf2 100%); 
+                    padding: 25px; border-radius: 15px; margin-bottom: 25px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+            <h3 style='margin: 0 0 15px 0; color: #0d47a1; font-size: 20px;'>
+                📅 Lộ trình ôn tập 7 ngày
+            </h3>
+            <p style='margin: 0; line-height: 1.8; color: #1565c0; font-size: 15px; white-space: pre-line;'>{next_steps}</p>
         </div>
         """
     
-    # Practice Resources (NEW)
+    # Practice Resources - Improved
     resources = study_data.get('practice_resources', [])
     if resources:
         html += """
-        <div style='background: #fff8e1; border: 2px solid #ffc107; 
-                    padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
-            <h3 style='margin-top: 0; color: #f57c00;'>📖 Nguồn tài liệu học tập:</h3>
-            <ul style='margin: 0;'>
+        <div style='background: white; border: 2px solid #ffc107; 
+                    padding: 25px; border-radius: 15px; margin-bottom: 25px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+            <h3 style='margin: 0 0 15px 0; color: #f57c00; font-size: 20px;'>
+                📖 Nguồn tài liệu học tập
+            </h3>
+            <ul style='margin: 0; padding-left: 20px; font-size: 15px;'>
         """
         for resource in resources:
-            html += f"<li style='margin-bottom: 10px;'>{resource}</li>"
+            html += f"<li style='margin-bottom: 12px; line-height: 1.6; color: #e65100;'>{resource}</li>"
         html += "</ul></div>"
     
-    # Motivation Message (NEW)
+    # Motivation Message - Improved
     motivation = study_data.get('motivation_message', '')
     if motivation:
         html += f"""
         <div style='background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
-                    color: white; padding: 20px; border-radius: 10px; text-align: center;'>
-            <h3 style='margin-top: 0;'>💪 Lời động viên</h3>
-            <p style='margin: 0; font-size: 16px; line-height: 1.6; font-style: italic;'>{motivation}</p>
+                    color: white; padding: 30px; border-radius: 15px; text-align: center;
+                    box-shadow: 0 6px 12px rgba(0,0,0,0.15);'>
+            <h3 style='margin: 0 0 15px 0; font-size: 22px;'>💪 Lời động viên</h3>
+            <p style='margin: 0; font-size: 17px; line-height: 1.8; font-style: italic; opacity: 0.95;'>
+                "{motivation}"
+            </p>
         </div>
         """
     
     html += "</div>"
     return html
+

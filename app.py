@@ -782,50 +782,143 @@ elif st.session_state.exam_state == "FINISHED":
     # --- HIỂN THỊ TÀI LIỆU ÔN TẬP ---
     if st.session_state.get('show_study_guide', False):
         st.divider()
-        st.header("📚 TÀI LIỆU ÔN TẬP")
+        
+        # Header với styling đẹp hơn
+        st.markdown("""
+        <div style='background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); 
+                    padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
+            <h1 style='color: white; margin: 0; text-align: center;'>
+                📚 TÀI LIỆU ÔN TẬP CÁ NHÂN HÓA
+            </h1>
+            <p style='color: white; text-align: center; margin: 10px 0 0 0; opacity: 0.9;'>
+                Được tạo bởi AI dựa trên kết quả thi của bạn
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
         
         # CACHE: Kiểm tra xem đã tạo study guide chưa để tránh gọi API lại
         if 'cached_study_guide' not in st.session_state:
-            with st.spinner("🤖 AI đang phân tích và tạo tài liệu ôn tập chi tiết... (chỉ 1 lần duy nhất)"):
-                try:
-                    from study_guide import generate_study_guide, format_study_guide_html
-                    
-                    # GỌI API DUY NHẤT - Kết quả sẽ được cache
-                    study_data = generate_study_guide(questions, answers)
-                    
-                    # Lưu vào cache để không phải gọi lại
-                    st.session_state.cached_study_guide = study_data
-                    print("✅ Đã cache study guide vào session_state")
-                    
-                except Exception as e:
-                    st.error(f"❌ Lỗi khi tạo tài liệu ôn tập: {e}")
-                    st.info("Vui lòng kiểm tra kết nối mạng và API key")
-                    st.session_state.cached_study_guide = {
-                        "error": f"Lỗi hệ thống: {str(e)}",
-                        "topics": []
-                    }
+            # Progress bar với thông tin chi tiết
+            progress_text = st.empty()
+            progress_bar = st.progress(0)
+            
+            progress_text.text("🔍 Phân tích kết quả bài thi...")
+            progress_bar.progress(25)
+            
+            try:
+                from study_guide import generate_study_guide, format_study_guide_html
+                
+                progress_text.text("🤖 AI đang tạo tài liệu ôn tập chi tiết...")
+                progress_bar.progress(50)
+                
+                # GỌI API DUY NHẤT - Kết quả sẽ được cache
+                study_data = generate_study_guide(questions, answers)
+                
+                progress_bar.progress(75)
+                progress_text.text("✨ Đang định dạng nội dung...")
+                
+                # Lưu vào cache để không phải gọi lại
+                st.session_state.cached_study_guide = study_data
+                
+                progress_bar.progress(100)
+                progress_text.text("✅ Hoàn thành!")
+                
+                import time
+                time.sleep(0.5)
+                progress_text.empty()
+                progress_bar.empty()
+                
+                print("✅ Đã cache study guide vào session_state")
+                
+            except Exception as e:
+                progress_text.empty()
+                progress_bar.empty()
+                
+                st.error(f"❌ Lỗi khi tạo tài liệu ôn tập: {e}")
+                st.info("💡 Vui lòng kiểm tra:")
+                st.markdown("""
+                - ✓ Kết nối internet ổn định
+                - ✓ GEMINI_API_KEY hợp lệ và chưa hết hạn
+                - ✓ Quota API còn đủ
+                """)
+                
+                st.session_state.cached_study_guide = {
+                    "error": f"Lỗi hệ thống: {str(e)}",
+                    "topics": []
+                }
         
         # Lấy data từ cache (đã có sẵn hoặc vừa tạo ở trên)
         study_data = st.session_state.cached_study_guide
         
         if 'error' not in study_data:
-            # Hiển thị HTML đẹp
-            from study_guide import format_study_guide_html
-            html_content = format_study_guide_html(study_data)
-            st.markdown(html_content, unsafe_allow_html=True)
+            # Tabs để tổ chức nội dung tốt hơn
+            tab1, tab2 = st.tabs(["📖 Nội dung ôn tập", "💾 Tải xuống"])
             
-            # Hiển thị thông tin về cache
-            st.success("✅ Tài liệu đã được cache - không tốn thêm API quota khi xem lại!")
+            with tab1:
+                # Hiển thị HTML đẹp
+                from study_guide import format_study_guide_html
+                html_content = format_study_guide_html(study_data)
+                st.markdown(html_content, unsafe_allow_html=True)
             
-            # Thêm nút download JSON
-            import json
-            study_json = json.dumps(study_data, ensure_ascii=False, indent=2)
-            st.download_button(
-                label="💾 Tải tài liệu ôn tập (JSON)",
-                data=study_json,
-                file_name=f"study_guide_{st.session_state.session_id[:8]}.json",
-                mime="application/json"
-            )
+            with tab2:
+                st.success("✅ Tài liệu đã được cache - không tốn thêm API quota khi xem lại!")
+                
+                # Download options
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    # Thêm nút download JSON
+                    import json
+                    study_json = json.dumps(study_data, ensure_ascii=False, indent=2)
+                    st.download_button(
+                        label="📥 Tải tài liệu (JSON)",
+                        data=study_json,
+                        file_name=f"study_guide_{st.session_state.session_id[:8]}.json",
+                        mime="application/json",
+                        use_container_width=True
+                    )
+                
+                with col2:
+                    # Download HTML version
+                    html_full = f"""
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Tài liệu ôn tập GMAT</title>
+                        <style>
+                            body {{ font-family: system-ui; max-width: 1200px; margin: 40px auto; padding: 20px; }}
+                        </style>
+                    </head>
+                    <body>
+                        {html_content}
+                    </body>
+                    </html>
+                    """
+                    st.download_button(
+                        label="📥 Tải tài liệu (HTML)",
+                        data=html_full,
+                        file_name=f"study_guide_{st.session_state.session_id[:8]}.html",
+                        mime="text/html",
+                        use_container_width=True
+                    )
+                
+                # Statistics
+                st.divider()
+                st.markdown("### 📊 Thống kê tài liệu")
+                
+                topics_count = len(study_data.get('topics', []))
+                high_priority = sum(1 for t in study_data.get('topics', []) if t.get('importance') == 'high')
+                
+                metric_col1, metric_col2, metric_col3 = st.columns(3)
+                with metric_col1:
+                    st.metric("Tổng số chủ đề", topics_count)
+                with metric_col2:
+                    st.metric("Ưu tiên cao", high_priority, delta=f"{high_priority}/{topics_count}")
+                with metric_col3:
+                    total_wrong = sum(t.get('stats', {}).get('wrong', 0) for t in study_data.get('topics', []))
+                    st.metric("Câu cần ôn lại", total_wrong)
+        
         else:
             st.error(study_data['error'])
             if 'debug_info' in study_data:

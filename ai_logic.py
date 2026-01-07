@@ -60,7 +60,7 @@ def _get_model():
                     config=cfg,
                 )
 
-        return _ModelWrapper(client, 'gemma-3-27b-it')
+        return _ModelWrapper(client, 'gemini-2.5-pro')
     except Exception as e:
         print(f"Lỗi khởi tạo Gemini: {e}")
         return None

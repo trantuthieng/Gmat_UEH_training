@@ -59,8 +59,8 @@ def process_pdf_to_json(pdf_path, output_path):
     - Chỉ trả về JSON thuần, không có markdown formatting (```json).
     """
 
-    # 3. Gọi model Gemini 2.0 Flash (chuyên xử lý văn bản dài)
-    model_name = 'gemini-2.5-flash-lite'
+    # 3. Gửi model Gemini 2.5 Pro (chuyên xử lý văn bản dài, chất lượng cao)
+    model_name = 'gemini-2.5-pro'
     # Thử gửi request với retry
     max_retries = 3
     retry_count = 0
