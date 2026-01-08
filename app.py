@@ -861,10 +861,26 @@ elif st.session_state.exam_state == "FINISHED":
             tab1, tab2 = st.tabs(["📖 Nội dung ôn tập", "💾 Tải xuống"])
             
             with tab1:
-                # Hiển thị HTML đẹp
-                from study_guide import format_study_guide_html
-                html_content = format_study_guide_html(study_data)
-                st.markdown(html_content, unsafe_allow_html=True)
+                # Hiển thị nội dung ôn tập
+                if 'error' in study_data:
+                    st.error(f"❌ {study_data['error']}")
+                else:
+                    # Hiển thị tổng quan
+                    if 'overall_summary' in study_data:
+                        st.info(f"📊 **Tổng quan:** {study_data['overall_summary']}")
+                    
+                    # Hiển thị từng topic
+                    topics = study_data.get('topics', [])
+                    if topics:
+                        for topic in topics:
+                            with st.expander(f"📚 {topic.get('topic', 'Chủ đề')} - {topic.get('stats', {}).get('correct', 0)}/{topic.get('stats', {}).get('total', 0)} đúng"):
+                                st.write(topic.get('explanation', 'Không có nội dung'))
+                                if 'tips' in topic and topic['tips']:
+                                    st.write("**💡 Mẹo:**")
+                                    for tip in topic['tips']:
+                                        st.write(f"- {tip}")
+                    else:
+                        st.warning("Không có dữ liệu ôn tập")
             
             with tab2:
                 st.success("✅ Tài liệu đã được cache - không tốn thêm API quota khi xem lại!")
