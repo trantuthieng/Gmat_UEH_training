@@ -881,16 +881,26 @@ elif st.session_state.exam_state == "FINISHED":
                             with st.expander(f"📚 {topic.get('topic', 'Chủ đề')} - {correct}/{total} đúng ({accuracy:.0f}%)"):
                                 col1, col2 = st.columns([2, 1])
                                 with col1:
-                                    explanation = topic.get('explanation')
-                                    if explanation:
-                                        st.write(explanation)
-                                    else:
-                                        st.write("_Chưa có giải thích chi tiết_")
+                                    # Hiển thị từng mục giáo dục
+                                    if 'key_concepts' in topic and topic['key_concepts']:
+                                        st.markdown("**📖 Khái niệm chính:**")
+                                        for concept in topic['key_concepts']:
+                                            st.write(f"• {concept}")
                                     
-                                    if 'tips' in topic and topic['tips']:
-                                        st.markdown("**💡 Mẹo:**")
-                                        for tip in topic['tips']:
+                                    if 'common_mistakes' in topic and topic['common_mistakes']:
+                                        st.markdown("**⚠️ Lỗi phổ biến:**")
+                                        for mistake in topic['common_mistakes']:
+                                            st.write(f"• {mistake}")
+                                    
+                                    if 'study_tips' in topic and topic['study_tips']:
+                                        st.markdown("**💡 Mẹo ôn tập:**")
+                                        for tip in topic['study_tips']:
                                             st.write(f"• {tip}")
+                                    
+                                    if 'practice_approach' in topic and topic['practice_approach']:
+                                        st.markdown("**🎯 Cách tiếp cận:**")
+                                        st.write(topic['practice_approach'])
+                                
                                 with col2:
                                     st.metric("Tỉ lệ đúng", f"{accuracy:.0f}%")
                     else:
