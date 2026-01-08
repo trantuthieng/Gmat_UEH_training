@@ -901,27 +901,14 @@ elif st.session_state.exam_state == "FINISHED":
                     )
                 
                 with col2:
-                    # Download HTML version
-                    html_full = f"""
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Tài liệu ôn tập GMAT</title>
-                        <style>
-                            body {{ font-family: system-ui; max-width: 1200px; margin: 40px auto; padding: 20px; }}
-                        </style>
-                    </head>
-                    <body>
-                        {html_content}
-                    </body>
-                    </html>
-                    """
+                    # Download as text version instead of HTML
+                    import json
+                    text_content = json.dumps(study_data, ensure_ascii=False, indent=2)
                     st.download_button(
-                        label="📥 Tải tài liệu (HTML)",
-                        data=html_full,
-                        file_name=f"study_guide_{st.session_state.session_id[:8]}.html",
-                        mime="text/html",
+                        label="📥 Tải tài liệu (TXT)",
+                        data=text_content,
+                        file_name=f"study_guide_{st.session_state.session_id[:8]}.txt",
+                        mime="text/plain",
                         use_container_width=True
                     )
                 
