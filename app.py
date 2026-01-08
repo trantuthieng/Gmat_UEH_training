@@ -897,6 +897,11 @@ elif st.session_state.exam_state == "FINISHED":
                                         for tip in topic['study_tips']:
                                             st.write(f"• {tip}")
                                     
+                                    if 'practice_drills' in topic and topic['practice_drills']:
+                                        st.markdown("**🧪 Bài tập nhỏ:**")
+                                        for drill in topic['practice_drills']:
+                                            st.write(f"• {drill}")
+                                    
                                     if 'practice_approach' in topic and topic['practice_approach']:
                                         st.markdown("**🎯 Cách tiếp cận:**")
                                         st.write(topic['practice_approach'])

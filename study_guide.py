@@ -94,12 +94,13 @@ def generate_study_guide(questions: List[Dict[str, Any]], user_answers: Dict[str
         topics_summary.append(f"- {topic}: {data['correct']}/{data['total']} đúng ({accuracy:.0f}%)")
     
     # Tạo danh sách chi tiết các câu hỏi để AI có đủ context
+    # Bao gồm trạng thái đúng/sai để AI đưa ra nội dung tùy biến theo lỗi
     questions_details = []
     for topic, data in topic_analysis.items():
         for q in data['questions'][:3]:  # Lấy max 3 câu đại diện mỗi topic
             questions_details.append({
                 'topic': topic,
-                'question': q['question'][:150],  # Cắt ngắn để tiết kiệm token
+                'question': q['question'][:180],  # Cắt ngắn để tiết kiệm token
                 'is_correct': q['is_correct']
             })
     
@@ -109,9 +110,12 @@ Bạn là giáo viên GMAT chuyên nghiệp. Học sinh vừa hoàn thành bài 
 KẾT QUẢ THEO TOPIC:
 {chr(10).join(topics_summary)}
 
-NHIỆM VỤ: Tạo tài liệu ôn tập ĐẦY ĐỦ, CHI TIẾT trong 1 lần trả lời duy nhất.
+CÁC CÂU HỎI ĐẠI DIỆN (đúng/sai để tham chiếu khi viết nội dung):
+{json.dumps(questions_details, ensure_ascii=False)}
 
-YÊU CẦU OUTPUT (JSON format - PHẢI ĐẦY ĐỦ TẤT CẢ TRƯỜNG):
+NHIỆM VỤ: Tạo tài liệu ôn tập ĐẦY ĐỦ, CHI TIẾT trong 1 lần trả lời duy nhất. Nội dung phải cụ thể, bám sát lỗi học sinh mắc phải.
+
+YÊU CẦU OUTPUT (JSON hợp lệ - PHẢI ĐẦY ĐỦ TẤT CẢ TRƯỜNG):
 {{
     "overall_summary": "Nhận xét tổng quan về kết quả học sinh (3-4 câu). Phân tích điểm mạnh, điểm yếu rõ ràng.",
     
@@ -123,28 +127,36 @@ YÊU CẦU OUTPUT (JSON format - PHẢI ĐẦY ĐỦ TẤT CẢ TRƯỜNG):
             "priority_level": 1,
             
             "key_concepts": [
-                "{{Khái niệm 1}}: {{Giải thích chi tiết 2-3 câu với ví dụ cụ thể}}",
-                "{{Khái niệm 2}}: {{Giải thích chi tiết 2-3 câu với ví dụ cụ thể}}",
-                "{{Khái niệm 3}}: {{Giải thích chi tiết 2-3 câu với ví dụ cụ thể}}"
+                "Định nghĩa 1: giải thích 2-3 câu + ví dụ",
+                "Định nghĩa 2: giải thích 2-3 câu + ví dụ",
+                "Định nghĩa 3: giải thích 2-3 câu + ví dụ"
             ],
             
             "common_mistakes": [
-                "{{Lỗi 1}}: {{Mô tả lỗi}} - {{Cách tránh cụ thể}}",
-                "{{Lỗi 2}}: {{Mô tả lỗi}} - {{Cách tránh cụ thể}}",
-                "{{Lỗi 3}}: {{Mô tả lỗi}} - {{Cách tránh cụ thể}}"
+                "Lỗi điển hình 1 (tham chiếu từ các câu sai): cách nhận biết + cách tránh",
+                "Lỗi điển hình 2: cách nhận biết + cách tránh",
+                "Lỗi điển hình 3: cách nhận biết + cách tránh"
             ],
             
             "study_tips": [
-                "{{Mẹo 1}}: {{Chi tiết cách học và luyện tập 2-3 câu}}",
-                "{{Mẹo 2}}: {{Chi tiết cách học và luyện tập 2-3 câu}}",
-                "{{Mẹo 3}}: {{Chi tiết cách học và luyện tập 2-3 câu}}"
+                "Mẹo 1: cách ôn tập chi tiết 2-3 câu",
+                "Mẹo 2: cách ôn tập chi tiết 2-3 câu",
+                "Mẹo 3: cách ôn tập chi tiết 2-3 câu"
             ],
             
-            "practice_approach": "Hướng dẫn chi tiết cách tiếp cận bài tập dạng này. Bao gồm: (1) Cách đọc đề, (2) Các bước giải quyết, (3) Mẹo nhận biết bẫy. Tối thiểu 4-5 câu có ví dụ cụ thể.",
+            "practice_approach": "Hướng dẫn chi tiết cách tiếp cận (1) Đọc đề, (2) Các bước giải, (3) Mẹo nhận biết bẫy. Ít nhất 4-5 câu kèm ví dụ.",
             
             "formulas_or_rules": [
-                "{{Công thức/Quy tắc 1 nếu có}}",
-                "{{Công thức/Quy tắc 2 nếu có}}"
+                "Công thức/Quy tắc 1",
+                "Công thức/Quy tắc 2"
+            ],
+            
+            "practice_drills": [
+                "Bài tập ngắn 1 (không cần đáp án, tập trung vào kỹ năng)",
+                "Bài tập ngắn 2",
+                "Bài tập ngắn 3",
+                "Bài tập ngắn 4",
+                "Bài tập ngắn 5"
             ],
             
             "time_management_tip": "Mẹo quản lý thời gian khi làm dạng bài này (1-2 câu)"
@@ -152,16 +164,16 @@ YÊU CẦU OUTPUT (JSON format - PHẢI ĐẦY ĐỦ TẤT CẢ TRƯỜNG):
     ],
     
     "recommended_focus": [
-        "{{Chủ đề ưu tiên 1}} - Lý do cụ thể tại sao cần ưu tiên",
-        "{{Chủ đề ưu tiên 2}} - Lý do cụ thể tại sao cần ưu tiên",
-        "{{Chủ đề ưu tiên 3}} - Lý do cụ thể tại sao cần ưu tiên"
+        "Chủ đề ưu tiên 1 - Lý do cụ thể",
+        "Chủ đề ưu tiên 2 - Lý do cụ thể",
+        "Chủ đề ưu tiên 3 - Lý do cụ thể"
     ],
     
-    "next_steps": "Kế hoạch học tập CỤ THỂ cho 7 ngày tới. Bao gồm: Ngày 1-2 làm gì, Ngày 3-4 làm gì, Ngày 5-7 làm gì. Tối thiểu 5-6 câu rất chi tiết.",
+    "next_steps": "Kế hoạch học tập CỤ THỂ cho 7 ngày tới: Ngày 1-2, Ngày 3-4, Ngày 5-7 (tối thiểu 5-6 câu).",
     
     "practice_resources": [
-        "Nguồn học liệu 1: Mô tả và cách sử dụng",
-        "Nguồn học liệu 2: Mô tả và cách sử dụng"
+        "Nguồn 1: Mô tả và cách sử dụng",
+        "Nguồn 2: Mô tả và cách sử dụng"
     ],
     
     "motivation_message": "Lời khuyên động viên cho học sinh (2-3 câu)"
@@ -170,9 +182,9 @@ YÊU CẦU OUTPUT (JSON format - PHẢI ĐẦY ĐỦ TẤT CẢ TRƯỜNG):
 HƯỚNG DẪN QUAN TRỌNG:
 1. Tạo nội dung cho TẤT CẢ các topic có trong kết quả (không bỏ sót)
 2. Ưu tiên các topic có accuracy thấp (< 70%) - đánh dấu importance="high"
-3. Mỗi phần PHẢI đầy đủ, chi tiết, CÓ VÍ DỤ CỤ THỂ
+3. Mỗi phần PHẢI đầy đủ, cụ thể, bám sát lỗi từ các câu sai cung cấp
 4. Không dùng placeholder như "...", "etc", phải viết đầy đủ
-5. Trả về JSON thuần túy, KHÔNG có markdown formatting (```json)
+5. Trả về JSON THUẦN, KHÔNG có markdown (không dùng ```json)
 6. Đảm bảo JSON hợp lệ, đóng mở ngoặc đúng
 
 LƯU Ý: Đây là LẦN DUY NHẤT tôi gọi API, hãy trả về ĐẦY ĐỦ NHẤT có thể!
@@ -184,10 +196,11 @@ LƯU Ý: Đây là LẦN DUY NHẤT tôi gọi API, hãy trả về ĐẦY ĐỦ
             model='gemini-2.5-pro',
             contents=prompt,
             config={
-                'temperature': 0.7,  # Giảm temperature để ổn định hơn
-                'max_output_tokens': 16384,  # Tăng lên tối đa để đảm bảo không bị cắt
+                'temperature': 0.5,  # Giảm để cụ thể hơn
+                'max_output_tokens': 16384,
                 'top_p': 0.9,
-                'top_k': 40
+                'top_k': 40,
+                'response_mime_type': 'application/json'  # Bắt buộc trả JSON
             }
         )
         
