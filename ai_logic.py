@@ -151,11 +151,11 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
 
     YÊU CẦU QUAN TRỌNG (bắt buộc):
     - Hãy suy nghĩ từng bước (Chain of Thought) và ghi rõ phép tính số học cụ thể (không nói chung chung).
-    - step_by_step_thinking phải có dạng "Bước 1: ... Bước 2: ..." kèm số liệu, công thức và kết quả trung gian.
-    - explanation phải tóm tắt ngắn gọn kết quả, nêu rõ công thức/suy luận chính và số cuối cùng.
+    - step_by_step_thinking phải có dạng "Bước 1: ... Bước 2: ..." kèm số liệu, công thức và kết quả trung gian. ĐỦ CHI TIẾT, ĐẦY ĐỦ.
+    - explanation: CHỈ ghi kết quả cuối cùng + lý do TẠI SAO là đáp án đúng (KHÔNG lặp lại công thức, KHÔNG lặp lại các bước tính - những cái đó đã có ở step_by_step_thinking).
     - Đáp án đúng (correct_answer) PHẢI nằm trong danh sách lựa chọn (options).
     - Trả về kết quả dưới dạng JSON thuần túy, không có markdown.
-    - CHỈ trả về 4 trường: question, options, step_by_step_thinking, correct_answer, explanation. KHÔNG thêm bất kỳ trường hay phần giải thích nào khác.
+    - CHỈ trả về 5 trường: question, options, step_by_step_thinking, correct_answer, explanation. KHÔNG thêm bất kỳ trường hay phần giải thích nào khác.
 
     OUTPUT JSON FORMAT (Bắt buộc tuân thủ chính xác):
     {{
