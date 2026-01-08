@@ -873,12 +873,26 @@ elif st.session_state.exam_state == "FINISHED":
                     topics = study_data.get('topics', [])
                     if topics:
                         for topic in topics:
-                            with st.expander(f"📚 {topic.get('topic', 'Chủ đề')} - {topic.get('stats', {}).get('correct', 0)}/{topic.get('stats', {}).get('total', 0)} đúng"):
-                                st.write(topic.get('explanation', 'Không có nội dung'))
-                                if 'tips' in topic and topic['tips']:
-                                    st.write("**💡 Mẹo:**")
-                                    for tip in topic['tips']:
-                                        st.write(f"- {tip}")
+                            stats = topic.get('stats', {})
+                            correct = stats.get('correct', 0)
+                            total = stats.get('total', 1)
+                            accuracy = (correct / total * 100) if total > 0 else 0
+                            
+                            with st.expander(f"📚 {topic.get('topic', 'Chủ đề')} - {correct}/{total} đúng ({accuracy:.0f}%)"):
+                                col1, col2 = st.columns([2, 1])
+                                with col1:
+                                    explanation = topic.get('explanation')
+                                    if explanation:
+                                        st.write(explanation)
+                                    else:
+                                        st.write("_Chưa có giải thích chi tiết_")
+                                    
+                                    if 'tips' in topic and topic['tips']:
+                                        st.markdown("**💡 Mẹo:**")
+                                        for tip in topic['tips']:
+                                            st.write(f"• {tip}")
+                                with col2:
+                                    st.metric("Tỉ lệ đúng", f"{accuracy:.0f}%")
                     else:
                         st.warning("Không có dữ liệu ôn tập")
             
