@@ -268,6 +268,13 @@ YÊU CẦU QUAN TRỌNG:
             
             # Parse JSON response
             text = text.replace('```json', '').replace('```', '').strip()
+            
+            # Fix multiple closing braces (common AI error)
+            # Replace }}} with }} at end of JSON
+            text = re.sub(r'\}\}\}+\s*$', '}}', text)
+            # Replace }]}} with }]} 
+            text = re.sub(r'\}\]\}\}+', '}]}', text)
+            
             topic_guide = json.loads(text)
             
             # Thêm metadata
@@ -291,13 +298,22 @@ YÊU CẦU QUAN TRỌNG:
                 'accuracy': round(accuracy, 0),
                 'importance': importance,
                 'priority_level': priority,
-                'theory': f"Cần ôn tập lại kiến thức cơ bản về {topic_name}",
+                'theory': f"Cần ôn tập lại kiến thức cơ bản về {topic_name}. Hãy xem lại định nghĩa, công thức và cách áp dụng trong các bài toán. Luyện tập thêm để nắm vững.",
+                'detailed_concepts': [
+                    {'concept_name': f'Khái niệm cơ bản {topic_name}', 'explanation': 'Cần ôn lại từ đầu', 'example': 'Xem sách giáo khoa'}
+                ],
+                'step_by_step_method': [
+                    'Bước 1: Đọc kỹ đề bài',
+                    'Bước 2: Xác định dạng bài',
+                    'Bước 3: Áp dụng công thức',
+                    'Bước 4: Kiểm tra kết quả'
+                ],
                 'mistake_analysis': [],
-                'common_mistakes': [f"Bạn sai {wrong_count} câu ở {topic_name}"],
-                'tips_for_accuracy': [f"Ôn lại lý thuyết {topic_name}"],
+                'common_mistakes': [f"Bạn sai {wrong_count} câu ở {topic_name}. Cần ôn lại lý thuyết."],
+                'tips_for_accuracy': [f"Ôn lại lý thuyết {topic_name} từ sách cơ bản"],
                 'tips_for_speed': ["Luyện tập thêm để tăng tốc độ"],
-                'practice_drills': [],
-                'key_formulas': [],
+                'practice_drills': [f"Làm thêm {max(5, wrong_count * 2)} bài tập về {topic_name}"],
+                'key_formulas': ["Xem lại công thức cơ bản"],
                 'stats': {
                     'total': data['total'],
                     'correct': data['correct'],
@@ -337,27 +353,42 @@ def _create_fallback_study_guide(topic_analysis: Dict[str, Any]) -> Dict[str, An
             'accuracy': round(accuracy, 0),
             'importance': importance,
             'priority_level': 1 if importance == 'high' else (2 if importance == 'medium' else 3),
-            'key_concepts': [
-                f"Khái niệm cơ bản của {topic_name}",
-                f"Ứng dụng thực tế trong bài thi GMAT",
-                f"Liên kết với các chủ đề khác"
+            'theory': f"Ôn tập lại {topic_name} từ cơ bản. Bạn sai {data['wrong']} câu, cần xem lại lý thuyết, công thức và cách áp dụng. Làm thêm bài tập để củng cố.",
+            'detailed_concepts': [
+                {'concept_name': f'Khái niệm cơ bản {topic_name}', 'explanation': f'Cần nắm vững định nghĩa và ứng dụng của {topic_name}', 'example': 'Xem sách giáo khoa và làm bài tập mẫu'},
+                {'concept_name': 'Ứng dụng thực tế', 'explanation': f'Áp dụng {topic_name} trong các bài toán GMAT', 'example': 'Luyện tập các dạng bài thường gặp'},
+                {'concept_name': 'Liên kết kiến thức', 'explanation': f'Kết hợp {topic_name} với các chủ đề khác', 'example': 'Hiểu mối quan hệ giữa các topic'}
             ],
+            'step_by_step_method': [
+                'Bước 1: Đọc đề kỹ lưỡng và xác định yêu cầu',
+                'Bước 2: Xác định dạng bài và phương pháp giải',
+                'Bước 3: Áp dụng công thức/quy tắc phù hợp',
+                'Bước 4: Kiểm tra lại kết quả và logic'
+            ],
+            'mistake_analysis': [],
             'common_mistakes': [
                 f"Bạn trả lời sai {data['wrong']} câu ({100-accuracy:.0f}% tỷ lệ sai)",
                 f"Các lỗi phổ biến: nhầm lẫn định nghĩa, tính toán sai, hiểu sai đề",
                 f"Cách tránh: đọc kỹ đề, kiểm tra lại, ôn lại công thức"
             ],
-            'study_tips': [
+            'tips_for_accuracy': [
                 f"Ôn tập lại {topic_name} từ sách cơ bản",
                 f"Làm thêm {max(5, data['wrong'] * 2)} bài tập thực hành",
                 f"Ghi chép lại các lỗi sai và cách giải quyết"
             ],
-            'practice_approach': f"Khi gặp câu {topic_name}: (1) Đọc đề kỹ lưỡng, (2) Xác định dạng bài, (3) Áp dụng công thức/quy tắc, (4) Kiểm tra lại kết quả. Tập trung vào các câu sai trước đây để hiểu rõ lý do.",
-            'formulas_or_rules': [
-                f"Quy tắc chính: Ôn lại định nghĩa cơ bản",
-                f"Công thức quan trọng: Xem lại sách giáo khoa"
+            'tips_for_speed': [
+                f"Dành {max(1, 30 // len(topic_analysis))} phút cho mỗi câu {topic_name}",
+                "Nếu quá khó, bỏ qua và quay lại sau"
             ],
-            'time_management_tip': f"Dành {max(1, 30 // len(topic_analysis))} phút để làm các câu {topic_name}. Nếu quá khó, bỏ qua và quay lại sau.",
+            'practice_drills': [
+                f"Làm {max(5, data['wrong'] * 2)} bài tập {topic_name}",
+                "Làm lại các câu sai để hiểu rõ lý do",
+                "Tham khảo lời giải chi tiết"
+            ],
+            'key_formulas': [
+                f"Công thức cơ bản {topic_name}: Xem lại sách giáo khoa",
+                "Quy tắc quan trọng: Ôn lại định nghĩa"
+            ],
             'stats': {
                 'total': data['total'],
                 'correct': data['correct'],
