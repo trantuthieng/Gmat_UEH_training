@@ -886,6 +886,25 @@ elif st.session_state.exam_state == "FINISHED":
                                     st.info(topic['theory'])
                                     st.markdown("---")
                                 
+                                # Chi tiết các khái niệm
+                                if 'detailed_concepts' in topic and topic['detailed_concepts']:
+                                    st.markdown("### 💡 Các khái niệm chi tiết")
+                                    for concept in topic['detailed_concepts']:
+                                        with st.container():
+                                            st.markdown(f"**{concept.get('concept_name', '')}**")
+                                            st.write(concept.get('explanation', ''))
+                                            if concept.get('example'):
+                                                st.code(concept['example'], language="text")
+                                            st.markdown("")
+                                    st.markdown("---")
+                                
+                                # Phương pháp từng bước
+                                if 'step_by_step_method' in topic and topic['step_by_step_method']:
+                                    st.markdown("### 📝 Phương pháp làm bài từng bước")
+                                    for step in topic['step_by_step_method']:
+                                        st.write(f"**{step}**")
+                                    st.markdown("---")
+                                
                                 # Phân tích lỗi sai của học sinh
                                 if 'mistake_analysis' in topic and topic['mistake_analysis']:
                                     st.markdown("### 🔍 Phân tích bài làm của bạn")

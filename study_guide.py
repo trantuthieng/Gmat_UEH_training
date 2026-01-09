@@ -162,60 +162,90 @@ CÁC CÂU HỎI HỌC SINH TRẢ LỜI SAI (cần phân tích chi tiết):
 {json.dumps(wrong_details, ensure_ascii=False, indent=2)}
 
 NHIỆM VỤ:
-1. **Lý thuyết chi tiết**: Giải thích đầy đủ kiến thức cơ bản về {topic_name} (tối thiểu 5-6 câu)
-2. **Phân tích bài làm**: Đi qua TỪNG câu sai, chỉ rõ:
-   - Học sinh đã hiểu sai điểm nào
-   - Tại sao câu trả lời của học sinh không đúng
-   - Cách suy luận đúng là gì
-3. **Lỗi phổ biến khác**: Ngoài lỗi học sinh mắc phải, còn có những lỗi nào khác?
-4. **Mẹo tăng tỷ lệ đúng và tốc độ**: Cụ thể, dễ áp dụng ngay
+1. **Lý thuyết chi tiết đầy đủ**: Giải thích TOÀN BỘ kiến thức về {topic_name}
+2. **Phân tích bài làm**: Đi qua TỪNG câu sai với chi tiết cụ thể
+3. **Lỗi phổ biến**: Liệt kê đầy đủ các lỗi thường gặp
+4. **Mẹo thực chiến**: Cụ thể, áp dụng ngay được
 
 OUTPUT (JSON format):
 {{
-    "theory": "LÝ THUYẾT ĐẦY ĐỦ về {topic_name}: định nghĩa, công thức, quy tắc, cách áp dụng. Tối thiểu 6-8 câu chi tiết.",
+    "theory": "LÝ THUYẾT ĐẦY ĐỦ về {topic_name}:\\n\\n1. ĐỊNH NGHĨA: Giải thích rõ ràng khái niệm cơ bản (3-4 câu)\\n\\n2. CÔNG THỨC/QUY TẮC CHÍNH: Liệt kê tất cả công thức quan trọng với giải thích\\n\\n3. CÁCH ÁP DỤNG: Hướng dẫn từng bước cách sử dụng công thức/quy tắc (4-5 bước chi tiết)\\n\\n4. VÍ DỤ MINH HỌA: Ít nhất 1 ví dụ cụ thể với lời giải chi tiết\\n\\n5. LƯU Ý QUAN TRỌNG: Các điểm dễ nhầm lẫn cần chú ý",
+    
+    "detailed_concepts": [
+        {{
+            "concept_name": "Khái niệm/Kỹ thuật 1",
+            "explanation": "Giải thích chi tiết 3-4 câu với ví dụ cụ thể",
+            "example": "Ví dụ minh họa rõ ràng"
+        }},
+        {{
+            "concept_name": "Khái niệm/Kỹ thuật 2",
+            "explanation": "Giải thích chi tiết 3-4 câu với ví dụ cụ thể",
+            "example": "Ví dụ minh họa rõ ràng"
+        }},
+        {{
+            "concept_name": "Khái niệm/Kỹ thuật 3",
+            "explanation": "Giải thích chi tiết 3-4 câu với ví dụ cụ thể",
+            "example": "Ví dụ minh họa rõ ràng"
+        }}
+    ],
+    
+    "step_by_step_method": [
+        "Bước 1: Mô tả chi tiết cách thực hiện bước này",
+        "Bước 2: Mô tả chi tiết cách thực hiện bước này",
+        "Bước 3: Mô tả chi tiết cách thực hiện bước này",
+        "Bước 4: Mô tả chi tiết cách thực hiện bước này"
+    ],
     
     "mistake_analysis": [
         {{
             "question_summary": "Tóm tắt ngắn câu hỏi",
             "user_mistake": "Học sinh đã chọn... vì hiểu sai rằng...",
             "why_wrong": "Lý do tại sao sai (chi tiết 2-3 câu)",
-            "correct_approach": "Cách suy luận đúng từng bước"
+            "correct_approach": "Cách suy luận đúng từng bước với giải thích cụ thể"
         }}
     ],
     
     "common_mistakes": [
-        "Lỗi 1: mô tả chi tiết + cách nhận biết + cách tránh",
-        "Lỗi 2: mô tả chi tiết + cách nhận biết + cách tránh",
-        "Lỗi 3: mô tả chi tiết + cách nhận biết + cách tránh"
+        "Lỗi 1: Mô tả chi tiết lỗi + Cách nhận biết + Cách tránh cụ thể",
+        "Lỗi 2: Mô tả chi tiết lỗi + Cách nhận biết + Cách tránh cụ thể",
+        "Lỗi 3: Mô tả chi tiết lỗi + Cách nhận biết + Cách tránh cụ thể",
+        "Lỗi 4: Mô tả chi tiết lỗi + Cách nhận biết + Cách tránh cụ thể"
     ],
     
     "tips_for_accuracy": [
-        "Mẹo 1: cụ thể, dễ áp dụng ngay (2-3 câu)",
-        "Mẹo 2: cụ thể, dễ áp dụng ngay (2-3 câu)",
-        "Mẹo 3: cụ thể, dễ áp dụng ngay (2-3 câu)"
+        "Mẹo 1: Kỹ thuật cụ thể với ví dụ áp dụng (2-3 câu)",
+        "Mẹo 2: Kỹ thuật cụ thể với ví dụ áp dụng (2-3 câu)",
+        "Mẹo 3: Kỹ thuật cụ thể với ví dụ áp dụng (2-3 câu)",
+        "Mẹo 4: Kỹ thuật cụ thể với ví dụ áp dụng (2-3 câu)"
     ],
     
     "tips_for_speed": [
-        "Mẹo tăng tốc 1: cụ thể (1-2 câu)",
-        "Mẹo tăng tốc 2: cụ thể (1-2 câu)"
+        "Mẹo tăng tốc 1: Kỹ thuật rút gọn cụ thể (2 câu)",
+        "Mẹo tăng tốc 2: Kỹ thuật rút gọn cụ thể (2 câu)",
+        "Mẹo tăng tốc 3: Kỹ thuật rút gọn cụ thể (2 câu)"
     ],
     
     "practice_drills": [
-        "Bài tập 1: mô tả ngắn gọn",
-        "Bài tập 2: mô tả ngắn gọn",
-        "Bài tập 3: mô tả ngắn gọn"
+        "Bài tập 1: Mô tả bài tập ngắn để rèn kỹ năng cụ thể",
+        "Bài tập 2: Mô tả bài tập ngắn để rèn kỹ năng cụ thể",
+        "Bài tập 3: Mô tả bài tập ngắn để rèn kỹ năng cụ thể",
+        "Bài tập 4: Mô tả bài tập ngắn để rèn kỹ năng cụ thể"
     ],
     
     "key_formulas": [
-        "Công thức/Quy tắc quan trọng 1",
-        "Công thức/Quy tắc quan trọng 2"
+        "Công thức 1: Diễn giải + Khi nào dùng",
+        "Công thức 2: Diễn giải + Khi nào dùng",
+        "Công thức 3: Diễn giải + Khi nào dùng"
     ]
 }}
 
-LƯU Ý:
+YÊU CẦU QUAN TRỌNG:
+- Phần "theory" PHẢI có cấu trúc 5 phần như mô tả (ĐỊNH NGHĨA, CÔNG THỨC, CÁCH ÁP DỤNG, VÍ DỤ, LƯU Ý)
+- Phần "detailed_concepts" PHẢI có ít nhất 3 khái niệm với ví dụ cụ thể
+- Phần "step_by_step_method" PHẢI có ít nhất 4 bước chi tiết
 - Phân tích CỤ THỂ dựa trên các câu sai được cung cấp
-- Không viết chung chung kiểu "nên đọc kỹ đề"
-- Đưa ra lời khuyên CỤ THỂ, dễ áp dụng
+- MỖI MỤC phải dài, chi tiết, CÓ VÍ DỤ
+- Không viết chung chung - phải cụ thể, áp dụng được ngay
 - Trả về JSON thuần, không có markdown
 """
 
