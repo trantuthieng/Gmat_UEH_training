@@ -879,35 +879,64 @@ elif st.session_state.exam_state == "FINISHED":
                             accuracy = (correct / total * 100) if total > 0 else 0
                             
                             with st.expander(f"📚 {topic.get('topic', 'Chủ đề')} - {correct}/{total} đúng ({accuracy:.0f}%)"):
-                                col1, col2 = st.columns([2, 1])
+                                # Lý thuyết chi tiết
+                                if 'theory' in topic and topic['theory']:
+                                    st.markdown("### 📖 Lý thuyết cơ bản")
+                                    st.info(topic['theory'])
+                                    st.markdown("---")
+                                
+                                # Phân tích lỗi sai của học sinh
+                                if 'mistake_analysis' in topic and topic['mistake_analysis']:
+                                    st.markdown("### 🔍 Phân tích bài làm của bạn")
+                                    for idx, mistake in enumerate(topic['mistake_analysis'], 1):
+                                        with st.container():
+                                            st.markdown(f"**Câu {idx}: {mistake.get('question_summary', '')}**")
+                                            st.error(f"❌ **Lỗi của bạn:** {mistake.get('user_mistake', '')}")
+                                            st.warning(f"⚠️ **Tại sao sai:** {mistake.get('why_wrong', '')}")
+                                            st.success(f"✅ **Cách đúng:** {mistake.get('correct_approach', '')}")
+                                            st.markdown("")
+                                    st.markdown("---")
+                                
+                                col1, col2 = st.columns(2)
+                                
                                 with col1:
-                                    # Hiển thị từng mục giáo dục
-                                    if 'key_concepts' in topic and topic['key_concepts']:
-                                        st.markdown("**📖 Khái niệm chính:**")
-                                        for concept in topic['key_concepts']:
-                                            st.write(f"• {concept}")
-                                    
+                                    # Lỗi phổ biến
                                     if 'common_mistakes' in topic and topic['common_mistakes']:
-                                        st.markdown("**⚠️ Lỗi phổ biến:**")
+                                        st.markdown("### ⚠️ Lỗi phổ biến khác")
                                         for mistake in topic['common_mistakes']:
                                             st.write(f"• {mistake}")
+                                        st.markdown("")
                                     
-                                    if 'study_tips' in topic and topic['study_tips']:
-                                        st.markdown("**💡 Mẹo ôn tập:**")
-                                        for tip in topic['study_tips']:
+                                    # Mẹo tăng độ chính xác
+                                    if 'tips_for_accuracy' in topic and topic['tips_for_accuracy']:
+                                        st.markdown("### 🎯 Mẹo tăng tỷ lệ đúng")
+                                        for tip in topic['tips_for_accuracy']:
                                             st.write(f"• {tip}")
+                                        st.markdown("")
                                     
+                                    # Bài tập thực hành
                                     if 'practice_drills' in topic and topic['practice_drills']:
-                                        st.markdown("**🧪 Bài tập nhỏ:**")
+                                        st.markdown("### 🧪 Bài tập luyện thêm")
                                         for drill in topic['practice_drills']:
                                             st.write(f"• {drill}")
-                                    
-                                    if 'practice_approach' in topic and topic['practice_approach']:
-                                        st.markdown("**🎯 Cách tiếp cận:**")
-                                        st.write(topic['practice_approach'])
                                 
                                 with col2:
-                                    st.metric("Tỉ lệ đúng", f"{accuracy:.0f}%")
+                                    # Metric
+                                    st.metric("Tỉ lệ đúng", f"{accuracy:.0f}%", 
+                                             delta=f"{wrong} câu sai" if wrong > 0 else "Hoàn hảo!")
+                                    
+                                    # Mẹo tăng tốc độ
+                                    if 'tips_for_speed' in topic and topic['tips_for_speed']:
+                                        st.markdown("### ⚡ Mẹo tăng tốc độ")
+                                        for tip in topic['tips_for_speed']:
+                                            st.write(f"• {tip}")
+                                        st.markdown("")
+                                    
+                                    # Công thức quan trọng
+                                    if 'key_formulas' in topic and topic['key_formulas']:
+                                        st.markdown("### 📐 Công thức cần nhớ")
+                                        for formula in topic['key_formulas']:
+                                            st.code(formula, language="text")
                     else:
                         st.warning("Không có dữ liệu ôn tập")
             

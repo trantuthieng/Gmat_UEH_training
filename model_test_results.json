@@ -1,0 +1,80 @@
+{
+  "timestamp": "2026-01-07T22:45:34.398933",
+  "results": [
+    {
+      "success": true,
+      "model": "gemini-2.0-flash",
+      "response": "Chắc chắn rồi, hãy tìm giá gốc của chiếc áo:\n\n**Bước 1: Hiểu về phần trăm giảm giá**\n\n*   Giảm giá 20% nghĩa là giá bạn trả là 80% giá gốc (100% - 20% = 80%).\n\n**Bước 2: Đặt phương trình**\n\n*   Gọi giá gốc là \"x\".\n*   Phương trình: 0,80x = $96 (80% của giá gốc bằng $96)\n\n**Bước 3: Giải phương trình**\n\n*   Để tìm \"x\", hãy chia cả hai vế của phương trình cho 0,80:\n    x = $96 / 0,80\n    x = $120\n\n**Đáp án:** Giá gốc của chiếc áo là $120.",
+      "time": 2.418151617050171,
+      "length": 439,
+      "score": 90
+    },
+    {
+      "success": true,
+      "model": "gemini-2.0-flash-lite",
+      "response": "Chắc chắn rồi, đây là cách giải bài toán này từng bước một:\n\n**1. Hiểu vấn đề**\n\n*   Giá giảm $96 là sau khi đã giảm 20% so với giá gốc.\n*   Chúng ta cần tìm giá gốc trước khi giảm.\n\n**2. Đặt ẩn**\n\n*   Gọi giá gốc là x.\n\n**3. Lập phương trình**\n\n*   Giảm 20% có nghĩa là giá mới bằng 80% (100% - 20%) giá gốc.\n*   Phương trình: 0.80 * x = 96\n\n**4. Giải phương trình**\n\n*   Chia cả hai vế của phương trình cho 0.80:\n    x = 96 / 0.80\n*   Tính toán:\n    x = 120\n\n**5. Kết quả**\n\n*   Giá gốc của chiếc áo là $120.\n\n**Vậy đáp án là $120.**",
+      "time": 2.885298728942871,
+      "length": 535,
+      "score": 90
+    },
+    {
+      "success": true,
+      "model": "gemini-2.5-flash",
+      "response": "Để tìm giá gốc, chúng ta cần hiểu rằng giá mới $96 là kết quả của việc giảm giá 20% so với giá gốc.\n\n**Các bước thực hiện:**\n\n1.  **Xác định phần trăm giá còn lại:**\n    Nếu chiếc áo được giảm giá 20%, điều đó có nghĩa là giá mới là 100% - 20% = 80% của giá gốc.\n\n2.  **Thiết lập phương trình:**\n    Chúng ta biết rằng 80% của giá gốc là $96.\n    Gọi G là giá gốc.\n    0.80 * G = $96\n\n3.  **Giải phương trình để tìm giá gốc (G):**\n    G = $96 / 0.80\n    G = $120\n\n**Kiểm tra lại:**\nNếu giá gốc là $120, và giảm giá 20%:\n20% của $120 = 0.20 * $120 = $24\nGiá mới = $120 - $24 = $96\nKết quả này khớp với thông tin đề bài.\n\n**Vậy, giá gốc của chiếc áo là $120.**",
+      "time": 5.991781711578369,
+      "length": 658,
+      "score": 90
+    },
+    {
+      "success": true,
+      "model": "gemini-2.5-flash-lite",
+      "response": "Chắc chắn rồi, đây là cách giải bài toán GMAT Math này từng bước:\n\n**Hiểu vấn đề:**\n\nChúng ta biết giá sau khi giảm giá là $96, và mức giảm giá là 20%. Chúng ta cần tìm giá ban đầu của chiếc áo.\n\n**Thiết lập phương trình:**\n\nChúng ta có thể biểu diễn mối quan hệ giữa giá gốc, phần trăm giảm giá và giá mới bằng một phương trình.\n\n*   Gọi $G$ là giá gốc của chiếc áo.\n*   Phần trăm giảm giá là 20%, tương đương với 0.20 dưới dạng thập phân.\n*   Giá mới là giá gốc trừ đi số tiền giảm giá.\n\nSố tiền giảm giá là 20% của giá gốc, tức là $0.20 \\times G$.\n\nVì vậy, giá mới được tính bằng:\nGiá gốc - Số tiền giảm giá = Giá mới\n$G - 0.20 \\times G = 96$\n\n**Giải phương trình:**\n\n1.  **Kết hợp các số hạng tương tự:**\n    Chúng ta có thể viết $G$ là $1 \\times G$. Vậy phương trình trở thành:\n    $1 \\times G - 0.20 \\times G = 96$\n    $(1 - 0.20) \\times G = 96$\n    $0.80 \\times G = 96$\n\n2.  **Cô lập biến $G$:**\n    Để tìm giá trị của $G$, chúng ta cần chia cả hai vế của phương trình cho 0.80:\n    $G = \\frac{96}{0.80}$\n\n3.  **Thực hiện phép chia:**\n    $G = 120$\n\n**Kiểm tra lại kết quả:**\n\nĐể đảm bảo câu trả lời của chúng ta là đúng, chúng ta có thể kiểm tra lại:\nGiá gốc là $120.\nGiảm giá 20% của $120 là: $0.20 \\times 120 = 24$.\nGiá mới là: $120 - 24 = 96$.\n\nĐiều này khớp với thông tin đã cho trong đề bài, vì vậy câu trả lời của chúng ta là chính xác.\n\n**Câu trả lời:**\n\nGiá gốc của chiếc áo là **$120**.",
+      "time": 2.4086623191833496,
+      "length": 1403,
+      "score": 100
+    },
+    {
+      "success": true,
+      "model": "gemini-2.5-pro",
+      "response": "Chào bạn, đây là cách giải chi tiết bài toán GMAT này từng bước một.\n\n---\n\n### **Bài toán:**\n\nNếu một chiếc áo được giảm giá 20% và giá mới là $96, giá gốc là bao nhiêu?\n\n### **Cách giải chi tiết:**\n\nChúng ta cần tìm giá gốc của chiếc áo. Hãy gọi giá gốc là **G**.\n\n#### **Bước 1: Hiểu mối quan hệ giữa các giá trị**\n\n*   **Giá gốc (G):** Là giá ban đầu của chiếc áo (100%). Đây là giá trị chúng ta cần tìm.\n*   **Phần trăm giảm giá:** 20%\n*   **Giá sau khi giảm (Giá mới):** $96\n\nKhi một mặt hàng được giảm giá 20%, nghĩa là bạn chỉ phải trả 80% giá trị ban đầu của nó.\n\n`100% (Giá gốc) - 20% (Giảm giá) = 80% (Phần trăm của giá gốc mà bạn phải trả)`\n\n#### **Bước 2: Thiết lập phương trình**\n\nChúng ta biết rằng giá mới ($96) chính là 80% của giá gốc (G). Chúng ta có thể viết điều này dưới dạng một phương trình toán học:\n\n`80% của G = $96`\n\nChuyển 80% thành số thập phân (80/100 = 0.80), phương trình trở thành:\n\n`0.80 * G = 96`\n\n#### **Bước 3: Giải phương trình để tìm G**\n\nĐể tìm G, chúng ta chia cả hai vế của phương trình cho 0.80:\n\n`G = 96 / 0.80`\n\nThực hiện phép chia:\n\n`G = 120`\n\n#### **Bước 4: Kiểm tra lại kết quả**\n\nĐể chắc chắn câu trả lời là đúng, hãy thử tính ngược lại. Nếu giá gốc là $120, giảm giá 20% thì số tiền được giảm là bao nhiêu?\n\n*   Số tiền giảm giá = 20% của $120 = 0.20 * 120 = $24.\n*   Giá mới = Giá gốc - Số tiền giảm giá = $120 - $24 = $96.\n\nKết quả này khớp với giá mới đã cho trong đề bài ($96). Vì vậy, câu trả lời của chúng ta là chính xác.\n\n---\n\n### **Kết luận:**\n\nGiá gốc của chiếc áo là **$120**.",
+      "time": 17.991725206375122,
+      "length": 1537,
+      "score": 100
+    },
+    {
+      "success": false,
+      "model": "gemini-3-flash",
+      "error": "Status 404: models/gemini-3-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+      "time": 1.0180790424346924
+    },
+    {
+      "success": false,
+      "model": "gemini-3-pro",
+      "error": "Status 404: models/gemini-3-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+      "time": 1.37143874168396
+    },
+    {
+      "success": false,
+      "model": "gemma-3-1b",
+      "error": "Status 404: models/gemma-3-1b is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+      "time": 1.2682678699493408
+    },
+    {
+      "success": false,
+      "model": "gemma-3-12b",
+      "error": "Status 404: models/gemma-3-12b is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+      "time": 1.1308629512786865
+    },
+    {
+      "success": false,
+      "model": "gemma-3-27b",
+      "error": "Status 400: API key expired. Please renew the API key.",
+      "time": 1.0446393489837646
+    }
+  ],
+  "summary": {
+    "total_tested": 10,
+    "successful": 5,
+    "failed": 5
+  }
+}

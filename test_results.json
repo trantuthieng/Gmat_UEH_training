@@ -1,0 +1,203 @@
+{
+  "timestamp": "2026-01-07T22:42:06.367703",
+  "model_rankings": [
+    [
+      "gemini-2.0-flash",
+      0
+    ],
+    [
+      "gemini-2.0-flash-lite",
+      0
+    ],
+    [
+      "gemini-2.5-flash",
+      0
+    ],
+    [
+      "gemini-2.5-flash-lite",
+      0
+    ],
+    [
+      "gemini-2.5-pro",
+      0
+    ],
+    [
+      "gemini-3-flash",
+      0
+    ],
+    [
+      "gemini-3-pro",
+      0
+    ],
+    [
+      "gemma-3-1b",
+      0
+    ],
+    [
+      "gemma-3-12b",
+      0
+    ],
+    [
+      "gemma-3-27b",
+      0
+    ]
+  ],
+  "model_scores": {
+    "gemini-2.0-flash": 0,
+    "gemini-2.0-flash-lite": 0,
+    "gemini-2.5-flash": 0,
+    "gemini-2.5-flash-lite": 0,
+    "gemini-2.5-pro": 0,
+    "gemini-3-flash": 0,
+    "gemini-3-pro": 0,
+    "gemma-3-1b": 0,
+    "gemma-3-12b": 0,
+    "gemma-3-27b": 0
+  },
+  "model_times": {
+    "gemini-2.0-flash": 0,
+    "gemini-2.0-flash-lite": 0,
+    "gemini-2.5-flash": 0,
+    "gemini-2.5-flash-lite": 0,
+    "gemini-2.5-pro": 0,
+    "gemini-3-flash": 0,
+    "gemini-3-pro": 0,
+    "gemma-3-1b": 0,
+    "gemma-3-12b": 0,
+    "gemma-3-27b": 0
+  },
+  "detailed_results": [
+    {
+      "question_id": 1,
+      "question_type": "Reading Comprehension",
+      "results": [
+        {
+          "success": false,
+          "model": "gemini-2.0-flash",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 1.0925002098083496
+        },
+        {
+          "success": false,
+          "model": "gemini-2.0-flash-lite",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.6428837776184082
+        },
+        {
+          "success": false,
+          "model": "gemini-2.5-flash",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.5640606880187988
+        },
+        {
+          "success": false,
+          "model": "gemini-2.5-flash-lite",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.5541062355041504
+        },
+        {
+          "success": false,
+          "model": "gemini-2.5-pro",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.5735878944396973
+        },
+        {
+          "success": false,
+          "model": "gemini-3-flash",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.649019718170166
+        },
+        {
+          "success": false,
+          "model": "gemini-3-pro",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.6912531852722168
+        },
+        {
+          "success": false,
+          "model": "gemma-3-1b",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.7218673229217529
+        },
+        {
+          "success": false,
+          "model": "gemma-3-12b",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.5775606632232666
+        },
+        {
+          "success": false,
+          "model": "gemma-3-27b",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.6336636543273926
+        }
+      ]
+    },
+    {
+      "question_id": 2,
+      "question_type": "Data Sufficiency",
+      "results": [
+        {
+          "success": false,
+          "model": "gemini-2.0-flash",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.6438097953796387
+        },
+        {
+          "success": false,
+          "model": "gemini-2.0-flash-lite",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.7329974174499512
+        },
+        {
+          "success": false,
+          "model": "gemini-2.5-flash",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.6828610897064209
+        },
+        {
+          "success": false,
+          "model": "gemini-2.5-flash-lite",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.7224335670471191
+        },
+        {
+          "success": false,
+          "model": "gemini-2.5-pro",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.794572114944458
+        },
+        {
+          "success": false,
+          "model": "gemini-3-flash",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.6463372707366943
+        },
+        {
+          "success": false,
+          "model": "gemini-3-pro",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.6539204120635986
+        },
+        {
+          "success": false,
+          "model": "gemma-3-1b",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.8651227951049805
+        },
+        {
+          "success": false,
+          "model": "gemma-3-12b",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.806175947189331
+        },
+        {
+          "success": false,
+          "model": "gemma-3-27b",
+          "error": "API Error: 400 - {\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"API key expired. Please renew the API key.\",\n    \"st",
+          "time": 0.6838271617889404
+        }
+      ]
+    }
+  ]
+}

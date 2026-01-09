@@ -51,7 +51,7 @@ def generate_study_guide(questions: List[Dict[str, Any]], user_answers: Dict[str
             "topics": []
         }
     
-    # Phân tích câu sai và đúng theo topic
+    # Phân tích câu sai và đúng theo topic - GIỮ TOÀN BỘ THÔNG TIN
     topic_analysis = {}
     
     for idx, q in enumerate(questions):
@@ -71,7 +71,8 @@ def generate_study_guide(questions: List[Dict[str, Any]], user_answers: Dict[str
                 'total': 0,
                 'correct': 0,
                 'wrong': 0,
-                'questions': []
+                'questions': [],
+                'wrong_questions': []  # Tách riêng câu sai để ưu tiên phân tích
             }
         
         topic_analysis[topic]['total'] += 1
@@ -80,215 +81,210 @@ def generate_study_guide(questions: List[Dict[str, Any]], user_answers: Dict[str
         else:
             topic_analysis[topic]['wrong'] += 1
         
-        topic_analysis[topic]['questions'].append({
+        # Lưu TOÀN BỘ thông tin câu hỏi (không cắt ngắn)
+        question_data = {
             'question': q.get('question', ''),
+            'options': q.get('options', []),
+            'user_choice': user_choice,
             'correct_answer': correct_answer,
             'explanation': q.get('explanation', ''),
+            'step_by_step_thinking': q.get('step_by_step_thinking', ''),
             'is_correct': is_correct
-        })
+        }
+        
+        topic_analysis[topic]['questions'].append(question_data)
+        if not is_correct:
+            topic_analysis[topic]['wrong_questions'].append(question_data)
     
-    # Tạo prompt ĐẦY ĐỦ để AI sinh TẤT CẢ nội dung trong 1 lần gọi
-    topics_summary = []
-    for topic, data in topic_analysis.items():
+    # XỬ LÝ TỪNG CHỦ ĐỀ MỘT - ƯU TIÊN CHỦ ĐỀ CÓ NHIỀU CÂU SAI
+    sorted_topics = sorted(
+        topic_analysis.items(),
+        key=lambda x: (x[1]['wrong'], -x[1]['total']),  # Sắp theo số câu sai (nhiều nhất trước)
+        reverse=True
+    )
+    
+    all_topics_guides = []
+    
+    for topic_name, data in sorted_topics:
         accuracy = (data['correct'] / data['total'] * 100) if data['total'] > 0 else 0
-        topics_summary.append(f"- {topic}: {data['correct']}/{data['total']} đúng ({accuracy:.0f}%)")
-    
-    # Tạo danh sách chi tiết các câu hỏi để AI có đủ context
-    # Bao gồm trạng thái đúng/sai để AI đưa ra nội dung tùy biến theo lỗi
-    questions_details = []
-    for topic, data in topic_analysis.items():
-        for q in data['questions'][:3]:  # Lấy max 3 câu đại diện mỗi topic
-            questions_details.append({
-                'topic': topic,
-                'question': q['question'][:180],  # Cắt ngắn để tiết kiệm token
-                'is_correct': q['is_correct']
+        wrong_count = data['wrong']
+        
+        # Chỉ phân tích chi tiết nếu có câu sai HOẶC accuracy < 100%
+        if wrong_count == 0 and accuracy == 100:
+            # Topic hoàn hảo - tạo guide đơn giản
+            all_topics_guides.append({
+                'topic': topic_name,
+                'accuracy': round(accuracy, 0),
+                'importance': 'low',
+                'priority_level': 3,
+                'key_concepts': [f"Bạn đã nắm vững {topic_name}!"],
+                'common_mistakes': [],
+                'study_tips': [f"Tiếp tục duy trì hiểu biết về {topic_name}"],
+                'practice_approach': f"Bạn không có lỗi nào ở {topic_name}. Tiếp tục!",
+                'formulas_or_rules': [],
+                'practice_drills': [],
+                'time_management_tip': 'Duy trì tốc độ hiện tại',
+                'stats': {
+                    'total': data['total'],
+                    'correct': data['correct'],
+                    'wrong': data['wrong']
+                }
             })
+            continue
     
-    prompt = f"""
-Bạn là giáo viên GMAT chuyên nghiệp. Học sinh vừa hoàn thành bài thi 30 câu với kết quả:
+        # TẠO PROMPT CHI TIẾT CHO TỪNG TOPIC - BAO GỒM CÂU HỎI SAI ĐẦY ĐỦ
+        importance = 'high' if accuracy < 60 else ('medium' if accuracy < 80 else 'low')
+        priority = 1 if importance == 'high' else (2 if importance == 'medium' else 3)
+        
+        # Chuẩn bị chi tiết các câu SAI để phân tích
+        wrong_details = []
+        for q in data['wrong_questions']:
+            wrong_details.append({
+                'question': q['question'],
+                'options': q['options'],
+                'user_choice': q['user_choice'],
+                'correct_answer': q['correct_answer'],
+                'explanation': q['explanation'],
+                'step_by_step': q['step_by_step_thinking']
+            })
+        
+        # Prompt chi tiết cho TỪNG topic
+        topic_prompt = f"""
+Bạn là giáo viên GMAT chuyên nghiệp. Phân tích chi tiết chủ đề "{topic_name}" cho học sinh.
 
-KẾT QUẢ THEO TOPIC:
-{chr(10).join(topics_summary)}
+THỐNG KÊ:
+- Tổng số câu: {data['total']}
+- Số câu đúng: {data['correct']}
+- Số câu sai: {wrong_count}
+- Độ chính xác: {accuracy:.0f}%
 
-CÁC CÂU HỎI ĐẠI DIỆN (đúng/sai để tham chiếu khi viết nội dung):
-{json.dumps(questions_details, ensure_ascii=False)}
+CÁC CÂU HỎI HỌC SINH TRẢ LỜI SAI (cần phân tích chi tiết):
+{json.dumps(wrong_details, ensure_ascii=False, indent=2)}
 
-NHIỆM VỤ: Tạo tài liệu ôn tập ĐẦY ĐỦ, CHI TIẾT trong 1 lần trả lời duy nhất. Nội dung phải cụ thể, bám sát lỗi học sinh mắc phải.
+NHIỆM VỤ:
+1. **Lý thuyết chi tiết**: Giải thích đầy đủ kiến thức cơ bản về {topic_name} (tối thiểu 5-6 câu)
+2. **Phân tích bài làm**: Đi qua TỪNG câu sai, chỉ rõ:
+   - Học sinh đã hiểu sai điểm nào
+   - Tại sao câu trả lời của học sinh không đúng
+   - Cách suy luận đúng là gì
+3. **Lỗi phổ biến khác**: Ngoài lỗi học sinh mắc phải, còn có những lỗi nào khác?
+4. **Mẹo tăng tỷ lệ đúng và tốc độ**: Cụ thể, dễ áp dụng ngay
 
-YÊU CẦU OUTPUT (JSON hợp lệ - PHẢI ĐẦY ĐỦ TẤT CẢ TRƯỜNG):
+OUTPUT (JSON format):
 {{
-    "overall_summary": "Nhận xét tổng quan về kết quả học sinh (3-4 câu). Phân tích điểm mạnh, điểm yếu rõ ràng.",
+    "theory": "LÝ THUYẾT ĐẦY ĐỦ về {topic_name}: định nghĩa, công thức, quy tắc, cách áp dụng. Tối thiểu 6-8 câu chi tiết.",
     
-    "topics": [
+    "mistake_analysis": [
         {{
-            "topic": "Tên chủ đề chính xác",
-            "accuracy": 60,
-            "importance": "high",
-            "priority_level": 1,
-            
-            "key_concepts": [
-                "Định nghĩa 1: giải thích 2-3 câu + ví dụ",
-                "Định nghĩa 2: giải thích 2-3 câu + ví dụ",
-                "Định nghĩa 3: giải thích 2-3 câu + ví dụ"
-            ],
-            
-            "common_mistakes": [
-                "Lỗi điển hình 1 (tham chiếu từ các câu sai): cách nhận biết + cách tránh",
-                "Lỗi điển hình 2: cách nhận biết + cách tránh",
-                "Lỗi điển hình 3: cách nhận biết + cách tránh"
-            ],
-            
-            "study_tips": [
-                "Mẹo 1: cách ôn tập chi tiết 2-3 câu",
-                "Mẹo 2: cách ôn tập chi tiết 2-3 câu",
-                "Mẹo 3: cách ôn tập chi tiết 2-3 câu"
-            ],
-            
-            "practice_approach": "Hướng dẫn chi tiết cách tiếp cận (1) Đọc đề, (2) Các bước giải, (3) Mẹo nhận biết bẫy. Ít nhất 4-5 câu kèm ví dụ.",
-            
-            "formulas_or_rules": [
-                "Công thức/Quy tắc 1",
-                "Công thức/Quy tắc 2"
-            ],
-            
-            "practice_drills": [
-                "Bài tập ngắn 1 (không cần đáp án, tập trung vào kỹ năng)",
-                "Bài tập ngắn 2",
-                "Bài tập ngắn 3",
-                "Bài tập ngắn 4",
-                "Bài tập ngắn 5"
-            ],
-            
-            "time_management_tip": "Mẹo quản lý thời gian khi làm dạng bài này (1-2 câu)"
+            "question_summary": "Tóm tắt ngắn câu hỏi",
+            "user_mistake": "Học sinh đã chọn... vì hiểu sai rằng...",
+            "why_wrong": "Lý do tại sao sai (chi tiết 2-3 câu)",
+            "correct_approach": "Cách suy luận đúng từng bước"
         }}
     ],
     
-    "recommended_focus": [
-        "Chủ đề ưu tiên 1 - Lý do cụ thể",
-        "Chủ đề ưu tiên 2 - Lý do cụ thể",
-        "Chủ đề ưu tiên 3 - Lý do cụ thể"
+    "common_mistakes": [
+        "Lỗi 1: mô tả chi tiết + cách nhận biết + cách tránh",
+        "Lỗi 2: mô tả chi tiết + cách nhận biết + cách tránh",
+        "Lỗi 3: mô tả chi tiết + cách nhận biết + cách tránh"
     ],
     
-    "next_steps": "Kế hoạch học tập CỤ THỂ cho 7 ngày tới: Ngày 1-2, Ngày 3-4, Ngày 5-7 (tối thiểu 5-6 câu).",
-    
-    "practice_resources": [
-        "Nguồn 1: Mô tả và cách sử dụng",
-        "Nguồn 2: Mô tả và cách sử dụng"
+    "tips_for_accuracy": [
+        "Mẹo 1: cụ thể, dễ áp dụng ngay (2-3 câu)",
+        "Mẹo 2: cụ thể, dễ áp dụng ngay (2-3 câu)",
+        "Mẹo 3: cụ thể, dễ áp dụng ngay (2-3 câu)"
     ],
     
-    "motivation_message": "Lời khuyên động viên cho học sinh (2-3 câu)"
+    "tips_for_speed": [
+        "Mẹo tăng tốc 1: cụ thể (1-2 câu)",
+        "Mẹo tăng tốc 2: cụ thể (1-2 câu)"
+    ],
+    
+    "practice_drills": [
+        "Bài tập 1: mô tả ngắn gọn",
+        "Bài tập 2: mô tả ngắn gọn",
+        "Bài tập 3: mô tả ngắn gọn"
+    ],
+    
+    "key_formulas": [
+        "Công thức/Quy tắc quan trọng 1",
+        "Công thức/Quy tắc quan trọng 2"
+    ]
 }}
 
-HƯỚNG DẪN QUAN TRỌNG:
-1. Tạo nội dung cho TẤT CẢ các topic có trong kết quả (không bỏ sót)
-2. Ưu tiên các topic có accuracy thấp (< 70%) - đánh dấu importance="high"
-3. Mỗi phần PHẢI đầy đủ, cụ thể, bám sát lỗi từ các câu sai cung cấp
-4. Không dùng placeholder như "...", "etc", phải viết đầy đủ
-5. Trả về JSON THUẦN, KHÔNG có markdown (không dùng ```json)
-6. Đảm bảo JSON hợp lệ, đóng mở ngoặc đúng
-
-LƯU Ý: Đây là LẦN DUY NHẤT tôi gọi API, hãy trả về ĐẦY ĐỦ NHẤT có thể!
+LƯU Ý:
+- Phân tích CỤ THỂ dựa trên các câu sai được cung cấp
+- Không viết chung chung kiểu "nên đọc kỹ đề"
+- Đưa ra lời khuyên CỤ THỂ, dễ áp dụng
+- Trả về JSON thuần, không có markdown
 """
 
-    try:
-        # Call generate_content with google-genai Client API
-        response = model.models.generate_content(
-            model='gemini-2.5-pro',
-            contents=prompt,
-            config={
-                'temperature': 0.5,  # Giảm để cụ thể hơn
-                'max_output_tokens': 16384,
-                'top_p': 0.9,
-                'top_k': 40,
-                'response_mime_type': 'application/json'  # Bắt buộc trả JSON
-            }
-        )
-        
-        # Clean response - xử lý kỹ để đảm bảo JSON hợp lệ
-        text = response.text if hasattr(response, 'text') else str(response)
-        print(f"📝 Raw response length: {len(text)} characters")
-        print(f"📝 First 300 chars: {text[:300]}")
-        
-        # Remove markdown code fences
-        text = text.replace('```json', '').replace('```', '').strip()
-        
-        # Remove common unwanted prefixes/suffixes
-        text = re.sub(r'^[^{]*', '', text)  # Xóa text trước dấu {
-        text = text.lstrip()
-        text = re.sub(r'[^}]*$', '}', text)  # Giữ chỉ tới dấu } cuối
-        
-        # Find JSON object boundaries
-        start = text.find('{')
-        end = text.rfind('}')
-        if start == -1 or end == -1:
-            print(f"❌ Không tìm thấy JSON object delimiters")
-            return _create_fallback_study_guide(topic_analysis)
-        
-        text = text[start:end+1]
-        print(f"✅ Extracted JSON: {len(text)} characters")
-        
-        # Fix common invalid escape sequences before parsing
-        # Replace invalid escapes like \x (where x is not a valid escape char) with \\x
-        def fix_escapes(match):
-            escape_char = match.group(1)
-            # Valid JSON escapes: " \ / b f n r t u
-            if escape_char in ['"', '\\', '/', 'b', 'f', 'n', 'r', 't']:
-                return match.group(0)  # Keep valid escapes
-            elif escape_char == 'u':
-                # Check if followed by 4 hex digits
-                if len(match.group(0)) >= 6 and re.match(r'\\u[0-9a-fA-F]{4}', match.group(0)):
-                    return match.group(0)  # Valid unicode escape
-                else:
-                    return '\\\\u'  # Invalid unicode escape, fix it
-            else:
-                # Invalid escape, double the backslash
-                return '\\\\' + escape_char
-        
-        text = re.sub(r'\\(.)', fix_escapes, text)
-        print(f"✅ Fixed escape sequences")
-        
-        # Try to parse JSON
         try:
-            study_data = json.loads(text)
-            print(f"✅ JSON parse successful on first attempt")
-        except json.JSONDecodeError as parse_error:
-            # Attempt basic repair: remove trailing comma before } or ]
-            print(f"⚠️ First parse failed at position {parse_error.pos}, attempting repair...")
-            print(f"   Error: {parse_error.msg}")
-            text = re.sub(r',\s*([}\]])', r'\1', text)
-            try:
-                study_data = json.loads(text)
-                print(f"✅ JSON repair successful")
-            except json.JSONDecodeError as second_error:
-                print(f"❌ JSON repair failed: {second_error.msg}")
-                print(f"   Context: {text[max(0, second_error.pos-50):second_error.pos+50]}")
-                return _create_fallback_study_guide(topic_analysis)
-        
-        # Validate data structure
-        if 'topics' not in study_data or not isinstance(study_data['topics'], list):
-            print(f"⚠️ Invalid structure (missing topics array), using fallback")
-            return _create_fallback_study_guide(topic_analysis)
-        
-        print(f"✅ Study guide hoàn chỉnh: {len(study_data['topics'])} topics")
-        
-        # Thêm thông tin chi tiết từ topic_analysis
-        for topic_guide in study_data.get('topics', []):
-            topic_name = topic_guide.get('topic', '')
-            if topic_name in topic_analysis:
-                topic_guide['stats'] = {
-                    'total': topic_analysis[topic_name]['total'],
-                    'correct': topic_analysis[topic_name]['correct'],
-                    'wrong': topic_analysis[topic_name]['wrong']
+            # Gọi API cho TỪNG topic
+            response = model.models.generate_content(
+                model='gemini-2.5-pro',
+                contents=topic_prompt,
+                config={
+                    'temperature': 0.3,  # Giảm để tập trung, cụ thể
+                    'max_output_tokens': 8192,  # Đủ cho 1 topic chi tiết
+                    'top_p': 0.9,
+                    'top_k': 30,
+                    'response_mime_type': 'application/json'
                 }
-        
-        return study_data
-        
-    except Exception as e:
-        print(f"❌ Lỗi tạo study guide: {e}")
-        import traceback
-        traceback.print_exc()
-        # Fallback to simple guide if anything fails
-        return _create_fallback_study_guide(topic_analysis)
+            )
+            
+            text = response.text if hasattr(response, 'text') else str(response)
+            print(f"✅ Topic '{topic_name}': Generated {len(text)} chars")
+            
+            # Parse JSON response
+            text = text.replace('```json', '').replace('```', '').strip()
+            topic_guide = json.loads(text)
+            
+            # Thêm metadata
+            topic_guide['topic'] = topic_name
+            topic_guide['accuracy'] = round(accuracy, 0)
+            topic_guide['importance'] = importance
+            topic_guide['priority_level'] = priority
+            topic_guide['stats'] = {
+                'total': data['total'],
+                'correct': data['correct'],
+                'wrong': data['wrong']
+            }
+            
+            all_topics_guides.append(topic_guide)
+            
+        except Exception as e:
+            print(f"⚠️ Lỗi phân tích topic '{topic_name}': {e}")
+            # Fallback đơn giản cho topic này
+            all_topics_guides.append({
+                'topic': topic_name,
+                'accuracy': round(accuracy, 0),
+                'importance': importance,
+                'priority_level': priority,
+                'theory': f"Cần ôn tập lại kiến thức cơ bản về {topic_name}",
+                'mistake_analysis': [],
+                'common_mistakes': [f"Bạn sai {wrong_count} câu ở {topic_name}"],
+                'tips_for_accuracy': [f"Ôn lại lý thuyết {topic_name}"],
+                'tips_for_speed': ["Luyện tập thêm để tăng tốc độ"],
+                'practice_drills': [],
+                'key_formulas': [],
+                'stats': {
+                    'total': data['total'],
+                    'correct': data['correct'],
+                    'wrong': data['wrong']
+                }
+            })
+    
+    # Tạo tổng quan
+    total_correct = sum(d['correct'] for d in topic_analysis.values())
+    total_questions = sum(d['total'] for d in topic_analysis.values())
+    total_wrong = sum(d['wrong'] for d in topic_analysis.values())
+    overall_accuracy = (total_correct / total_questions * 100) if total_questions > 0 else 0
+    
+    return {
+        'overall_summary': f"Kết quả: {total_correct}/{total_questions} đúng ({overall_accuracy:.0f}%). Bạn cần tập trung ôn tập {total_wrong} câu sai, đặc biệt các chủ đề: {', '.join([t['topic'] for t in all_topics_guides[:3] if t.get('importance') in ['high', 'medium']])}.",
+        'topics': all_topics_guides
+    }
 
 
 def _create_fallback_study_guide(topic_analysis: Dict[str, Any]) -> Dict[str, Any]:
