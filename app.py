@@ -876,6 +876,7 @@ elif st.session_state.exam_state == "FINISHED":
                             stats = topic.get('stats', {})
                             correct = stats.get('correct', 0)
                             total = stats.get('total', 1)
+                            wrong = stats.get('wrong', 0)
                             accuracy = (correct / total * 100) if total > 0 else 0
                             
                             with st.expander(f"📚 {topic.get('topic', 'Chủ đề')} - {correct}/{total} đúng ({accuracy:.0f}%)"):
