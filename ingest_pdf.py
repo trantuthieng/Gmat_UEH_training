@@ -24,7 +24,13 @@ def process_pdf_to_json(pdf_path, output_path):
     print(f"🚀 Đang tải file '{pdf_path}' lên Gemini...")
     
     # 1. Upload file PDF lên Gemini
-    sample_file = client.files.upload(file=open(pdf_path, 'rb'), display_name="GMAT Exam Data")
+    # google-genai v1.56+: set mime_type via config for PDF uploads
+    sample_file = client.files.upload(
+        file=open(pdf_path, 'rb'),
+        config={
+            "mime_type": "application/pdf"
+        }
+    )
     
     # Đợi file xử lý xong (thường mất 1-2 giây)
     while sample_file.state.name == "PROCESSING":
@@ -40,24 +46,28 @@ def process_pdf_to_json(pdf_path, output_path):
 
     # 2. Tạo Prompt để trích xuất dữ liệu
     prompt = """
-    Hãy đóng vai trò là một chuyên gia xử lý dữ liệu.
-    Nhiệm vụ: Đọc toàn bộ file PDF này và trích xuất TẤT CẢ các câu hỏi trắc nghiệm.
-    
-    Yêu cầu định dạng Output (JSON List):
-    [
-      {
-        "id": 1,
-        "type": "math" hoặc "general", (Câu 1-30 là math, 31-90 là general)
-        "topic": "Chủ đề ngắn gọn của câu hỏi",
-        "content": "Nội dung câu hỏi đầy đủ (không bao gồm các lựa chọn A,B,C,D)"
-      },
-      ...
-    ]
-    
-    Lưu ý: 
-    - Hãy cố gắng trích xuất càng nhiều câu hỏi càng tốt.
-    - Chỉ trả về JSON thuần, không có markdown formatting (```json).
-    """
+        Hãy đóng vai trò là một chuyên gia xử lý dữ liệu GMAT.
+        Nhiệm vụ: Trích xuất TẤT CẢ câu hỏi trắc nghiệm từ file PDF.
+
+        Yêu cầu định dạng Output (JSON List):
+        [
+            {
+                "id": 1,
+                "type": "math" | "data_sufficiency" | "logic" | "visual_logic", 
+                "topic": "Chủ đề ngắn gọn (ví dụ: Average, Mixture, Pattern)",
+                "content": "Nội dung câu hỏi đầy đủ",
+                "options": ["A...", "B...", "C...", "D..."], 
+                "data_statements": ["(1) ...", "(2) ..."] (CHỈ DÀNH CHO data_sufficiency, để null nếu không phải),
+                "correct_answer": "Đáp án đúng nếu có trong file"
+            }
+        ]
+
+        Quy tắc phân loại type:
+        - "data_sufficiency": Nếu câu hỏi có 2 mệnh đề (1) và (2) và yêu cầu xác định dữ liệu có đủ không (Ví dụ câu 15, 18).
+        - "visual_logic": Nếu câu hỏi dựa vào bảng biểu, hình vẽ quy luật (Ví dụ câu 5).
+        - "math": Các bài toán đố thông thường.
+        - "logic": Các câu hỏi chuỗi số, logic ngôn ngữ.
+        """
 
     # 3. Sử dụng model Gemini 2.5 Pro
     

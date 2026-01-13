@@ -138,34 +138,55 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
 
     topic = seed_question.get('topic', 'Kiến thức tổng hợp')
     is_visual = topic.lower() in ['pattern recognition', 'letter pattern', 'logic puzzle', 'number pattern']
-    
-    prompt = f"""
-    Bạn là chuyên gia ra đề thi GMAT cao cấp.
-    Chủ đề: {topic}
-    Câu mẫu: "{seed_question['content']}"
+    q_type = seed_question.get('type', 'general')
 
-    Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI dựa trên logic của câu mẫu:
-    1. Toán học: Thay đổi số liệu nhưng PHẢI TỰ TÍNH TOÁN LẠI ĐÁP ÁN chính xác.
-    2. Logic: Giữ cấu trúc suy luận, thay đổi ngữ cảnh.
-    3. Pattern: Tạo quy luật mới rõ ràng.
+    if q_type == 'data_sufficiency':
+        prompt = f"""
+        Bạn là chuyên gia ra đề GMAT. Hãy tạo 1 biến thể MỚI cho câu hỏi dạng Data Sufficiency sau:
+        Câu gốc: "{seed_question['content']}"
+        
+        Nhiệm vụ:
+        1. Giữ nguyên cấu trúc câu hỏi (Câu hỏi chính + 2 Dữ kiện).
+        2. Thay đổi số liệu hoặc ngữ cảnh sao cho LOGIC SUY LUẬN thay đổi (ví dụ: từ "Cả 2 mới đủ" thành "Chỉ (1) đủ").
+        3. Options PHẢI LUÔN LÀ 5 lựa chọn chuẩn của GMAT Data Sufficiency (A: 1 đủ, B: 2 đủ, C: cả 2 mới đủ, D: 1 trong 2 đủ, E: cả 2 không đủ).
+        
+        Output JSON:
+        {{
+            "question": "Câu hỏi chính...\n(1) Dữ kiện 1...\n(2) Dữ kiện 2...",
+            "options": ["A. Chỉ (1) là đủ...", "B. Chỉ (2) là đủ...", "C. Cả (1) và (2) mới đủ", "D. Mỗi dữ kiện riêng lẻ đủ", "E. Cả hai dữ kiện đều không đủ"],
+            "correct_answer": "Chọn đúng option tương ứng logic mới",
+            "step_by_step_thinking": "Phân tích dữ kiện 1... Phân tích dữ kiện 2... Kết hợp...",
+            "explanation": "Giải thích ngắn gọn."
+        }}
+        """
+    else:
+        prompt = f"""
+        Bạn là chuyên gia ra đề thi GMAT cao cấp.
+        Chủ đề: {topic}
+        Câu mẫu: "{seed_question['content']}"
 
-    YÊU CẦU QUAN TRỌNG (bắt buộc):
-    - Hãy suy nghĩ từng bước (Chain of Thought) và ghi rõ phép tính số học cụ thể (không nói chung chung).
-    - step_by_step_thinking phải có dạng "Bước 1: ... Bước 2: ..." kèm số liệu, công thức và kết quả trung gian. ĐỦ CHI TIẾT, ĐẦY ĐỦ.
-    - explanation: CHỈ ghi kết quả cuối cùng + lý do TẠI SAO là đáp án đúng (KHÔNG lặp lại công thức, KHÔNG lặp lại các bước tính - những cái đó đã có ở step_by_step_thinking).
-    - Đáp án đúng (correct_answer) PHẢI nằm trong danh sách lựa chọn (options).
-    - Trả về kết quả dưới dạng JSON thuần túy, không có markdown.
-    - CHỈ trả về 5 trường: question, options, step_by_step_thinking, correct_answer, explanation. KHÔNG thêm bất kỳ trường hay phần giải thích nào khác.
+        Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI dựa trên logic của câu mẫu:
+        1. Toán học: Thay đổi số liệu nhưng PHẢI TỰ TÍNH TOÁN LẠI ĐÁP ÁN chính xác.
+        2. Logic: Giữ cấu trúc suy luận, thay đổi ngữ cảnh.
+        3. Pattern: Tạo quy luật mới rõ ràng.
 
-    OUTPUT JSON FORMAT (Bắt buộc tuân thủ chính xác):
-    {{
-        "question": "Nội dung câu hỏi...",
-        "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
-        "step_by_step_thinking": "Bước 1: ...; Bước 2: ... (ghi rõ phép tính và kết quả trung gian)",
-        "correct_answer": "Chép y nguyên text của lựa chọn đúng vào đây",
-        "explanation": "Tóm tắt vì sao đáp án đúng, nhắc lại công thức/suy luận chính và số kết quả"
-    }}
-    """
+        YÊU CẦU QUAN TRỌNG (bắt buộc):
+        - Hãy suy nghĩ từng bước (Chain of Thought) và ghi rõ phép tính số học cụ thể (không nói chung chung).
+        - step_by_step_thinking phải có dạng "Bước 1: ... Bước 2: ..." kèm số liệu, công thức và kết quả trung gian. ĐỦ CHI TIẾT, ĐẦY ĐỦ.
+        - explanation: CHỈ ghi kết quả cuối cùng + lý do TẠI SAO là đáp án đúng (KHÔNG lặp lại công thức, KHÔNG lặp lại các bước tính - những cái đó đã có ở step_by_step_thinking).
+        - Đáp án đúng (correct_answer) PHẢI nằm trong danh sách lựa chọn (options).
+        - Trả về kết quả dưới dạng JSON thuần túy, không có markdown.
+        - CHỈ trả về 5 trường: question, options, step_by_step_thinking, correct_answer, explanation. KHÔNG thêm bất kỳ trường hay phần giải thích nào khác.
+
+        OUTPUT JSON FORMAT (Bắt buộc tuân thủ chính xác):
+        {{
+            "question": "Nội dung câu hỏi...",
+            "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
+            "step_by_step_thinking": "Bước 1: ...; Bước 2: ... (ghi rõ phép tính và kết quả trung gian)",
+            "correct_answer": "Chép y nguyên text của lựa chọn đúng vào đây",
+            "explanation": "Tóm tắt vì sao đáp án đúng, nhắc lại công thức/suy luận chính và số kết quả"
+        }}
+        """
 
     for attempt in range(1, max_attempts + 1):
         try:

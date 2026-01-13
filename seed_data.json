@@ -2,1334 +2,320 @@
   {
     "id": 1,
     "type": "math",
-    "topic": "Mixture problems",
-    "content": "Cần thêm bao nhiêu lít rượu nguyên chất vào một dung dịch 40 lít, trong đó có 10% là rượu theo thể tích, để làm gấp đôi tỷ lệ rượu nguyên chất trong dung dịch?"
+    "topic": "Mixture Problems",
+    "content": "Cần thêm bao nhiêu lít rượu nguyên chất vào một dung dịch 40 lít, trong đó có 10% là rượu theo thể tích, để làm gấp đôi tỷ lệ rượu nguyên chất trong dung dịch?",
+    "options": [
+      "a. 1",
+      "b. 3",
+      "c. 5",
+      "d. 7"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 2,
     "type": "math",
-    "topic": "Average",
-    "content": "Tại cửa hàng tạp hóa, doanh thu trung bình mỗi ngày là 4 triệu đồng trong một khoảng thời gian 10 ngày. Nếu doanh thu trung bình mỗi ngày trong 6 ngày đầu tiên là 3,6 triệu đồng, vậy doanh thu trung bình mỗi ngày trong 4 ngày cuối là bao nhiêu?"
+    "topic": "Averages",
+    "content": "Tại cửa hàng tạp hóa, doanh thu trung bình mỗi ngày là 4 triệu đồng trong một khoảng thời gian 10 ngày. Nếu doanh thu trung bình mỗi ngày trong 6 ngày đầu tiên là 3,6 triệu đồng, vậy doanh thu trung bình mỗi ngày trong 4 ngày cuối là bao nhiêu?",
+    "options": [
+      "a. 4,600,000",
+      "b. 3,800,000",
+      "c. 4,440,000",
+      "d. 4,500,000"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 3,
     "type": "math",
-    "topic": "Average",
-    "content": "Tại một nhà máy, trong x ngày vừa qua, trung bình mỗi ngày nhà máy sản xuất 40 sản phẩm. Hôm nay nhà máy sản xuất được 100 sản phẩm, điều này làm cho giá trị trung bình mới là 50 sản phẩm/ngày. Tìm giá trị x?"
+    "topic": "Averages",
+    "content": "Tại một nhà máy, trong x ngày vừa qua, trung bình mỗi ngày nhà máy sản xuất 40 sản phẩm. Hôm nay nhà máy sản xuất được 100 sản phẩm, điều này làm cho giá trị trung bình mới là 50 sản phẩm/ngày. Tìm giá trị x?",
+    "options": [
+      "a. 5",
+      "b. 8",
+      "c. 9",
+      "d. 10",
+      "e. 15"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 4,
-    "type": "math",
-    "topic": "Number series",
-    "content": "Số tiếp theo của dãy số: 2, 5, 9, 19, 37, (?)"
+    "type": "logic",
+    "topic": "Number Sequence",
+    "content": "Số tiếp theo của dãy số: 2, 5, 9, 19, 37, (?)",
+    "options": [
+      "a. 73",
+      "b. 75",
+      "c. 76",
+      "d. 78"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 5,
-    "type": "math",
-    "topic": "Pattern recognition",
-    "content": "Tìm giá trị hợp lý tại giá trị “?” tại hình số 4."
+    "type": "visual_logic",
+    "topic": "Grid Pattern",
+    "content": "Tìm giá trị hợp lý tại giá trị “?” tại hình số 4.",
+    "options": [
+      "a. 1",
+      "b. 3",
+      "c. 5",
+      "d. 7"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 6,
     "type": "math",
-    "topic": "Percentage increase",
-    "content": "Người đua xe đạp A tăng tốc độ từ 10 km/giờ lên 25 km/giờ trong vòng đua cuối, cũng tại vòng đua cuối này, người đua xe đạp B tăng tốc độ từ 8 km/giờ lên 24 km/giờ. Tốc độ của B tăng nhanh hơn bao nhiêu phần trăm so với tốc độ tăng của A?"
+    "topic": "Percentage Change",
+    "content": "Người đua xe đạp A tăng tốc độ từ 10 km/giờ lên 25 km/giờ trong vòng đua cuối, cũng tại vòng đua cuối này, người đua xe đạp B tăng tốc độ từ 8 km/giờ lên 24 km/giờ. Tốc độ của B tăng nhanh hơn bao nhiêu phần trăm so với tốc độ tăng của A?",
+    "options": [
+      "a. 33.33%",
+      "b. 50%",
+      "c. 66.67%",
+      "d. 75%"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 7,
     "type": "math",
-    "topic": "Compound interest",
-    "content": "Giá trị của một công ty là 100 tỷ đồng. Giá trị công ty tăng trung bình 4.8%/năm. Hỏi sau 15 năm giá trị của công ty sẽ vào khoảng bao nhiêu tỷ đồng?"
+    "topic": "Compound Growth",
+    "content": "Giá trị của một công ty là 100 tỷ đồng. Giá trị công ty tăng trung bình 4.8%/năm. Hỏi sau 15 năm giá trị của công ty sẽ vào khoảng bao nhiêu tỷ đồng?",
+    "options": [
+      "a. 202 tỷ",
+      "b. 180 tỷ",
+      "c. 220 tỷ",
+      "d. 172 tỷ"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 8,
     "type": "math",
-    "topic": "Permutations and combinations",
-    "content": "Dùng 4 chữ số lẻ: 1, 3, 5, 7 để viết tất cả các số có 4 chữ số khác nhau thì viết được bao nhiêu số"
+    "topic": "Permutations",
+    "content": "Dùng 4 chữ số lẻ: 1, 3, 5, 7 để viết tất cả các số có 4 chữ số khác nhau thì viết được bao nhiêu số:",
+    "options": [
+      "a. 24",
+      "b. 30",
+      "c. 18",
+      "d. 12"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 9,
     "type": "math",
-    "topic": "Percentage and tax",
-    "content": "Một mặt hàng bị áp thuế bán hàng 10% trên phần giá vượt quá 200 đô la. Nếu khách hàng trả 10 đô la tiền thuế bán hàng cho mặt hàng này, giá của mặt hàng đó là bao nhiêu đô la?"
+    "topic": "Linear Equations",
+    "content": "Một mặt hàng bị áp thuế bán hàng 10% trên phần giá vượt quá 200 đô la. Nếu khách hàng trả 10 đô la tiền thuế bán hàng cho mặt hàng này, giá của mặt hàng đó là bao nhiêu đô la?",
+    "options": [
+      "a. 200",
+      "b. 250",
+      "c. 300",
+      "d. 360"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 10,
     "type": "math",
-    "topic": "Number properties",
-    "content": "Biết a và b là các số nguyên khác 0 và a + b = 1. Hỏi có thể nói gì về tích ab ?"
+    "topic": "Number Properties",
+    "content": "Biết a và b là các số nguyên khác 0 và a + b = 1. Hỏi có thể nói gì về tích ab ?",
+    "options": [
+      "a. tích ab là số lẻ và dương",
+      "b. tích ab là số lẻ và âm",
+      "c. tích ab là số chẵn và dương",
+      "d. tích ab là số chẵn và âm"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 11,
     "type": "math",
-    "topic": "Geometry and percentage",
-    "content": "Ba đường Lê Lợi, Nguyễn Huệ và Hàm Nghi tạo thành một tam giác vuông với góc vuông là giao giữa 2 đường Lê Lợi và Nguyễn Huệ. Đường Nguyễn Huệ dài 900m, đường Lê Lợi dài 800m. Anh A đi bộ từ đầu đường Nguyễn Huệ phía Sông Sài Gòn lên đến đường Lê Lợi quẹo trái đi tiếp đường Lê Lợi đến chợ Bến Thành. Chị B cùng xuất phát 1 chỗ nhưng đi theo đường Hàm Nghi đến chợ Bến Thành. Hỏi khoảng cách mà A phải đi nhiều hơn B khoảng bao nhiêu phần trăm?"
+    "topic": "Geometry & Percentage",
+    "content": "Ba đường Lê Lợi, Nguyễn Huệ và Hàm Nghi tạo thành một tam giác vuông với góc vuông là giao giữa 2 đường Lê Lợi và Nguyễn Huệ. Đường Nguyễn Huệ dài 900m, đường Lê Lợi dài 800m. Anh A đi bộ từ đầu đường Nguyễn Huệ phía Sông Sài Gòn lên đến đường Lê Lợi quẹo trái đi tiếp đường Lê Lợi đến chợ Bến Thành. Chị B cùng xuất phát 1 chỗ nhưng đi theo đường Hàm Nghi đến chợ Bến Thành. Hỏi khoảng cách mà A phải đi nhiều hơn B khoảng bao nhiêu phần trăm?",
+    "options": [
+      "a. 30%",
+      "b. 40%",
+      "c. 50%",
+      "d. 60%"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 12,
     "type": "math",
-    "topic": "Median",
-    "content": "Trong một lớp học, số điểm của học sinh trong kỳ thi là: {56, 78, 90, 65, 88, 72, 80, 95}. Hãy tìm trung vị của dãy số này."
+    "topic": "Statistics (Median)",
+    "content": "Trong một lớp học, số điểm của học sinh trong kỳ thi là: {56, 78, 90, 65, 88, 72, 80, 95}. Hãy tìm trung vị của dãy số này.",
+    "options": [
+      "a. 76",
+      "b. 78",
+      "c. 79",
+      "d.80"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 13,
     "type": "math",
-    "topic": "Exponents",
-    "content": "Nếu X = m – 1, công thức nào sau đây đúng với m = 1/2 ?"
+    "topic": "Exponents & Inequalities",
+    "content": "Nếu X = m – 1, công thức nào sau đây đúng với m = 1/2 ?",
+    "options": [
+      "a. X° > X² > X³ > X¹",
+      "b. X° > X² > X¹ > X³",
+      "c. X° > X¹ > X² > X³",
+      "d. X³ > X² > X¹ > X°"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 14,
     "type": "math",
-    "topic": "Percentage and stocks",
-    "content": "Công ty A sở hữu 40% cổ phiếu của tổng công ty XYZ. Công ty B sở hữu 15000 cổ phiếu XYZ. Công ty C sở hữu phần cổ phiếu còn lại của tổng công ty XYZ. Hỏi công ty A sở hữu bao nhiêu cổ phiếu biết rằng công ty C sở hữu nhiều hơn công ty A 25%?"
+    "topic": "Percentage & Algebra",
+    "content": "Công ty A sở hữu 40% cổ phiếu của tổng công ty XYZ. Công ty B sở hữu 15000 cổ phiếu XYZ. Công ty C sở hữu phần cổ phiếu còn lại của tổng công ty XYZ. Hỏi công ty A sở hữu bao nhiêu cổ phiếu biết rằng công ty C sở hữu nhiều hơn công ty A 25%?",
+    "options": [
+      "a. 45000",
+      "b. 50000",
+      "c. 60000",
+      "d. 75000"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 15,
-    "type": "math",
-    "topic": "Data sufficiency",
-    "content": "Liệu x³ có chính xác bằng 125?"
+    "type": "data_sufficiency",
+    "topic": "Algebra",
+    "content": "Liệu x³ có chính xác bằng 125?",
+    "options": [
+      "a. Một mình nhận định (1) là đủ, nhưng một mình nhận định (2) là không đủ.",
+      "b. Một mình nhận định (2) là đủ, nhưng một mình nhận định (1) là không đủ.",
+      "c. Bất cứ 1 trong 2 nhận định là đủ",
+      "d. Cả 2 nhận định mới đủ",
+      "e. Cả 2 nhận định vẫn không đủ"
+    ],
+    "data_statements": [
+      "(1) x > 4",
+      "(2) x < 6"
+    ],
+    "correct_answer": null
   },
   {
     "id": 16,
     "type": "math",
-    "topic": "Quadratic equations",
-    "content": "Các phương trình sau đây có thể bằng 0 với một vài giá trị nào đó của x?"
+    "topic": "Algebraic Equations",
+    "content": "Các phương trình sau đây có thể bằng 0 với một vài giá trị nào đó của x?\n(1) 3x² - 12\n(2) x² + x⁴ + 1\n(3) x² + 7x + 6",
+    "options": [
+      "a. Cả (1), (2), và (3)",
+      "b. Chỉ trường hợp (3)",
+      "c. Chỉ trường hợp (1)",
+      "d. Chỉ (1) và (3)"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 17,
-    "type": "general",
-    "topic": "Vocabulary",
-    "content": "Tìm từ thích hợp để đưa vào vị trí dấu hỏi (?)"
+    "type": "logic",
+    "topic": "Word Pattern",
+    "content": "Tìm từ thích hợp để đưa vào vị trí dấu hỏi (?)\nIMAGINATION - DEDICATION - OPERATION - MOVEMENT - ?",
+    "options": [
+      "a. LAIDIES",
+      "b. CENTER",
+      "c. LEFT",
+      "d. RIGHT"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 18,
-    "type": "math",
-    "topic": "Weighted average",
-    "content": "Trong một công ty, tuổi bình quân của những người quản lý là 54, trong khi đó tuổi bình quân của nhân viên không quản lý là 34. Hỏi tuổi trung bình chung của toàn bộ nhân viên trong công ty là bao nhiêu?"
+    "type": "data_sufficiency",
+    "topic": "Averages",
+    "content": "Trong một công ty, tuổi bình quân của những người quản lý là 54, trong khi đó tuổi bình quân của nhân viên không quản lý là 34. Hỏi tuổi trung bình chung của toàn bộ nhân viên trong công ty là bao nhiêu?",
+    "options": [
+      "a. Một mình nhận định (1) là đủ, nhưng một mình nhận định (2) là không đủ.",
+      "b. Một mình nhận định (2) là đủ, nhưng một mình nhận định (1) là không đủ.",
+      "c. Bất cứ 1 trong 2 nhận định là đủ",
+      "d. Cả 2 nhận định mới đủ, còn bất cứ nhận định nào một mình là không đủ.",
+      "e. cả 2 nhận định vẫn không đủ"
+    ],
+    "data_statements": [
+      "(1) Có 10 người làm quản lý.",
+      "(2) Số nhân viên không làm quản lý nhiều gấp 4 lần số nhân viên làm quản lý."
+    ],
+    "correct_answer": null
   },
   {
     "id": 19,
     "type": "math",
-    "topic": "Set theory",
-    "content": "Một cuộc khảo sát 200 sinh viên mới vào trường thể thao cho thấy có 70 sinh viên thích môn cầu lông và 90 sinh viên thích môn bóng bàn. Biết rằng số sinh viên không thích môn cầu lông và cũng chẳng thích môn bóng bàn nhiều gấp đôi số sinh viên thích cả hai môn đó. Hỏi có bao nhiêu sinh viên được khảo sát không thích môn cầu lông và cũng chẳng thích môn bóng bàn?"
+    "topic": "Set Theory",
+    "content": "Một cuộc khảo sát 200 sinh viên mới vào trường thể thao cho thấy có 70 sinh viên thích môn cầu lông và 90 sinh viên thích môn bóng bàn. Biết rằng số sinh viên không thích môn cầu lông và cũng chẳng thích môn bóng bàn nhiều gấp đôi số sinh viên thích cả hai môn đó. Hỏi có bao nhiêu sinh viên được khảo sát không thích môn cầu lông và cũng chẳng thích môn bóng bàn?",
+    "options": [
+      "a. 20",
+      "b. 40",
+      "c. 50",
+      "d. 80",
+      "e. 120"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 20,
     "type": "math",
-    "topic": "Set theory",
-    "content": "Một cuộc khảo sát 200 sinh viên mới vào trường thể thao cho thấy có 60 sinh viên thích môn cầu lông và 80 sinh viên thích môn bóng bàn. Biết rằng số sinh viên không thích môn cầu lông và cũng chẳng thích môn bóng bàn nhiều gấp đôi số sinh viên thích cả hai môn đó. Hỏi có bao nhiêu sinh viên được khảo sát không thích môn cầu lông và cũng chẳng thích môn bóng bàn?"
+    "topic": "Set Theory",
+    "content": "Một cuộc khảo sát 200 sinh viên mới vào trường thể thao cho thấy có 60 sinh viên thích môn cầu lông và 80 sinh viên thích môn bóng bàn. Biết rằng số sinh viên không thích môn cầu lông và cũng chẳng thích môn bóng bàn nhiều gấp đôi số sinh viên thích cả hai môn đó. Hỏi có bao nhiêu sinh viên được khảo sát không thích môn cầu lông và cũng chẳng thích môn bóng bàn?",
+    "options": [
+      "a. 20",
+      "b. 40",
+      "c. 50",
+      "d. 80",
+      "e. 120"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 21,
     "type": "math",
-    "topic": "Least common multiple",
-    "content": "Một số tối thiểu muốn chia hết cho cả 18 và 24 thì số đó phải chia hết cho số nào sau đây?"
+    "topic": "Number Properties (LCM)",
+    "content": "Số nhỏ nhất trong các số bên dưới số nào chia hết cho cả 18 và 24?",
+    "options": [
+      "a. 288",
+      "b. 72",
+      "c. 216",
+      "d. 360"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   },
   {
     "id": 22,
-    "type": "general",
-    "topic": "Alphabetical series",
-    "content": "Ký tự tiếp theo trong dãy sau đây là ký tự nào: A...C...F...J...O...U...?"
-  },
-  {
-    "id": 23,
-    "type": "math",
-    "topic": "Percentage",
-    "content": "Một loại nước ép hỗn hợp chứa 25% trái cây táo và 75% cherry theo thể tích. Nếu nước ép hỗn hợp này đắt hơn 20% so với cùng một lượng chỉ có nước ép táo, thì nước ép cherry đắt hơn nước ép táo bao nhiêu phần trăm?"
-  },
-  {
-    "id": 24,
-    "type": "math",
-    "topic": "Data sufficiency",
-    "content": "Hãy tỉnh giá của 13 quả cam và 12 quả táo là bao nhiêu?"
-  },
-  {
-    "id": 25,
-    "type": "math",
-    "topic": "LCM and time",
-    "content": "Có 5 cái chuông lần lượt kêu mỗi chu kỳ sau 3, 6, 9, 15, và 18 giây. Hỏi sau 5 phút, chúng kêu cùng lúc bao nhiêu lần?"
-  },
-  {
-    "id": 26,
-    "type": "math",
-    "topic": "Percentage and area",
-    "content": "Nếu chiều dài và chiều rộng của một khu vườn hình chữ nhật tăng lên 20%, thì diện tích khu vườn sẽ tăng lên bao nhiêu %?"
-  },
-  {
-    "id": 27,
-    "type": "math",
-    "topic": "Compound interest",
-    "content": "Công an vừa phát hiện ra một tổ chức tín dụng bất hợp pháp cho vay chợ đen với lãi suất cao, kỳ hạn 3%/tuần (lãi nhập vào vốn sau mỗi tuần). Nếu quan niệm 1 năm có chẵn 52 tuần thì lãi suất tính theo năm của khoản vay đó sau 1 năm là bao nhiêu?"
-  },
-  {
-    "id": 28,
-    "type": "math",
-    "topic": "Data sufficiency and ratios",
-    "content": "Dàn máy tính của công ty có một số máy là của Hãng X và số còn lại là của Hãng Y. Biết rằng tỷ số máy Hãng Y trên số máy của Hãng X trong dàn máy của công ty là 5/6. Hỏi dàn máy của công ty có bao nhiêu máy Hãng Y?"
-  },
-  {
-    "id": 29,
-    "type": "math",
-    "topic": "Word problem",
-    "content": "Một nhóm gồm 5 nhân viên bán bảo hiểm. Trong tháng trước Andy bán được nhiều gấp đôi số hợp đồng bảo hiểm so với Ellen, Bob bán được nhiều hơn Ellen 3 hợp đồng, Cary bán được gấp đôi số hợp đồng của Bob và cuối cùng, Dora bán được số hợp đồng bằng tổng số hợp đồng của Bob và Ellen cộng lại. Hỏi tháng trước ai bán được nhiều hợp đồng bảo hiểm nhất?"
-  },
-  {
-    "id": 30,
-    "type": "math",
-    "topic": "Percentage and inverse proportion",
-    "content": "Dựa trên dữ liệu của năm trước, với số tiền y, có thể mua được x món hàng. Nếu giá trung bình của mỗi món hàng tăng lên 20% trong năm nay, thì số món hàng có thể mua với 3y là bao nhiêu?"
-  },
-  {
-    "id": 31,
-    "type": "math",
-    "topic": "Mixture problems",
-    "content": "Có 60 lít dầu đựng trong hai thùng. Nếu đổ 2 lít từ thùng I sang thùng II thì lúc đó số dầu ở thùng I sẽ bằng 2/3 số dầu ở thùng II. Số dầu thùng I lúc đầu là"
-  },
-  {
-    "id": 32,
-    "type": "math",
-    "topic": "Percentage change",
-    "content": "Giá trị một công ty năm 201x tăng 2%, năm 201x+1 tăng 3%, năm 201x+2 giảm 2%. Hỏi sau 3 năm giá trị công ty tăng/giảm bao nhiêu %?"
-  },
-  {
-    "id": 33,
-    "type": "math",
-    "topic": "Interest rates",
-    "content": "Một ngân hàng thông báo nhận gửi tiết kiệm 5,2%/năm kỳ hạn 3 tháng. Nếu không tính đến yếu tố lạm phát và các chi phí giao dịch thì lãi suất thực tính theo năm của khoản tiết kiệm này là bao nhiêu?"
-  },
-  {
-    "id": 34,
-    "type": "math",
-    "topic": "Combinatorics",
-    "content": "Có bao nhiêu vị trí khác nhau khi đặt hình vuông cạnh 3x3 vào hình vuông lớn cạnh 10 x 10?"
-  },
-  {
-    "id": 35,
-    "type": "math",
-    "topic": "Set theory",
-    "content": "Trong 1 lớp học, mọi sinh viên đều vượt qua môn này với điểm số A, B hoặc C. 22 sinh viên có điểm A, 12 sinh viên có điểm B và 21 sinh viên có điểm C trong bảng điểm của mình. Nếu tổng số sinh viên trong lớp là 36, đồng thời 5 sinh viên chỉ có 2 mức điểm là A và B, 3 sinh viên chỉ có 2 mức điểm B và C và 3 sinh viên chỉ có 2 mức điểm A và C, thì có bao nhiêu sinh viên có cả 3 mức điểm A, B, C trong bảng điểm của mình?"
-  },
-  {
-    "id": 36,
-    "type": "math",
-    "topic": "Counting",
-    "content": "Một cái khóa số có 3 chữ số từ 0 đến 9. Mã số được thiết lập với một số ràng buộc sau: số thứ nhất không thể là 0 hoặc 1; số thứ hai chỉ có thể là 0 hoặc 1; số thứ hai và số thứ ba không thể cùng là số 0. Hỏi có có thể bao nhiêu mã số?"
-  },
-  {
-    "id": 37,
-    "type": "math",
-    "topic": "Weighted average",
-    "content": "Một đội bóng đá thắng 40% trong số 20 trận đầu tiên của mùa giải và thắng 70% các trận còn lại. Biết rằng đội này thắng 55% tổng số trận cả mùa. Hỏi đội bóng đã chơi tổng cộng bao nhiêu trận trong mùa giải?"
-  },
-  {
-    "id": 38,
-    "source_file": "23.DAP AN DE THI THU GMAT MDDCT 2023DOT2-246 - KINH TE UEH - Studocu.pdf",
-    "type": "logic",
-    "topic": "Number Logic",
-    "content": "Số nào khác với những số còn lại? A: 32418, B: 84129, C: 47632, D: 36119."
-  },
-  {
-    "id": 39,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Investment",
-    "content": "Anna, Billy, Carson đầu tư tổng cộng 50.000 USD vào một dự án. Anna đầu tư nhiều hơn Billy 4.000 USD, Billy đầu tư nhiều hơn Carson 5.000 USD. Tổng lợi nhuận đạt được của dự án là 35.000 USD. Hỏi Anna nhận được bao nhiêu lợi nhuận từ dự án?"
-  },
-  {
-    "id": 40,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Ratios",
-    "content": "Bốn nhân viên của công ty làm việc cho một dự án. Thời lượng 4 người này làm việc cho dự án có tỷ lệ 2:3:5:6. Biết rằng thời lượng làm việc cho dự án của một trong bốn người là 30 giờ. Hỏi trong các số sau đây (80, 96, 160, 192), số nào KHÔNG THỂ là tổng số giờ của cả 4 người làm cho dự án?"
-  },
-  {
-    "id": 41,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Word Problem",
-    "content": "A được trả tiền công cố định 50$/ngày và cứ mỗi giờ làm việc thì nhận thêm 15$/giờ bắt đầu từ giờ đầu tiên. B không được trả tiền công cố định, tuy nhiên mỗi giờ làm việc được trả 27$/giờ bắt đầu từ giờ đầu tiên. A vào làm lúc 9:21 AM, B vào làm lúc 10:09 AM, hỏi tới mấy giờ thì tổng tiền công của A và B làm được bằng nhau?"
-  },
-  {
-    "id": 42,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Mixture Problem",
-    "content": "Dung dịch X có 20% chất tẩy, còn lại là chất tạo bọt, Y có 45% chất tẩy, còn lại là chất tạo bọt. Trộn X, Y để được dung dịch Z có 35% chất tẩy. Hỏi tỷ lệ % dung dịch X trong dung dịch này sau khi trộn là bao nhiêu?"
-  },
-  {
-    "id": 43,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Average",
-    "content": "July thuê xe 3 tháng. Tháng 01 dùng hết 19 galon xăng và trung bình chạy 24 dặm/galon. Tháng 02 dùng hết 31 galon và trung bình chạy 26 dặm/galon. Khi hết tháng thứ 03, July tính rằng cả 3 tháng đã dùng hết 72 galon và tiêu thụ trung bình 27 dặm/galon. Hỏi mức tiêu hao trung bình của tháng thứ 3 là bao nhiêu dặm/galon?"
-  },
-  {
-    "id": 44,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Geometry/Percentage",
-    "content": "Khi đo diện tích mảnh đất hình vuông bằng thủ công, sở địa chính cho phép nhân viên sai sót mỗi cạnh không quá 2%. Hỏi diện tích có thể sai sót lớn nhất cho phép không quá bao nhiêu %?"
-  },
-  {
-    "id": 45,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "logic",
-    "topic": "Number Logic",
-    "content": "Merlin thích số 8 chứ không phải số 9, anh ấy cũng thích 64 chứ không phải 65, 125 chứ không phải 124. Anh ấy có lẽ sẽ thích số nào dưới đây? (a) 35, (b) 62, (c) 102, (d) 216."
-  },
-  {
-    "id": 46,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Average",
-    "content": "Một cửa hàng bán lẻ có doanh thu 5 tháng đầu tiên lần lượt là 6435$, 6927$, 6855$, 7230$, 6562$. Hỏi doanh thu tháng thứ 6 là bao nhiêu để doanh thu trung bình 6 tháng đạt 6500$?"
-  },
-  {
-    "id": 47,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Work Rate",
-    "content": "Một đàn bò 40 con ăn hết 40 gánh cỏ trong vòng 40 ngày. Hỏi 1 con bò ăn 1 gánh cỏ hết bao nhiêu ngày?"
-  },
-  {
-    "id": 48,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Compound Interest",
-    "content": "Một người gửi tiết kiệm 100 triệu đồng với thể thức lãi kép, biết lãi suất kép là 7,18%/năm. Hỏi sau 10 năm thì cả gốc lẫn lãi là bao nhiêu?"
-  },
-  {
-    "id": 49,
-    "source_file": "48153370-91cd-440c-bb5e-717bcfce4c88.pdf",
-    "type": "math",
-    "topic": "Set Theory",
-    "content": "Một nhà xuất bản sản xuất được 65 cuốn sách gồm 2 loại là sách hư cấu và phi hư cấu. Trong đó có 25 cuốn dưới 200 trang. Nhà xuất bản đó sản xuất được 35 cuốn sách hư cấu trong đó có 20 cuốn trên 200 trang. Hỏi số lượng sách phi hư cấu dưới 200 trang là bao nhiêu?"
-  },
-  {
-    "id": 50,
-    "source_file": "1c942df2-3f15-4339-8b4b-fd67eda0d29f.pdf",
-    "type": "math",
-    "topic": "Number Properties",
-    "content": "Cho biết tổng 8^2 + 10^2 + 12^2 + 14^2 + 16^2 = 7601. Hỏi tổng 24^2 + 30^2 + 36^2 + 42^2 + 48^2 tăng lên bao nhiêu phần trăm so với tổng ban đầu?"
-  },
-  {
-    "id": 51,
-    "source_file": "1c942df2-3f15-4339-8b4b-fd67eda0d29f.pdf",
-    "type": "math",
-    "topic": "LCM",
-    "content": "Một hệ thống đèn có 3 bóng đèn. Các đèn này sẽ chớp với những khoảng thời gian nhất định. Cứ 6 phút đèn 1 chớp 1 lần; cứ 8 phút đèn 2 chớp 1 lần và cứ 14 phút đèn 3 chớp 1 lần. Nếu tất cả 3 đèn chớp đồng thời vào lúc 11:04 AM, thì cả 3 đèn sẽ cùng chớp lần tiếp theo vào lúc mấy giờ?"
-  },
-  {
-    "id": 52,
-    "source_file": "1c942df2-3f15-4339-8b4b-fd67eda0d29f.pdf",
-    "type": "math",
-    "topic": "Optimization",
-    "content": "Boris có doanh nghiệp sản xuất đá với 3 phân xưởng sản xuất có công suất như nhau 6000 viên/ngày và mỗi phân xưởng sản xuất 1 màu: cam, tím, xanh lá. Tại khâu đóng gói, 15 viên cam/hộp, 13 viên tím/hộp, 14 viên xanh lá/hộp. Hỏi mỗi phân xưởng nên sản xuất tối thiểu bao nhiêu để đóng gói không dư không thiếu viên nào?"
-  },
-  {
-    "id": 53,
-    "source_file": "1c942df2-3f15-4339-8b4b-fd67eda0d29f.pdf",
-    "type": "math",
-    "topic": "Fractions",
-    "content": "Andre đã tiết kiệm được 3/7 tiền mua 1 chiếc xe Mercedes, anh ta tính rằng từ nay đến cuối mùa hè anh ta tiết kiệm được thêm 2/5 phần còn thiếu lại để mua chiếc xe đó. Hỏi anh ta cần phải tiết kiệm thêm bao nhiêu phần giá chiếc xe sau mùa hè này?"
-  },
-  {
-    "id": 54,
-    "source_file": "1c942df2-3f15-4339-8b4b-fd67eda0d29f.pdf",
-    "type": "math",
-    "topic": "Algebra",
-    "content": "Cho x = (5/9 + 5/27 + 45/81)/3 thì căn bậc hai của (1-x) bằng bao nhiêu?"
-  },
-  {
-    "id": 55,
-    "source_file": "1c942df2-3f15-4339-8b4b-fd67eda0d29f.pdf",
-    "type": "math",
-    "topic": "Discount",
-    "content": "Một trạm bán xăng khuyến mãi: mua 10 lít đầu tiên không giảm giá, từ lít sau đó giảm 10%. Nếu khách hàng A mua 25L và khách hàng B mua 20L thì giá trị chiết khấu trên 1L xăng của KH A bằng bao nhiêu % giá trị chiết khấu trên 1L xăng cho KH B?"
-  },
-  {
-    "id": 56,
-    "source_file": "1c942df2-3f15-4339-8b4b-fd67eda0d29f.pdf",
-    "type": "math",
-    "topic": "Set Theory",
-    "content": "Nếu 75% người Mỹ sở hữu 1 chiếc oto, 15% người Mỹ sở hữu 1 chiếc xe đạp và 20% người Mỹ không sở hữu cả oto lẫn xe đạp. Hỏi có ít nhất bao nhiêu % người Mỹ sở hữu cả 2?"
-  },
-  {
-    "id": 57,
-    "source_file": "5ce33415-f91a-4c27-b6d8-36ee01696380.pdf",
-    "type": "math",
-    "topic": "Probability/Combinatorics",
-    "content": "John có 10 đôi tất nguyên. Nếu John làm mất 7 chiếc cọc cạch thì anh ta còn lại nhiều nhất bao nhiêu đôi tất nguyên?"
-  },
-  {
-    "id": 58,
-    "source_file": "5ce33415-f91a-4c27-b6d8-36ee01696380.pdf",
-    "type": "math",
-    "topic": "Percentage",
-    "content": "Các hoá đơn bán kẹo trong ngày Valentin năm ngoái tổng cộng là 385 triệu đô la tương đương với 7% tổng doanh thu kẹo đã bán cả năm. Vậy tổng doanh thu kẹo cả năm là bao nhiêu?"
-  },
-  {
-    "id": 59,
-    "source_file": "5ce33415-f91a-4c27-b6d8-36ee01696380.pdf",
-    "type": "math",
-    "topic": "Algebra",
-    "content": "Trong tất cả các số s và t, phép tính * được xác định bằng s*t=(s-1)(t+1). Nếu (-2)*x=-12, thì x bằng bao nhiêu?"
-  },
-  {
-    "id": 60,
-    "source_file": "5ce33415-f91a-4c27-b6d8-36ee01696380.pdf",
-    "type": "math",
-    "topic": "Growth",
-    "content": "Một lượng vi khuẩn cứ 10 phút lại gấp đôi lên. Nếu lượng vi khuẩn này ban đầu là 10^4 thì 1 giờ sau đó lượng vi khuẩn đó sẽ là bao nhiêu?"
-  },
-  {
-    "id": 61,
-    "source_file": "5ce33415-f91a-4c27-b6d8-36ee01696380.pdf",
-    "type": "math",
-    "topic": "Weighted Average",
-    "content": "Trong 1 mùa giải, 1 đội đã giành chiến thắng với 80% tổng số 100 trận đấu đầu tiên và 50% các trận đấu còn lại. Nếu đội đó thắng 70% các trận đấu trong cả mùa giải thì tổng số các trận đấu mà đội đó đã chơi là bao nhiêu?"
-  },
-  {
-    "id": 62,
-    "source_file": "9a55bee6-242e-4805-a1f8-5b15d0d2618c.pdf",
-    "type": "math",
-    "topic": "Counting",
-    "content": "Dùng 4 chữ số lẻ: 1, 3, 5, 7 để viết tất cả các số có 4 chữ số khác nhau thì viết được bao nhiêu số?"
-  },
-  {
-    "id": 63,
-    "source_file": "9a55bee6-242e-4805-a1f8-5b15d0d2618c.pdf",
-    "type": "math",
-    "topic": "Number Properties",
-    "content": "Biết a và b là các số nguyên khác 0 và a + b = 1. Hỏi có thể nói gì về tích ab?"
-  },
-  {
-    "id": 64,
-    "source_file": "9a55bee6-242e-4805-a1f8-5b15d0d2618c.pdf",
-    "type": "math",
-    "topic": "Arithmetic",
-    "content": "Biết a, b, c là ba số nguyên dương khác nhau. Tìm kết quả phép nhân: ab x ab = ccb. Các lựa chọn: 221, 335, 441, 881."
-  },
-  {
-    "id": 65,
-    "source_file": "9a55bee6-242e-4805-a1f8-5b15d0d2618c.pdf",
-    "type": "math",
-    "topic": "Geometry",
-    "content": "Một cái sàn lầu vọng nguyệt có hình lục giác đều có cạnh là 2m được sơn bởi 6 màu. Biết rằng để sơn 1 mét vuông cần 3 kg sơn. Hỏi cần bao nhiêu kg sơn mỗi màu?"
-  },
-  {
-    "id": 66,
-    "source_file": "9a55bee6-242e-4805-a1f8-5b15d0d2618c.pdf",
-    "type": "math",
-    "topic": "Percentage",
-    "content": "Năm ngoái Giang tiết kiệm được 10% thu nhập năm. Năm nay Giang có thu nhập tăng 5% so với năm ngoái và tiết kiệm được 12% thu nhập năm. Hỏi số tiền mà Giang tiết kiệm được năm nay bằng bao nhiêu phần trăm số tiền anh ta tiết kiệm được vào năm ngoái?"
-  },
-  {
-    "id": 67,
-    "source_file": "c7e2aadd-2988-419a-82f0-fa727fb296c9.pdf",
-    "type": "math",
-    "topic": "Cost Calculation",
-    "content": "Chi phí đường hàng không là 10 cent cho 1 km và 12 cent cho 1km thuê oto tự lái. Nếu bạn phải đi một quãng đường 200 km, trong đó chuyến bay hết x km, phần còn lại thuê xe tự lái, hỏi tổng chi phí là bao nhiêu?"
-  },
-  {
-    "id": 68,
-    "source_file": "c7e2aadd-2988-419a-82f0-fa727fb296c9.pdf",
-    "type": "math",
-    "topic": "Depreciation",
-    "content": "Một xe máy có giá 50 triệu đồng. Chiếc xe mất giá 20% mỗi năm, giá trị còn lại của chiếc xe sau 3 năm sử dụng là bao nhiêu?"
-  },
-  {
-    "id": 69,
-    "source_file": "c7e2aadd-2988-419a-82f0-fa727fb296c9.pdf",
-    "type": "math",
-    "topic": "Geometric Progression",
-    "content": "Một sân bay có số lượng chuyến bay cất cánh tăng gấp 2 lần sau mỗi giờ từ 9h00 đến 12h00 trưa. Từ 12h00 trở đi số lượng chuyến bay tăng gấp 2 lần sau mỗi 2 giờ. Biết có 4 chuyến bay trong khoảng 9h00-10h00, hỏi có bao nhiêu chuyến bay từ 2h00-4h00?"
-  },
-  {
-    "id": 70,
-    "source_file": "c7e2aadd-2988-419a-82f0-fa727fb296c9.pdf",
-    "type": "math",
-    "topic": "Percentage",
-    "content": "Một đợt khô hạn nước năm 2021 ở TP X làm giảm lượng nước trong hồ từ 118 triệu gallons nước xuống còn 96 triệu gallons. Thực tế đầu đợt khô hạn 2021 lượng nước trong hồ chỉ đạt 78,7%. Hỏi so với dung tích thiết kế tối đa của hồ thì lượng nước đã giảm bao nhiêu triệu gallons nước?"
-  },
-  {
-    "id": 71,
-    "source_file": "a7e4d2d4-a1f7-4bfb-b357-ae6e70455f72.pdf",
-    "type": "math",
-    "topic": "Probability",
-    "content": "Tại cuộc thi quần vợt nữ, mỗi cặp cầu thủ có thể đấu với nhau hai hoặc ba trận: cầu thủ nào thắng được hai trận trước sẽ là người thắng cuộc. Cặp cầu thủ Anna và Julia thi đấu với nhau, và xác suất thắng mỗi trận của Anna là 60%. Hỏi xác suất thắng cuộc của Julia là bao nhiêu?"
-  },
-  {
-    "id": 72,
-    "source_file": "a7e4d2d4-a1f7-4bfb-b357-ae6e70455f72.pdf",
-    "type": "math",
-    "topic": "Algebra",
-    "content": "Tuần trước Chris nhận được x đôla mỗi giờ cho 40 giờ làm việc đầu tiên và 22 đôla mỗi giờ cho mỗi giờ làm việc vượt trên 40 giờ. Tổng cộng tuần trước Chris làm việc 48 giờ và nhận được 816 đôla. Hỏi giá trị của x là bao nhiêu?"
-  },
-  {
-    "id": 73,
-    "source_file": "a7e4d2d4-a1f7-4bfb-b357-ae6e70455f72.pdf",
-    "type": "math",
-    "topic": "Word Problem",
-    "content": "Để hoàn thành kế hoạch đọc tài liệu đúng hạn định, Terry đã tính phải đọc 90 trang mỗi ngày. Tuy nhiên, thời gian đầu cô đã chỉ đọc được 75 trang mỗi ngày, và vì vậy còn 690 trang nữa cô phải đọc hết trong 6 ngày cuối thì mới hoàn thành kế hoạch đọc tài liệu đúng như hạn định. Hỏi kế hoạch đọc tài liệu theo hạn định của Terry là bao nhiêu ngày?"
-  },
-  {
-    "id": 74,
-    "source_file": "a7e4d2d4-a1f7-4bfb-b357-ae6e70455f72.pdf",
-    "type": "logic",
-    "topic": "Number Logic",
-    "content": "Tìm số đúng để thay vào vị trí dấu hỏi «?»: 16, 49, ?, 5, 7, 5, 4, 3, 6. Nguyên tắc 3x5+6+4=25."
-  },
-  {
-    "id": 75,
-    "source_file": "a7e4d2d4-a1f7-4bfb-b357-ae6e70455f72.pdf",
-    "type": "math",
-    "topic": "Combinatorics",
-    "content": "Xuất phát từ một đỉnh và bò theo các cạnh của khối lập phương, con ốc có bao nhiêu đường đi ngắn nhất để đến được đỉnh đối diện?"
-  },
-  {
-    "id": 76,
-    "source_file": "8588d0fc-e8a2-4c41-8a17-7be2d4c6b3f1.pdf",
-    "type": "math",
-    "topic": "Set Theory",
-    "content": "Trong một nhóm 68 học sinh, mỗi học sinh đăng ký học ít nhất một trong ba môn – Lịch sử, Toán và Tiếng Anh. 25 học sinh đăng ký môn Lịch sử, 25 học sinh đăng ký môn Toán và 34 học sinh đăng ký môn Tiếng Anh. Nếu chỉ có ba học sinh đăng ký cho cả ba lớp thì có bao nhiêu học sinh đăng ký đúng hai lớp?"
-  },
-  {
-    "id": 77,
-    "source_file": "8588d0fc-e8a2-4c41-8a17-7be2d4c6b3f1.pdf",
-    "type": "math",
-    "topic": "Percentage",
-    "content": "Trong số các phim của hãng A phát hành năm ngoái, 60% là phim hài và còn lại là phim kinh dị. 75% phim hài kiếm được lợi nhuận, nhưng 75% phim kinh dị không có lãi. Nếu hãng phim làm tổng cộng 40 bộ phim và không hòa vốn với bộ phim nào thì bao nhiêu bộ phim của họ có lãi?"
-  },
-  {
-    "id": 78,
-    "type": "math",
-    "topic": "Arithmetic Logic",
-    "content": "Biết a, b, c là ba số nguyên dương khác nhau. Tìm kết quả phép nhân: ab x ab = ccb. Các đáp án: 221, 335, 441, 881. [cite: 28]"
-  },
-  {
-    "id": 79,
-    "type": "math",
-    "topic": "Symmetry",
-    "content": "Phải tô đen thêm bao nhiêu ô vuông nữa để 2 trục in đậm trở thành trục đối xứng của cả bảng (trong hình lưới ô vuông)? [cite: 34]"
-  },
-  {
-    "id": 80,
-    "type": "math",
-    "topic": "Geometry",
-    "content": "Một cái sàn lầu vọng nguyệt có hình lục giác đều có cạnh là 2m được sơn bởi 6 màu tuy khác nhau nhưng gần giống nhau. Biết rằng để sơn 1 mét vuông cần 3 kg sơn. [cite_start]Hỏi cần bao nhiêu kg sơn mỗi màu? [cite: 41]"
-  },
-  {
-    "id": 81,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Liệu x³ có bằng 125? (1) [cite_start]x > 4, (2) x < 6. Chọn phương án đúng về tính đủ của dữ kiện. [cite: 64]"
-  },
-  {
-    "id": 82,
-    "type": "general",
-    "topic": "Verbal Logic",
-    "content": "Tìm từ thích hợp để đưa vào vị trí dấu hỏi (?): CANADIEN - IRLANDAIS - ANGLAIS - ALLEMAND? [cite_start]Các lựa chọn: ITALIEN, AMERICAIN, ESPAGNOL, JAPONAIS. [cite: 79]"
-  },
-  {
-    "id": 83,
-    "type": "math",
-    "topic": "Inequalities",
-    "content": "Trong các bất đẳng thức sau, bất đẳng thức nào thỏa mãn bất đẳng thức 10 - 2x > 18? [cite: 108]"
-  },
-  {
-    "id": 84,
-    "type": "math",
-    "topic": "Percentage",
-    "content": "Năm ngoái Giang tiết kiệm được 10% thu nhập năm. Năm nay Giang có thu nhập tăng 5% so với năm ngoái và tiết kiệm được 12% thu nhập năm. [cite_start]Hỏi số tiền mà Giang tiết kiệm được năm nay bằng bao nhiêu phần trăm số tiền anh ta tiết kiệm được vào năm ngoái? [cite: 118]"
-  },
-  {
-    "id": 85,
-    "type": "math",
-    "topic": "Geometry",
-    "content": "Có một mảnh đất hình thang vuông, trong đó đáy nhỏ có chiều dài 10 m, đáy lớn 16 m, cạnh bên không sát góc vuông có chiều dài 10 m. [cite_start]Hỏi diện tích mảnh đất? [cite: 132]"
-  },
-  {
-    "id": 86,
-    "type": "math",
-    "topic": "Logic Puzzle",
-    "content": "Ada và Paul nhận được điểm thi 3 môn. Ở môn thứ nhất điểm của Ada cao hơn của Paul 10 điểm. Ở môn thứ hai điểm của Ada cao hơn của Paul 4 điểm. Biết điểm trung bình 3 môn thi của Paul cao hơn của Ada 3 điểm. [cite_start]Hỏi ở môn thứ 3 điểm của Paul cao hơn Ada bao nhiêu điểm? [cite: 136]"
-  },
-  {
-    "id": 87,
-    "type": "logic",
-    "topic": "Categorical Logic",
-    "content": "Abarat là để chỉ một người đàn ông. Baba là để chỉ những Abarat có tóc nâu. Cinq là để chỉ những Abarat có tóc vàng. Decer là để chỉ những Baba có ít nhất 3 nốt ruồi trên cánh tay. [cite_start]Nếu một người đàn ông có tóc nâu và có 4 nốt ruồi trên cánh tay thì ông ta thuộc tộc nào là thích hợp nhất? [cite: 165]"
-  },
-  {
-    "id": 88,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Số tiếp theo của dãy số: 1, 4, 10, 22, 46, (?) [cite: 182]"
-  },
-  {
-    "id": 89,
-    "type": "math",
-    "topic": "Probability",
-    "content": "Tại cuộc thi quần vợt nữ, mỗi cặp cầu thủ có thể đấu với nhau hai hoặc ba trận: cầu thủ nào thắng được hai trận trước sẽ là người thắng cuộc. Cặp cầu thủ Anna và Julia thi đấu với nhau, và xác suất thắng mỗi trận của Anna là 60%. [cite_start]Hỏi xác suất thắng cuộc của Julia là bao nhiêu? [cite: 241]"
-  },
-  {
-    "id": 90,
-    "type": "math",
-    "topic": "Algebra",
-    "content": "Phương trình ((x-1)^2 - 1)^2 = 1 có mấy nghiệm? [cite: 249]"
-  },
-  {
-    "id": 91,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Vào cuối mùa, cửa hàng quần áo áp dụng đợt giảm giá mới bao nhiêu phần trăm? (1) Một khách hàng trước đó đã có phiếu giảm giá 10% giờ gộp với đợt giảm giá mới thì được giảm tới 50%. (2) [cite_start]Một khách hàng trước đó đã có phiếu giảm giá 10€ giờ gộp với đợt giảm giá mới thì được giảm 50% khi mua một chiếc khăn choàng. [cite: 255]"
-  },
-  {
-    "id": 92,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Một ủy ban gồm 10 thành viên đề ra kế hoạch lập quỹ phục vụ chiến dịch vận động tranh cử Tổng thống cho ứng cử viên của họ. Hỏi quỹ thu được bao nhiêu tiền? (1) Mỗi thành viên của ủy ban đã thuyết phục được ít nhất 10 người mỗi người đóng góp ít nhất 1000€ cho quỹ. (2) [cite_start]Số tiền trung bình mỗi người đóng góp cho quỹ là 1500€. [cite: 265]"
-  },
-  {
-    "id": 93,
-    "type": "logic",
-    "topic": "Matrix Logic",
-    "content": "Cho biết dãy chữ cái ABCDEFGHIJKLMNOPQRSTUVWXYZ. Xác định quy luật trong bảng chữ cái: CTJ, TIC, DFH, ?, CTP, NCV, EGI, WYA. [cite_start]Tìm cụm chữ cái thay thế dấu ? [cite: 287]"
-  },
-  {
-    "id": 94,
-    "type": "math",
-    "topic": "Algebra",
-    "content": "Tuần trước Chris nhận được x đôla mỗi giờ cho 40 giờ làm việc đầu tiên và 22 đôla mỗi giờ cho mỗi giờ làm việc vượt trên 40 giờ. Tổng cộng tuần trước Chris làm việc 48 giờ và nhận được 816 đôla. [cite_start]Hỏi giá trị của x là bao nhiêu? [cite: 309]"
-  },
-  {
-    "id": 95,
-    "type": "math",
-    "topic": "Word Problem",
-    "content": "Để hoàn thành kế hoạch đọc tài liệu đúng hạn định, Terry đã tính phải đọc 90 trang mỗi ngày. Tuy nhiên, thời gian đầu cô đã chỉ đọc được 75 trang mỗi ngày, và vì vậy còn 690 trang nữa cô phải đọc hết trong 6 ngày cuối thì mới hoàn thành kế hoạch đọc tài liệu đúng như hạn định. [cite_start]Hỏi kế hoạch đọc tài liệu theo hạn định của Terry là bao nhiêu ngày? [cite: 319]"
-  },
-  {
-    "id": 96,
-    "type": "math",
-    "topic": "Coordinate Geometry",
-    "content": "Trên mặt phẳng tọa độ, xác định phương trình của đường thẳng đi qua điểm (0, -2) và (3, 0). [cite: 328]"
-  },
-  {
-    "id": 97,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Xác định chênh lệch lớn nhất giữa giá bán 30 chiếc ví mà một cửa hàng đã bán được ngày hôm qua? (1) 1/3 số ví đã bán được giá $24 mỗi chiếc. (2) [cite_start]Giá bán thấp nhất của số ví đó bằng 1/3 giá bán cao nhất của số ví đó. [cite: 343]"
-  },
-  {
-    "id": 98,
-    "type": "logic",
-    "topic": "Pattern Recognition",
-    "content": "Tìm số đúng để thay vào vị trí dấu hỏi «?»: 16, 49, ?, 5, 7, 5, 4, 3, 6. Nguyên tắc 3x5+6+4=25. [cite: 364]"
-  },
-  {
-    "id": 99,
-    "type": "math",
-    "topic": "Combinatorics",
-    "content": "Xuất phát từ một đỉnh và bò theo các cạnh của khối lập phương, con ốc có bao nhiêu đường đi ngắn nhất để đến được đỉnh đối diện? [cite: 406]"
-  },
-  {
-    "id": 100,
-    "type": "logic",
-    "topic": "Number Logic",
-    "content": "Số nào khác với những số còn lại? [cite_start]A: 32418, B: 84129, C: 47632, D: 36119. [cite: 413]"
-  },
-  {
-    "id": 101,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Điền số thích hợp vào dấu ? trong dãy số sau: 10, 10, 9, 7, 7, ?, 4, 4, 3, 1. [cite: 419]"
-  },
-  {
-    "id": 102,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Điền số thích hợp vào dấu ? trong dãy số sau: 16, 23, 19, 19, 22, 15, 25, ? [cite: 421]"
-  },
-  {
-    "id": 103,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Điền số thích hợp vào dấu ? trong dãy số sau: 1, 10, 3, 9, 5, 8, 7, ?, 9, 6. [cite: 431]"
-  },
-  {
-    "id": 104,
-    "type": "math",
-    "topic": "Mixture Problem",
-    "content": "Phải hòa mấy lít dung dịch 15% muối vào 5 lít dung dịch 8% muối để được dung dịch 10% muối? [cite: 442]"
-  },
-  {
-    "id": 105,
-    "type": "math",
-    "topic": "Inequalities",
-    "content": "Biết 1 < x < y < z. [cite_start]Hỏi biểu thức nào sau đây có giá trị lớn nhất? x(x+1), z(y+1), x(y+z), y(x+z), z(x+y). [cite: 449]"
-  },
-  {
-    "id": 106,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Một công ty bất động sản bán được 3 ngôi nhà. Hỏi giá bán của ngôi nhà thứ hai là bao nhiêu? (i) Chênh lệch giá bán ngôi nhà đắt nhất và ngôi nhà rẻ nhất là 130.000 USD. (ii) [cite_start]Chênh lệch giá bán của hai ngôi nhà đắt hơn là 85.000 USD. [cite: 457]"
-  },
-  {
-    "id": 107,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Một khoản đầu tư có lãi suất cố định 4%/năm và được tính dồn hàng năm (compounded annually) trong vòng 5 năm. Hỏi khoản tiền lãi thu được của năm thứ 3 nhiều hơn bao nhiêu USD so với khoản tiền lãi thu được của năm thứ nhất? (i) Tổng giá trị cả gốc lẫn lãi vào thời điểm đầu năm thứ 2 là 4.160 USD. (ii) [cite_start]Tổng giá trị cả gốc lẫn lãi vào thời điểm đầu năm thứ 3 là 4.326 USD. [cite: 472]"
-  },
-  {
-    "id": 108,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Tìm số đúng để thay vào vị trí dấu hỏi “?” trong dãy sau: 11-13-17-23-? [cite: 482]"
-  },
-  {
-    "id": 109,
-    "type": "logic",
-    "topic": "Alphanumeric Logic",
-    "content": "Tìm chữ cái đúng để thay vào vị trí dấu hỏi \"?\" trong dãy sau: 1A - 2D - 3I - 4P - 5? [cite: 495]"
-  },
-  {
-    "id": 110,
-    "type": "math",
-    "topic": "Ratios",
-    "content": "Bốn nhân viên của công ty làm việc cho một dự án. Thời lượng bốn người này làm việc cho dự án có tỷ lệ 2:3:5:6. Biết rằng thời lượng làm việc cho dự án của một trong bốn người là 30 giờ. Hỏi trong các số sau đây, số nào KHÔNG THỂ là tổng số giờ của cả bốn người làm cho dự án? [cite_start]80, 96, 160, 192, 240. [cite: 542]"
-  },
-  {
-    "id": 111,
-    "type": "math",
-    "topic": "Statistics",
-    "content": "Số lượng máy tính được lắp ráp mỗi ngày trong 6 ngày liên tiếp lần lượt là: 20, 12, 18, 10, 16, 8. Hỏi phần trăm thay đổi số lượng máy tính được lắp ráp từ ngày nào sang ngày tiếp theo là lớn nhất xét về giá trị tuyệt đối? [cite: 553]"
-  },
-  {
-    "id": 112,
-    "type": "logic",
-    "topic": "Alphanumeric Logic",
-    "content": "Tìm số đúng thay vào vị trí dấu \"?\" trong dãy sau: B8D, E90R, I180T, O150J, G?K. (Biết thứ tự bảng chữ cái tiếng Anh)[cite_start]. [cite: 560]"
-  },
-  {
-    "id": 113,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Một đại lý ô tô mới nhập về một số xe giao cho nhân viên bán hàng để bán. Hỏi số xe đại lý mới nhập về là bao nhiêu, biết rằng: (i) Nếu mỗi nhân viên bán hàng bán được 4 xe thì sẽ còn 23 xe chưa bán được. (ii) [cite_start]Nếu mỗi nhân viên bán hàng bán được 6 xe thì sẽ còn 5 xe chưa bán được. [cite: 630]"
-  },
-  {
-    "id": 114,
-    "type": "math",
-    "topic": "Logic/Motion",
-    "content": "Vòng quay SỐ được chia thành các đoạn bằng nhau. [cite_start]Hỏi mũi tên sẽ dừng lại ở vị trí chữ cái nào sau khi quay từ vị trí S theo chiều kim đồng hồ được 1.174 đoạn? [cite: 676]"
-  },
-  {
-    "id": 115,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Trong trường đại học X, số sinh viên đăng ký học cả 2 môn Tiếng Anh và Tiếng Pháp ít hơn số sinh viên không đăng học cả 2 môn này bao nhiêu? (i) Trong trường đại học X có 85 sinh viên đăng ký học Tiếng Anh. (ii) [cite_start]Trong trường đại học X có 60 sinh viên đăng ký học Tiếng Pháp. [cite: 693]"
-  },
-  {
-    "id": 116,
-    "type": "math",
-    "topic": "LCM",
-    "content": "Bội số chung nhỏ nhất của 8, 9, 18 và 24 là số nào? [cite: 735]"
-  },
-  {
-    "id": 117,
-    "type": "math",
-    "topic": "Relative Speed",
-    "content": "Cần bao nhiêu giây để một đoàn tàu dài 500m chạy với tốc độ 63 km/h vượt qua một người đàn ông đi bộ cùng chiều dọc theo đoàn tàu với tốc độ là 3 km/h? [cite: 746]"
-  },
-  {
-    "id": 118,
-    "type": "math",
-    "topic": "Cost Function",
-    "content": "Chi phí đường hàng không là 10 cent cho 1 km và 12 cent cho 1km thuê oto tự lái. [cite_start]Nếu bạn phải đi một quảng đường 200 km, trong đó chuyến bay hết x km, phần còn lại thuê xe, thì chi phí là bao nhiêu? [cite: 756]"
-  },
-  {
-    "id": 119,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "David có 3 thẻ tín dụng: P, E, A. Anh ta vừa nhận sao kê số dư phải trả của 3 thẻ. Liệu số dư phải trả của thẻ E có phải là số dư lớn nhất? (1) [cite_start]Tổng số dư phải trả của thẻ E và A là 1350 usd gấp 3 lần số dư của P. (2) Số dư của thẻ E bằng 4/3 số dư của thẻ P và bằng 4/5 số dư của thẻ A. [cite: 783]"
-  },
-  {
-    "id": 120,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Do di cư dân cơ học đến khu công nghiệp. Dân cư thị trấn VL ngày 1/1/2010 tăng 56% so với ngày 1/1/2005, ngày 1/1/2015 dân cư thị trấn VL thậm chí còn tăng thêm 75% so với ngày 1/1/2010. Tính dân số thị trấn ngày 1/1/2005? (1) [cite_start]Dân cư thị trấn VL ngày 1/1/2015 là 21840. (2) Số dân thị trấn VL tăng từ ngày 1/1/2010 đến ngày 1/1/2015 nhiều hơn 4800 người so với số dân tăng kỳ trước đó. [cite: 797]"
-  },
-  {
-    "id": 121,
-    "type": "math",
-    "topic": "Ratios",
-    "content": "Hai số lớn hơn số thứ 3 lần lượt là 20% và 50%. [cite_start]Tỷ lệ giữa 2 số đầu là bao nhiêu? [cite: 825]"
-  },
-  {
-    "id": 122,
-    "type": "math",
-    "topic": "Interest Rates",
-    "content": "Lãi suất danh nghĩa 6% / năm nhưng được tính theo quý sẽ có lãi suất thực tế theo năm là bao nhiêu? [cite: 835]"
-  },
-  {
-    "id": 123,
-    "type": "math",
-    "topic": "Depreciation",
-    "content": "Một xe máy có giá 50 triệu đồng. [cite_start]Chiếc xe mất giá 20% mỗi năm, giá trị còn lại của chiếc xe sau 3 năm sử dụng là bao nhiêu? [cite: 850]"
-  },
-  {
-    "id": 124,
-    "type": "math",
-    "topic": "Weighted Average",
-    "content": "Một đội bóng rổ thắng 50% của 60 trận đầu tiên trong mùa và thắng 80% những trận còn lại của mùa giải. Đội này thắng 60% tổng số trận của mùa giải. [cite_start]Hỏi tổng số trận mà đội này đã chơi trong cả mùa giải? [cite: 872]"
-  },
-  {
-    "id": 125,
-    "type": "math",
-    "topic": "Percentage",
-    "content": "Một đợt khô hạn nước năm 2021 ở TP X làm giảm lượng nước trong hồ từ 118 triệu gallons nước xuống còn 96 triệu gallons. Thực tế đầu đợt khô hạn 2021 lượng nước trong hồ chỉ đạt 78,7%. [cite_start]Hỏi so với dung tích thiết kế tối đa của hồ thì lượng nước đã giảm bao nhiêu triệu gallons nước? [cite: 880]"
-  },
-  {
-    "id": 126,
-    "type": "math",
-    "topic": "Proportions",
-    "content": "Một loại chip có các màu được phân bổ như sau: 1/2 màu trắng; 1/6 màu xanh lá cây; 1/5 màu xanh dương; còn lại 12 chip màu đỏ. [cite_start]Hỏi có tổng cộng bao nhiêu chip? [cite: 922]"
-  },
-  {
-    "id": 127,
-    "type": "math",
-    "topic": "Exponential Growth",
-    "content": "Một nhà điểu học nghiên cứu loài sáo biển (starling) và phát hiện ra rằng số loài sáo biển tăng 400% sau mỗi 10 năm. [cite_start]Nếu số lượng này năm 1890 là 256 cá thể thì đến năm 1970 loài này khoảng bao nhiêu cá thể? [cite: 941]"
-  },
-  {
-    "id": 128,
-    "type": "math",
-    "topic": "Algebra",
-    "content": "Một nhà hàng vừa sửa chữa, cải tạo mở rộng không gian cho khách. Bàn mới dùng cho 6 khách trong khi bàn cũ chỉ ngồi được 4 khách. Sau khi mở rộng nhà hàng bây giờ có 40 bàn và có thể phục vụ cho 220 khách. [cite_start]Hỏi số lượng bàn mới mà nhà hàng mới trang bị thêm? [cite: 949]"
-  },
-  {
-    "id": 129,
-    "type": "logic",
-    "topic": "Sequences",
-    "content": "Một nhà máy sản xuất Notebook thứ tự 5 màu đỏ, xanh dương, đen, trắng và vàng đồng. Sau khi sản xuất lần lượt 5 màu sẽ bắt đầu lại màu đỏ. [cite_start]Nếu hôm nay nhà máy bắt đầu bằng màu đỏ và kết thúc màu đen thì trong ngày khả năng nhà máy đã sản xuất tổng cộng bao nhiêu máy? [cite: 961]"
-  },
-  {
-    "id": 130,
-    "type": "math",
-    "topic": "Weighted Average",
-    "content": "Một nhóm người tham gia đóng góp từ thiện, 30% số họ đóng góp 40 usd/người, 45% đóng góp 20 usd/người, số còn lại 12 usd/người. [cite_start]Hỏi giá trị quỹ mà nhóm đóng góp 40 usd/người chiếm bao nhiêu % trong tổng số quỹ? [cite: 968]"
-  },
-  {
-    "id": 131,
-    "type": "math",
-    "topic": "Geometric Progression",
-    "content": "Một sân bay có số lượng chuyến bay cất cánh tăng gấp 2 lần sau mỗi giờ từ 9h00 đến 12h00 trưa. Từ 12h00 trở đi Số lượng chuyến bay tăng gấp 2 lần sau mỗi 2 giờ. [cite_start]Biết có 4 chuyến bay trong khoảng 9h00-10h00, hỏi có bao nhiêu chuyến bay từ 2h00-4h00? [cite: 981]"
-  },
-  {
-    "id": 132,
-    "type": "math",
-    "topic": "Geometry/Speed",
-    "content": "Một sân trường đua Hình Chữ Nhật có tỷ lệ giữa các cạnh 3:2. Một vận động viên chạy xe đạp vòng quanh sân với tốc độ 12 km/h mất 8 phút để chạy hết 1 vòng sân. [cite_start]Tính diện tích sân theo m2? [cite: 994]"
-  },
-  {
-    "id": 133,
-    "type": "math",
-    "topic": "Compound Interest",
-    "content": "Tài khoản tiết kiệm ban đầu là 5000 usd có lãi suất gộp 8% (tính cả năm) và chu kỳ tính lãi là 6 tháng. [cite_start]Hỏi khoản tiết kiệm này chênh lệch bao nhiêu usd so với gửi tiết kiệm khoản này với lãi suất gộp 8% và chu kỳ tính lãi theo năm? [cite: 1012]"
-  },
-  {
-    "id": 134,
-    "type": "math",
-    "topic": "Set Theory",
-    "content": "Tại một bang của Hoa Kỳ 70% diện tích có mưa vào thứ 2, 65% diện tích có mưa vào thứ 3. Hoàn toàn không có mưa tại 25% diện tích bang trong của 2 ngày thứ 2 và 3. Có bao nhiêu % diện tích bang có mưa trong cả 2 ngày thứ 2 và 3? [cite: 1037]"
-  },
-  {
-    "id": 135,
-    "type": "math",
-    "topic": "Set Theory",
-    "content": "Tại TPHCM có 90% người có ít nhất 1 xe máy, 15% người có ít nhất 1 xe hơi, và tất cả mọi người đều có 1 chiếc xe hoặc là có cả 2 xe máy và xe hơi. [cite_start]Trong số những người sở hữu xe hơi có bao nhiêu % người sở hữu cả 2 loại xe? [cite: 1065]"
-  },
-  {
-    "id": 136,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Điền số thích hợp vào dấu ?: 1, 4, 27, 16, ?, 36, 343. [cite: 1079]"
-  },
-  {
-    "id": 137,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Tờ FND có 25 phóng viên đưa tin châu Á; 20 phóng viên đưa tin châu Âu và 20 phóng viên đưa tin Bắc Mỹ. Trong trường hợp chỉ có 4 PV chỉ đưa tin châu Á và châu Âu; 6 PV chỉ đưa tin châu Á và Bắc Mỹ, 7 PV chỉ đưa tin châu Âu và Bắc Mỹ. Thì có bao nhiêu PV đưa tin cả 3 vùng? (1) Tờ FND có 38 phóng viên trong đó mỗi PV đưa tin ít nhất 1 châu lục. (2) [cite_start]Số PV chỉ đưa tin châu Á và Bắc Mỹ nhiều hơn số PV đưa tin cả 3 châu lục. [cite: 1090]"
-  },
-  {
-    "id": 138,
-    "type": "math",
-    "topic": "Inventory",
-    "content": "Trong mùa cao điểm, cửa hàng mỗi ngày bán được 20% số hàng còn lại trong kho. [cite_start]Hỏi sau 4 ngày số hàng đã bán được là bao nhiêu phần so với ban đầu? [cite: 1162]"
-  },
-  {
-    "id": 139,
-    "type": "math",
-    "topic": "Arithmetic Logic",
-    "content": "Biết a, b, c là ba số nguyên dương khác nhau. Tìm kết quả phép nhân: ab x ab = ccb. Các đáp án: 221, 335, 441, 881."
-  },
-  {
-    "id": 140,
-    "type": "math",
-    "topic": "Symmetry",
-    "content": "Phải tô đen thêm bao nhiêu ô vuông nữa để 2 trục in đậm trở thành trục đối xứng của cả bảng (trong hình lưới ô vuông)?"
-  },
-  {
-    "id": 141,
-    "type": "math",
-    "topic": "Geometry",
-    "content": "Một cái sàn lầu vọng nguyệt có hình lục giác đều có cạnh là 2m được sơn bởi 6 màu tuy khác nhau nhưng gần giống nhau. Biết rằng để sơn 1 mét vuông cần 3 kg sơn. Hỏi cần bao nhiêu kg sơn mỗi màu?"
-  },
-  {
-    "id": 142,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Liệu x³ có bằng 125? (1) x > 4, (2) x < 6. Chọn phương án đúng về tính đủ của dữ kiện."
-  },
-  {
-    "id": 143,
-    "type": "general",
-    "topic": "Verbal Logic",
-    "content": "Tìm từ thích hợp để đưa vào vị trí dấu hỏi (?): CANADIEN - IRLANDAIS - ANGLAIS - ALLEMAND? Các lựa chọn: ITALIEN, AMERICAIN, ESPAGNOL, JAPONAIS."
-  },
-  {
-    "id": 144,
-    "type": "math",
-    "topic": "Inequalities",
-    "content": "Trong các bất đẳng thức sau, bất đẳng thức nào thỏa mãn bất đẳng thức 10 - 2x > 18?"
-  },
-  {
-    "id": 145,
-    "type": "math",
-    "topic": "Geometry",
-    "content": "Có một mảnh đất hình thang vuông, trong đó đáy nhỏ có chiều dài 10 m, đáy lớn 16 m, cạnh bên không sát góc vuông có chiều dài 10 m. Hỏi diện tích mảnh đất?"
-  },
-  {
-    "id": 146,
-    "type": "math",
-    "topic": "Logic Puzzle",
-    "content": "Ada và Paul nhận được điểm thi 3 môn. Ở môn thứ nhất điểm của Ada cao hơn của Paul 10 điểm. Ở môn thứ hai điểm của Ada cao hơn của Paul 4 điểm. Biết điểm trung bình 3 môn thi của Paul cao hơn của Ada 3 điểm. Hỏi ở môn thứ 3 điểm của Paul cao hơn Ada bao nhiêu điểm?"
-  },
-  {
-    "id": 147,
-    "type": "logic",
-    "topic": "Categorical Logic",
-    "content": "Abarat là để chỉ một người đàn ông. Baba là để chỉ những Abarat có tóc nâu. Cinq là để chỉ những Abarat có tóc vàng. Decer là để chỉ những Baba có ít nhất 3 nốt ruồi trên cánh tay. Nếu một người đàn ông có tóc nâu và có 4 nốt ruồi trên cánh tay thì ông ta thuộc tộc nào là thích hợp nhất?"
-  },
-  {
-    "id": 148,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Số tiếp theo của dãy số: 1, 4, 10, 22, 46, (?)"
-  },
-  {
-    "id": 149,
-    "type": "math",
-    "topic": "Geometry Counting",
-    "content": "Hình dưới đây có bao nhiêu tam giác, bao nhiêu tứ giác? (Yêu cầu đếm dựa trên hình vẽ các tam giác lồng nhau)."
-  },
-  {
-    "id": 150,
-    "type": "math",
-    "topic": "Algebra",
-    "content": "Phương trình ((x-1)^2 - 1)^2 = 1 có mấy nghiệm?"
-  },
-  {
-    "id": 151,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Vào cuối mùa, cửa hàng quần áo áp dụng đợt giảm giá mới bao nhiêu phần trăm? (1) Một khách hàng trước đó đã có phiếu giảm giá 10% giờ gộp với đợt giảm giá mới thì được giảm tới 50%. (2) Một khách hàng trước đó đã có phiếu giảm giá 10€ giờ gộp với đợt giảm giá mới thì được giảm 50% khi mua một chiếc khăn choàng."
-  },
-  {
-    "id": 152,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Một ủy ban gồm 10 thành viên đề ra kế hoạch lập quỹ phục vụ chiến dịch vận động tranh cử Tổng thống cho ứng cử viên của họ. Hỏi quỹ thu được bao nhiêu tiền? (1) Mỗi thành viên của ủy ban đã thuyết phục được ít nhất 10 người mỗi người đóng góp ít nhất 1000€ cho quỹ. (2) Số tiền trung bình mỗi người đóng góp cho quỹ là 1500€."
-  },
-  {
-    "id": 153,
-    "type": "logic",
-    "topic": "Matrix Logic",
-    "content": "Cho biết dãy chữ cái ABCDEFGHIJKLMNOPQRSTUVWXYZ. Xác định quy luật trong bảng chữ cái: CTJ, TIC, DFH, ?, CTP, NCV, EGI, WYA. Tìm cụm chữ cái thay thế dấu ?"
-  },
-  {
-    "id": 154,
-    "type": "math",
-    "topic": "Coordinate Geometry",
-    "content": "Trên mặt phẳng tọa độ, xác định phương trình của đường thẳng đi qua điểm (0, -2) và (3, 0)."
-  },
-  {
-    "id": 155,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Xác định chênh lệch lớn nhất giữa giá bán 30 chiếc ví mà một cửa hàng đã bán được ngày hôm qua? (1) 1/3 số ví đã bán được giá $24 mỗi chiếc. (2) Giá bán thấp nhất của số ví đó bằng 1/3 giá bán cao nhất của số ví đó."
-  },
-  {
-    "id": 156,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Điền số thích hợp vào dấu ? trong dãy số sau: 10, 10, 9, 7, 7, ?, 4, 4, 3, 1."
-  },
-  {
-    "id": 157,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Điền số thích hợp vào dấu ? trong dãy số sau: 16, 23, 19, 19, 22, 15, 25, ?"
-  },
-  {
-    "id": 158,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Điền số thích hợp vào dấu ? trong dãy số sau: 1, 10, 3, 9, 5, 8, 7, ?, 9, 6."
-  },
-  {
-    "id": 159,
-    "type": "math",
-    "topic": "Mixture Problem",
-    "content": "Phải hòa mấy lít dung dịch 15% muối vào 5 lít dung dịch 8% muối để được dung dịch 10% muối?"
-  },
-  {
-    "id": 160,
-    "type": "math",
-    "topic": "Inequalities",
-    "content": "Biết 1 < x < y < z. Hỏi biểu thức nào sau đây có giá trị lớn nhất? x(x+1), z(y+1), x(y+z), y(x+z), z(x+y)."
-  },
-  {
-    "id": 161,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Một công ty bất động sản bán được 3 ngôi nhà. Hỏi giá bán của ngôi nhà thứ hai là bao nhiêu? (i) Chênh lệch giá bán ngôi nhà đắt nhất và ngôi nhà rẻ nhất là 130.000 USD. (ii) Chênh lệch giá bán của hai ngôi nhà đắt hơn là 85.000 USD."
-  },
-  {
-    "id": 162,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Một khoản đầu tư có lãi suất cố định 4%/năm và được tính dồn hàng năm (compounded annually) trong vòng 5 năm. Hỏi khoản tiền lãi thu được của năm thứ 3 nhiều hơn bao nhiêu USD so với khoản tiền lãi thu được của năm thứ nhất? (i) Tổng giá trị cả gốc lẫn lãi vào thời điểm đầu năm thứ 2 là 4.160 USD. (ii) Tổng giá trị cả gốc lẫn lãi vào thời điểm đầu năm thứ 3 là 4.326 USD."
-  },
-  {
-    "id": 163,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Tìm số đúng để thay vào vị trí dấu hỏi “?” trong dãy sau: 11-13-17-23-?"
-  },
-  {
-    "id": 164,
-    "type": "logic",
-    "topic": "Alphanumeric Logic",
-    "content": "Tìm chữ cái đúng để thay vào vị trí dấu hỏi \"?\" trong dãy sau: 1A - 2D - 3I - 4P - 5?"
-  },
-  {
-    "id": 165,
-    "type": "math",
-    "topic": "Ratios",
-    "content": "Bốn nhân viên của công ty làm việc cho một dự án. Thời lượng bốn người này làm việc cho dự án có tỷ lệ 2:3:5:6. Biết rằng thời lượng làm việc cho dự án của một trong bốn người là 30 giờ. Hỏi trong các số sau đây, số nào KHÔNG THỂ là tổng số giờ của cả bốn người làm cho dự án? 80, 96, 160, 192, 240."
-  },
-  {
-    "id": 166,
-    "type": "math",
-    "topic": "Statistics",
-    "content": "Số lượng máy tính được lắp ráp mỗi ngày trong 6 ngày liên tiếp lần lượt là: 20, 12, 18, 10, 16, 8. Hỏi phần trăm thay đổi số lượng máy tính được lắp ráp từ ngày nào sang ngày tiếp theo là lớn nhất xét về giá trị tuyệt đối?"
-  },
-  {
-    "id": 167,
-    "type": "logic",
-    "topic": "Alphanumeric Logic",
-    "content": "Tìm số đúng thay vào vị trí dấu \"?\" trong dãy sau: B8D, E90R, I180T, O150J, G?K. (Biết thứ tự bảng chữ cái tiếng Anh)."
-  },
-  {
-    "id": 168,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Một đại lý ô tô mới nhập về một số xe giao cho nhân viên bán hàng để bán. Hỏi số xe đại lý mới nhập về là bao nhiêu, biết rằng: (i) Nếu mỗi nhân viên bán hàng bán được 4 xe thì sẽ còn 23 xe chưa bán được. (ii) Nếu mỗi nhân viên bán hàng bán được 6 xe thì sẽ còn 5 xe chưa bán được."
-  },
-  {
-    "id": 169,
-    "type": "math",
-    "topic": "Logic/Motion",
-    "content": "Vòng quay SỐ được chia thành các đoạn bằng nhau. Hỏi mũi tên sẽ dừng lại ở vị trí chữ cái nào sau khi quay từ vị trí S theo chiều kim đồng hồ được 1.174 đoạn?"
-  },
-  {
-    "id": 170,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Trong trường đại học X, số sinh viên đăng ký học cả 2 môn Tiếng Anh và Tiếng Pháp ít hơn số sinh viên không đăng học cả 2 môn này bao nhiêu? (i) Trong trường đại học X có 85 sinh viên đăng ký học Tiếng Anh. (ii) Trong trường đại học X có 60 sinh viên đăng ký học Tiếng Pháp."
-  },
-  {
-    "id": 171,
-    "type": "math",
-    "topic": "LCM",
-    "content": "Bội số chung nhỏ nhất của 8, 9, 18 và 24 là số nào?"
-  },
-  {
-    "id": 172,
-    "type": "math",
-    "topic": "Relative Speed",
-    "content": "Cần bao nhiêu giây để một đoàn tàu dài 500m chạy với tốc độ 63 km/h vượt qua một người đàn ông đi bộ cùng chiều dọc theo đoàn tàu với tốc độ là 3 km/h?"
-  },
-  {
-    "id": 173,
-    "type": "math",
-    "topic": "Cost Function",
-    "content": "Chi phí đường hàng không là 10 cent cho 1 km và 12 cent cho 1km thuê oto tự lái. Nếu bạn phải đi một quảng đường 200 km, trong đó chuyến bay hết x km, phần còn lại thuê xe, thì chi phí là bao nhiêu?"
-  },
-  {
-    "id": 174,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "David có 3 thẻ tín dụng: P, E, A. Anh ta vừa nhận sao kê số dư phải trả của 3 thẻ. Liệu số dư phải trả của thẻ E có phải là số dư lớn nhất? (1) Tổng số dư phải trả của thẻ E và A là 1350 usd gấp 3 lần số dư của P. (2) Số dư của thẻ E bằng 4/3 số dư của thẻ P và bằng 4/5 số dư của thẻ A."
-  },
-  {
-    "id": 175,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Do di cư dân cơ học đến khu công nghiệp. Dân cư thị trấn VL ngày 1/1/2010 tăng 56% so với ngày 1/1/2005, ngày 1/1/2015 dân cư thị trấn VL thậm chí còn tăng thêm 75% so với ngày 1/1/2010. Tính dân số thị trấn ngày 1/1/2005? (1) Dân cư thị trấn VL ngày 1/1/2015 là 21840. (2) Số dân thị trấn VL tăng từ ngày 1/1/2010 đến ngày 1/1/2015 nhiều hơn 4800 người so với số dân tăng kỳ trước đó."
-  },
-  {
-    "id": 176,
-    "type": "math",
-    "topic": "Ratios",
-    "content": "Hai số lớn hơn số thứ 3 lần lượt là 20% và 50%. Tỷ lệ giữa 2 số đầu là bao nhiêu?"
-  },
-  {
-    "id": 177,
-    "type": "math",
-    "topic": "Interest Rates",
-    "content": "Lãi suất danh nghĩa 6% / năm nhưng được tính theo quý sẽ có lãi suất thực tế theo năm là bao nhiêu?"
-  },
-  {
-    "id": 178,
-    "type": "math",
-    "topic": "Weighted Average",
-    "content": "Một đội bóng rổ thắng 50% của 60 trận đầu tiên trong mùa và thắng 80% những trận còn lại của mùa giải. Đội này thắng 60% tổng số trận của mùa giải. Hỏi tổng số trận mà đội này đã chơi trong cả mùa giải?"
-  },
-  {
-    "id": 179,
-    "type": "math",
-    "topic": "Proportions",
-    "content": "Một loại chip có các màu được phân bổ như sau: 1/2 màu trắng; 1/6 màu xanh lá cây; 1/5 màu xanh dương; còn lại 12 chip màu đỏ. Hỏi có tổng cộng bao nhiêu chip?"
-  },
-  {
-    "id": 180,
-    "type": "math",
-    "topic": "Exponential Growth",
-    "content": "Một nhà điểu học nghiên cứu loài sáo biển (starling) và phát hiện ra rằng số loài sáo biển tăng 400% sau mỗi 10 năm. Nếu số lượng này năm 1890 là 256 cá thể thì đến năm 1970 loài này khoảng bao nhiêu cá thể?"
-  },
-  {
-    "id": 181,
-    "type": "math",
-    "topic": "Algebra",
-    "content": "Một nhà hàng vừa sửa chữa, cải tạo mở rộng không gian cho khách. Bàn mới dùng cho 6 khách trong khi bàn cũ chỉ ngồi được 4 khách. Sau khi mở rộng nhà hàng bây giờ có 40 bàn và có thể phục vụ cho 220 khách. Hỏi số lượng bàn mới mà nhà hàng mới trang bị thêm?"
-  },
-  {
-    "id": 182,
-    "type": "logic",
-    "topic": "Sequences",
-    "content": "Một nhà máy sản xuất Notebook thứ tự 5 màu đỏ, xanh dương, đen, trắng và vàng đồng. Sau khi sản xuất lần lượt 5 màu sẽ bắt đầu lại màu đỏ. Nếu hôm nay nhà máy bắt đầu bằng màu đỏ và kết thúc màu đen thì trong ngày khả năng nhà máy đã sản xuất tổng cộng bao nhiêu máy?"
-  },
-  {
-    "id": 183,
-    "type": "math",
-    "topic": "Weighted Average",
-    "content": "Một nhóm người tham gia đóng góp từ thiện, 30% số họ đóng góp 40 usd/người, 45% đóng góp 20 usd/người, số còn lại 12 usd/người. Hỏi giá trị quỹ mà nhóm đóng góp 40 usd/người chiếm bao nhiêu % trong tổng số quỹ?"
-  },
-  {
-    "id": 184,
-    "type": "math",
-    "topic": "Geometric Progression",
-    "content": "Một sân bay có số lượng chuyến bay cất cánh tăng gấp 2 lần sau mỗi giờ từ 9h00 đến 12h00 trưa. Từ 12h00 trở đi Số lượng chuyến bay tăng gấp 2 lần sau mỗi 2 giờ. Biết có 4 chuyến bay trong khoảng 9h00-10h00, hỏi có bao nhiêu chuyến bay từ 2h00-4h00?"
-  },
-  {
-    "id": 185,
-    "type": "math",
-    "topic": "Geometry/Speed",
-    "content": "Một sân trường đua Hình Chữ Nhật có tỷ lệ giữa các cạnh 3:2. Một vận động viên chạy xe đạp vòng quanh sân với tốc độ 12 km/h mất 8 phút để chạy hết 1 vòng sân. Tính diện tích sân theo m2?"
-  },
-  {
-    "id": 186,
-    "type": "math",
-    "topic": "Compound Interest",
-    "content": "Tài khoản tiết kiệm ban đầu là 5000 usd có lãi suất gộp 8% (tính cả năm) và chu kỳ tính lãi là 6 tháng. Hỏi khoản tiết kiệm này chênh lệch bao nhiêu usd so với gửi tiết kiệm khoản này với lãi suất gộp 8% và chu kỳ tính lãi theo năm?"
-  },
-  {
-    "id": 187,
-    "type": "math",
-    "topic": "Set Theory",
-    "content": "Tại một bang của Hoa Kỳ 70% diện tích có mưa vào thứ 2, 65% diện tích có mưa vào thứ 3. Hoàn toàn không có mưa tại 25% diện tích bang trong của 2 ngày thứ 2 và 3. Có bao nhiêu % diện tích bang có mưa trong cả 2 ngày thứ 2 và 3?"
-  },
-  {
-    "id": 188,
-    "type": "math",
-    "topic": "Set Theory",
-    "content": "Tại TPHCM có 90% người có ít nhất 1 xe máy, 15% người có ít nhất 1 xe hơi, và tất cả mọi người đều có 1 chiếc xe hoặc là có cả 2 xe máy và xe hơi. Trong số những người sở hữu xe hơi có bao nhiêu % người sở hữu cả 2 loại xe?"
-  },
-  {
-    "id": 189,
-    "type": "math",
-    "topic": "Number Series",
-    "content": "Điền số thích hợp vào dấu ?: 1, 4, 27, 16, ?, 36, 343."
-  },
-  {
-    "id": 190,
-    "type": "math",
-    "topic": "Data Sufficiency",
-    "content": "Tờ FND có 25 phóng viên đưa tin châu Á; 20 phóng viên đưa tin châu Âu và 20 phóng viên đưa tin Bắc Mỹ. Trong trường hợp chỉ có 4 PV chỉ đưa tin châu Á và châu Âu; 6 PV chỉ đưa tin châu Á và Bắc Mỹ, 7 PV chỉ đưa tin châu Âu và Bắc Mỹ. Thì có bao nhiêu PV đưa tin cả 3 vùng? (1) Tờ FND có 38 phóng viên trong đó mỗi PV đưa tin ít nhất 1 châu lục. (2) Số PV chỉ đưa tin châu Á và Bắc Mỹ nhiều hơn số PV đưa tin cả 3 châu lục."
-  },
-  {
-    "id": 191,
-    "type": "math",
-    "topic": "Inventory",
-    "content": "Trong mùa cao điểm, cửa hàng mỗi ngày bán được 20% số hàng còn lại trong kho. Hỏi sau 4 ngày số hàng đã bán được là bao nhiêu phần so với ban đầu?"
-  },
-  {
-    "id": 192,
-    "type": "math",
-    "topic": "Mixture Problem",
-    "content": "Cần thêm bao nhiêu lít rượu nguyên chất vào một dung dịch 40 lít, trong đó có 10% là rượu theo thể tích, để làm gấp đôi tỷ lệ rượu nguyên chất trong dung dịch?",
-    "options": ["1", "3", "5", "7"]
-  },
-  {
-    "id": 193,
-    "type": "math",
-    "topic": "Average",
-    "content": "Tại cửa hàng tạp hóa, doanh thu trung bình mỗi ngày là 4 triệu đồng trong một khoảng thời gian 10 ngày. Nếu doanh thu trung bình mỗi ngày trong 6 ngày đầu tiên là 3,6 triệu đồng, vậy doanh thu trung bình mỗi ngày trong 4 ngày cuối là bao nhiêu?",
-    "options": ["4,600,000", "3,800,000", "4,440,000", "4,500,000"]
-  },
-  {
-    "id": 194,
-    "type": "math",
-    "topic": "Average/Algebra",
-    "content": "Tại một nhà máy, trong x ngày vừa qua, trung bình mỗi ngày nhà máy sản xuất 40 sản phẩm. Hôm nay nhà máy sản xuất được 100 sản phẩm, điều này làm cho giá trị trung bình mới là 50 sản phẩm/ngày. Tìm giá trị x?",
-    "options": ["5", "8", "9", "10", "15"]
-  },
-  {
-    "id": 195,
-    "type": "logic",
-    "topic": "Number Sequence",
-    "content": "Số tiếp theo của dãy số: 2, 5, 9, 19, 37, (?)",
-    "options": ["73", "75", "76", "78"]
-  },
-  {
-    "id": 196,
-    "type": "logic",
-    "topic": "Visual Pattern",
-    "content": "Tìm giá trị hợp lý tại giá trị “?” tại hình số 4 (trong bảng dữ liệu hình ảnh tương ứng với câu 5).",
-    "options": ["1", "3", "5", "7"]
-  },
-  {
-    "id": 197,
-    "type": "math",
-    "topic": "Percentage Change",
-    "content": "Người đua xe đạp A tăng tốc độ từ 10 km/h lên 25 km/h trong vòng đua cuối. Cũng tại vòng đua cuối này, người đua xe đạp B tăng tốc độ từ 8 km/h lên 24 km/h. Tốc độ của B tăng nhanh hơn bao nhiêu phần trăm so với tốc độ tăng của A?",
-    "options": ["33.33%", "50%", "66.67%", "75%"]
-  },
-  {
-    "id": 198,
-    "type": "math",
-    "topic": "Compound Growth",
-    "content": "Giá trị của một công ty là 100 tỷ đồng. Giá trị công ty tăng trung bình 4.8%/năm. Hỏi sau 15 năm giá trị của công ty sẽ vào khoảng bao nhiêu tỷ đồng?",
-    "options": ["202 tỷ", "180 tỷ", "220 tỷ", "172 tỷ"]
-  },
-  {
-    "id": 199,
-    "type": "math",
-    "topic": "Permutation",
-    "content": "Dùng 4 chữ số lẻ: 1, 3, 5, 7 để viết tất cả các số có 4 chữ số khác nhau thì viết được bao nhiêu số?",
-    "options": ["24", "30", "18", "12"]
-  },
-  {
-    "id": 200,
-    "type": "math",
-    "topic": "Tax Calculation",
-    "content": "Một mặt hàng bị áp thuế bán hàng 10% trên phần giá vượt quá 200 đô la. Nếu khách hàng trả 10 đô la tiền thuế bán hàng cho mặt hàng này, giá của mặt hàng đó là bao nhiêu đô la?",
-    "options": ["200", "250", "300", "360"]
-  },
-  {
-    "id": 201,
-    "type": "math",
-    "topic": "Integers Properties",
-    "content": "Biết a và b là các số nguyên khác 0 và a + b = 1. Hỏi có thể nói gì về tích ab?",
-    "options": ["Tích ab là số lẻ và dương", "Tích ab là số lẻ và âm", "Tích ab là số chẵn và dương", "Tích ab là số chẵn và âm"]
-  },
-  {
-    "id": 202,
-    "type": "math",
-    "topic": "Geometry/Distance",
-    "content": "Ba đường Lê Lợi, Nguyễn Huệ và Hàm Nghi tạo thành một tam giác vuông (góc vuông giao giữa Lê Lợi và Nguyễn Huệ). Nguyễn Huệ dài 900m, Lê Lợi dài 800m. A đi từ đầu Nguyễn Huệ -> Lê Lợi -> Bến Thành. B đi đường Hàm Nghi -> Bến Thành. Hỏi khoảng cách A đi nhiều hơn B khoảng bao nhiêu phần trăm?",
-    "options": ["30%", "40%", "50%", "60%"]
-  },
-  {
-    "id": 203,
-    "type": "math",
-    "topic": "Statistics (Median)",
-    "content": "Trong một lớp học, số điểm của học sinh trong kỳ thi là: {56, 78, 90, 65, 88, 72, 80, 95). Hãy tìm trung vị của dãy số này.",
-    "options": ["76", "78", "79", "80"]
-  },
-  {
-    "id": 204,
-    "type": "math",
-    "topic": "Exponents/Inequality",
-    "content": "Nếu X = m - 1, công thức nào sau đây đúng với m = 1/2?",
-    "options": ["X^0 > X^2 > X^3 > X^1", "X^0 > X^2 > X^1 > X^3", "X^0 > X^1 > X^2 > X^3", "X^3 > X^2 > X^1 > X^0"]
-  },
-  {
-    "id": 205,
-    "type": "math",
-    "topic": "Percentages/Shares",
-    "content": "Công ty A sở hữu 40% cổ phiếu XYZ. Công ty B sở hữu 15000 cổ phiếu XYZ. Công ty C sở hữu phần còn lại. Hỏi công ty A sở hữu bao nhiêu cổ phiếu biết rằng công ty C sở hữu nhiều hơn công ty A 25% (tức C = 1.25 * A)?",
-    "options": ["45000", "50000", "60000", "75000"]
-  },
-  {
-    "id": 206,
-    "type": "data_sufficiency",
-    "topic": "Exponents",
-    "content": "Liệu x^3 có chính xác bằng 125? (1) x > 4; (2) x < 6.",
-    "options": ["Một mình (1) đủ, (2) không đủ", "Một mình (2) đủ, (1) không đủ", "Bất cứ 1 trong 2 đủ", "Cả 2 mới đủ", "Cả 2 vẫn không đủ"]
-  },
-  {
-    "id": 207,
-    "type": "math",
-    "topic": "Equation Roots",
-    "content": "Các phương trình sau đây có thể bằng 0 với một vài giá trị nào đó của x? (1) 3x^2 - 12; (2) x^2 + x^4 + 1; (3) x^2 + 7x + 6.",
-    "options": ["Cả (1), (2), và (3)", "Chỉ trường hợp (3)", "Chỉ trường hợp (1)", "Chỉ (1) và (3)"]
-  },
-  {
-    "id": 208,
-    "type": "logic",
-    "topic": "Verbal Pattern",
-    "content": "Tìm từ thích hợp để đưa vào vị trí dấu hỏi (?): IMAGINATION - DEDICATION; OPERATION - MOVEMENT - ?",
-    "options": ["LAIDIES", "CENTER", "LEFT", "RIGHT"]
-  },
-  {
-    "id": 209,
-    "type": "data_sufficiency",
-    "topic": "Weighted Average",
-    "content": "Tuổi bình quân quản lý là 54, nhân viên không quản lý là 34. Hỏi tuổi trung bình chung? (1) Có 10 quản lý; (2) Số nhân viên không quản lý gấp 4 lần quản lý.",
-    "options": ["Một mình (1) đủ, (2) không đủ", "Một mình (2) đủ, (1) không đủ", "Bất cứ 1 trong 2 đủ", "Cả 2 mới đủ", "Cả 2 vẫn không đủ"]
-  },
-  {
-    "id": 210,
-    "type": "math",
-    "topic": "Venn Diagram",
-    "content": "Khảo sát 200 sinh viên: 70 thích cầu lông, 90 thích bóng bàn. Số SV không thích cả hai môn gấp đôi số SV thích cả hai môn. Hỏi có bao nhiêu SV không thích cả hai môn?",
-    "options": ["20", "40", "50", "80", "120"]
-  },
-  {
-    "id": 211,
-    "type": "math",
-    "topic": "LCM/Divisibility",
-    "content": "Số nhỏ nhất trong các số bên dưới số nào chia hết cho cả 18 và 24?",
-    "options": ["288", "72", "216", "360"]
-  },
-  {
-    "id": 212,
     "type": "logic",
     "topic": "Letter Sequence",
-    "content": "Ký tự tiếp theo trong dãy sau đây là ký tự nào: A...C...F...J...O...U...?",
-    "options": ["V", "X", "Y", "B"]
+    "content": "Ký tự tiếp theo trong dãy sau đây là ký tự nào: A...C...F...J...O...U...?\n(Dãy chữ tiếng Anh: ABCDEFGHIJKLMNOPQRSTUVWXYZ)",
+    "options": [
+      "a. V",
+      "b. X",
+      "c. Y",
+      "d. B"
+    ],
+    "data_statements": null,
+    "correct_answer": null
   }
 ]
