@@ -333,7 +333,14 @@ def _clean_html(text):
 def _format_multistep_text(text: str) -> str:
     """Clean HTML then place numbered steps on new lines for readability."""
     cleaned = _clean_html(text)
-    return re.sub(r"(?<!^)\b(\d+\.\s)", r"\n\1", cleaned).strip()
+    # Bullet common sections like Câu hỏi / Dữ kiện / Phân tích / Kết luận
+    for kw in ["Câu hỏi", "Dữ kiện", "Phân tích", "Kết luận"]:
+        cleaned = re.sub(rf"(?i)(^|\n)\s*{kw}\s*:\s*", fr"\1• {kw}: ", cleaned)
+    # Break numbered steps onto separate lines
+    cleaned = re.sub(r"(?<!^)\b(\d+\.\s)", r"\n\1", cleaned)
+    # Trim and collapse extra blank lines
+    cleaned = "\n".join(line.strip() for line in cleaned.splitlines() if line.strip())
+    return cleaned.strip()
 
 
 def _format_theory_dict(theory_dict):
