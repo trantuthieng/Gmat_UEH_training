@@ -314,6 +314,72 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- HÀM HỖ TRỢ ---
+def _format_theory_dict(theory_dict):
+    """
+    Convert structured theory dictionary to readable markdown text
+    
+    Args:
+        theory_dict: Dictionary containing theory information with keys like
+                    'title', 'definition', 'main_rules', 'application_steps', etc.
+    
+    Returns:
+        Formatted markdown string
+    """
+    lines = []
+    
+    # Title
+    if 'title' in theory_dict:
+        lines.append(f"**{theory_dict['title']}**\n")
+    
+    # Definition
+    if 'definition' in theory_dict:
+        lines.append(f"**📖 Định nghĩa:**\n{theory_dict['definition']}\n")
+    
+    # Main rules
+    if 'main_rules' in theory_dict and theory_dict['main_rules']:
+        lines.append("**📋 Quy tắc chính:**")
+        for i, rule in enumerate(theory_dict['main_rules'], 1):
+            if isinstance(rule, dict):
+                rule_name = rule.get('rule_name', '')
+                formula = rule.get('formula', '')
+                explanation = rule.get('explanation', '')
+                lines.append(f"\n{i}. **{rule_name}**")
+                if formula:
+                    lines.append(f"   - Công thức: `{formula}`")
+                if explanation:
+                    lines.append(f"   - {explanation}")
+            else:
+                lines.append(f"{i}. {rule}")
+        lines.append("")
+    
+    # Application steps
+    if 'application_steps' in theory_dict and theory_dict['application_steps']:
+        steps_data = theory_dict['application_steps']
+        if isinstance(steps_data, dict):
+            if 'title' in steps_data:
+                lines.append(f"**📝 {steps_data['title']}:**")
+            if 'steps' in steps_data and steps_data['steps']:
+                for i, step in enumerate(steps_data['steps'], 1):
+                    lines.append(f"{i}. {step}")
+                lines.append("")
+    
+    # Example analysis
+    if 'example_analysis' in theory_dict and theory_dict['example_analysis']:
+        example = theory_dict['example_analysis']
+        if isinstance(example, dict):
+            lines.append("**💡 Ví dụ minh họa:**")
+            if 'sequence' in example:
+                lines.append(f"- Dãy số: {example['sequence']}")
+            if 'solution' in example:
+                lines.append(f"- Lời giải: {example['solution']}")
+            lines.append("")
+    
+    # Important notes
+    if 'important_notes' in theory_dict:
+        lines.append(f"**⚠️ Lưu ý quan trọng:**\n{theory_dict['important_notes']}\n")
+    
+    return "\n".join(lines)
+
 @st.cache_data(ttl=3600, show_spinner=False)  # Cache for 1 hour
 def load_seed_data():
     try:
@@ -889,6 +955,10 @@ elif st.session_state.exam_state == "FINISHED":
                                         # Replace escaped newlines with actual newlines for markdown rendering
                                         theory_text = theory_text.replace('\\n\\n', '\n\n').replace('\\n', '\n')
                                         st.markdown(theory_text)
+                                    elif isinstance(theory_text, dict):
+                                        # Convert structured theory dictionary to readable markdown
+                                        formatted_theory = _format_theory_dict(theory_text)
+                                        st.markdown(formatted_theory)
                                     else:
                                         st.write(theory_text)
                                     st.markdown("---")
