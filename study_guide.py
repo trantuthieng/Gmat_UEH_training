@@ -952,9 +952,31 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             theory = topic.get('theory', '')
             if theory:
                 story.append(Paragraph("📚 Lý Thuyết", subheading_style))
-                # Clean up theory text for better PDF rendering
-                theory_clean = theory.replace('\n\n', '<br/><br/>').replace('\n', ' ')
-                story.append(Paragraph(theory_clean[:2000], body_style))  # Limit length
+                # Handle both string and dictionary theory formats
+                if isinstance(theory, str):
+                    # Clean up theory text for better PDF rendering
+                    theory_clean = theory.replace('\n\n', '<br/><br/>').replace('\n', ' ')
+                    story.append(Paragraph(theory_clean[:2000], body_style))  # Limit length
+                elif isinstance(theory, dict):
+                    # Convert dictionary theory to formatted text
+                    theory_parts = []
+                    if 'title' in theory:
+                        theory_parts.append(f"<b>{theory['title']}</b>")
+                    if 'definition' in theory:
+                        theory_parts.append(f"<br/><b>Định nghĩa:</b> {theory['definition'][:500]}")
+                    if 'main_rules' in theory and theory['main_rules']:
+                        theory_parts.append("<br/><b>Quy tắc chính:</b>")
+                        for i, rule in enumerate(theory['main_rules'][:3], 1):
+                            if isinstance(rule, dict):
+                                rule_name = rule.get('rule_name', '')
+                                theory_parts.append(f"<br/>{i}. {rule_name}")
+                            else:
+                                theory_parts.append(f"<br/>{i}. {rule}")
+                    theory_text = ' '.join(theory_parts)[:2000]  # Limit total length
+                    story.append(Paragraph(theory_text, body_style))
+                else:
+                    # Fallback for other types
+                    story.append(Paragraph(str(theory)[:2000], body_style))
                 story.append(Spacer(1, 0.1*inch))
             
             # Detailed concepts
