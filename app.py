@@ -330,6 +330,12 @@ def _clean_html(text):
     return text.replace("&nbsp;", " ").strip()
 
 
+def _format_multistep_text(text: str) -> str:
+    """Clean HTML then place numbered steps on new lines for readability."""
+    cleaned = _clean_html(text)
+    return re.sub(r"(?<!^)\b(\d+\.\s)", r"\n\1", cleaned).strip()
+
+
 def _format_theory_dict(theory_dict):
     """
     Convert structured theory dictionary to readable markdown text
@@ -1008,9 +1014,9 @@ elif st.session_state.exam_state == "FINISHED":
                                     for idx, mistake in enumerate(topic['mistake_analysis'], 1):
                                         with st.container():
                                             st.markdown(f"**Câu {idx}: {_clean_html(mistake.get('question_summary', ''))}**")
-                                            st.error(f"❌ **Lỗi của bạn:** {_clean_html(mistake.get('user_mistake', ''))}")
-                                            st.warning(f"⚠️ **Tại sao sai:** {_clean_html(mistake.get('why_wrong', ''))}")
-                                            st.success(f"✅ **Cách đúng:** {_clean_html(mistake.get('correct_approach', ''))}")
+                                            st.error(f"❌ **Lỗi của bạn:** {_format_multistep_text(mistake.get('user_mistake', ''))}")
+                                            st.warning(f"⚠️ **Tại sao sai:** {_format_multistep_text(mistake.get('why_wrong', ''))}")
+                                            st.success(f"✅ **Cách đúng:** {_format_multistep_text(mistake.get('correct_approach', ''))}")
                                             st.markdown("")
                                     st.markdown("---")
                                 
