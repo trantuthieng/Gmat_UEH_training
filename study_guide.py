@@ -2,6 +2,7 @@ import google.genai as genai
 import os
 import json
 import re
+from pathlib import Path
 from typing import List, Dict, Any
 from functools import lru_cache
 
@@ -839,12 +840,37 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
         PDF file as bytes, or None if reportlab not available
     """
     
-    def clean_text_for_pdf(text):
-        """Remove emojis and convert Vietnamese to ASCII-safe characters"""
+    def _register_vn_font():
+        """Try to register a Unicode font that supports Vietnamese diacritics."""
+        try:
+            from reportlab.pdfbase import pdfmetrics
+            from reportlab.pdfbase.ttfonts import TTFont
+            font_candidates = [
+                ("DejaVuSans", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+                ("NotoSans", "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"),
+                ("ArialUnicode", "C:/Windows/Fonts/ARIALUNI.TTF"),
+                ("Arial", "C:/Windows/Fonts/arial.ttf"),
+            ]
+            for name, path in font_candidates:
+                if Path(path).exists():
+                    pdfmetrics.registerFont(TTFont(name, path))
+                    return name
+        except Exception:
+            return None
+        return None
+
+    def clean_text_for_pdf(text, keep_unicode: bool):
+        """Normalize text; optionally keep Unicode if font supports it."""
         if not isinstance(text, str):
             text = str(text)
-        
-        # Vietnamese character mapping (most common)
+
+        # Remove emojis/high codepoints that typical fonts can't render well
+        text = ''.join(ch for ch in text if ord(ch) < 0x1F600 or ord(ch) > 0x1F64F)
+
+        if keep_unicode:
+            return text
+
+        # Fallback ASCII mapping (old behavior)
         vietnamese_map = {
             'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
             'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
@@ -872,19 +898,9 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             'Ư': 'U', 'Ừ': 'U', 'Ứ': 'U', 'Ử': 'U', 'Ữ': 'U', 'Ự': 'U',
             'Ỳ': 'Y', 'Ý': 'Y', 'Ỷ': 'Y', 'Ỹ': 'Y', 'Ỵ': 'Y',
         }
-        
-        # Replace Vietnamese characters
         for viet_char, ascii_char in vietnamese_map.items():
             text = text.replace(viet_char, ascii_char)
-        
-        # Remove emojis and special unicode (keep basic ASCII + common punctuation)
-        cleaned = ''
-        for char in text:
-            if ord(char) < 128 or char in '°×÷±':  # Basic ASCII + math symbols
-                cleaned += char
-            elif ord(char) > 127 and ord(char) < 256:  # Extended ASCII (keep for now)
-                cleaned += char
-        
+        cleaned = ''.join(ch for ch in text if ord(ch) < 128 or ch in '°×÷±')
         return cleaned
     
     try:
@@ -908,6 +924,13 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             print("  4. Streamlit Cloud sẽ tự động cài đặt")
             return None
         
+        # Try register Unicode font for Vietnamese
+        font_name = _register_vn_font()
+        unicode_font = bool(font_name)
+        if not font_name:
+            font_name = 'Helvetica'
+        bold_font_name = font_name
+
         # Create PDF buffer
         pdf_buffer = BytesIO()
         
@@ -933,7 +956,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             textColor=colors.HexColor('#0066cc'),
             spaceAfter=12,
             alignment=TA_CENTER,
-            fontName='Helvetica-Bold'
+            fontName=bold_font_name
         )
         
         heading_style = ParagraphStyle(
@@ -943,7 +966,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             textColor=colors.HexColor('#0066cc'),
             spaceAfter=6,
             spaceBefore=12,
-            fontName='Helvetica-Bold'
+            fontName=bold_font_name
         )
         
         subheading_style = ParagraphStyle(
@@ -952,7 +975,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             fontSize=12,
             textColor=colors.HexColor('#333333'),
             spaceAfter=6,
-            fontName='Helvetica-Bold'
+            fontName=bold_font_name
         )
         
         body_style = ParagraphStyle(
@@ -961,7 +984,8 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             fontSize=10,
             alignment=TA_JUSTIFY,
             spaceAfter=8,
-            leading=14
+            leading=14,
+            fontName=font_name
         )
         
         # Story to hold all PDF elements
@@ -976,7 +1000,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
         overall = study_data.get('overall_summary', '')
         if overall:
             story.append(Paragraph("Tong Quan Ket Qua", heading_style))
-            story.append(Paragraph(clean_text_for_pdf(overall), body_style))
+            story.append(Paragraph(clean_text_for_pdf(overall, unicode_font), body_style))
             story.append(Spacer(1, 0.2*inch))
         
         # Topics
@@ -985,7 +1009,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             if idx > 0:
                 story.append(PageBreak())
             
-            topic_name = clean_text_for_pdf(topic.get('topic', 'Chu de'))
+            topic_name = clean_text_for_pdf(topic.get('topic', 'Chu de'), unicode_font)
             stats = topic.get('stats', {})
             accuracy = (stats.get('correct', 0) / stats.get('total', 1) * 100) if stats.get('total', 1) > 0 else 0
             
@@ -1004,28 +1028,28 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
                 # Handle both string and dictionary theory formats
                 if isinstance(theory, str):
                     # Clean up theory text for better PDF rendering
-                    theory_clean = clean_text_for_pdf(theory).replace('\n\n', '<br/><br/>').replace('\n', ' ')
+                    theory_clean = clean_text_for_pdf(theory, unicode_font).replace('\n\n', '<br/><br/>').replace('\n', ' ')
                     story.append(Paragraph(theory_clean[:2000], body_style))  # Limit length
                 elif isinstance(theory, dict):
                     # Convert dictionary theory to formatted text
                     theory_parts = []
                     if 'title' in theory:
-                        theory_parts.append(f"<b>{theory['title']}</b>")
+                        theory_parts.append(f"<b>{clean_text_for_pdf(theory['title'], unicode_font)}</b>")
                     if 'definition' in theory:
-                        theory_parts.append(f"<br/><b>Dinh nghia:</b> {clean_text_for_pdf(theory['definition'][:500])}")
+                        theory_parts.append(f"<br/><b>Dinh nghia:</b> {clean_text_for_pdf(theory['definition'][:500], unicode_font)}")
                     if 'main_rules' in theory and theory['main_rules']:
                         theory_parts.append("<br/><b>Quy tac chinh:</b>")
                         for i, rule in enumerate(theory['main_rules'][:3], 1):
                             if isinstance(rule, dict):
-                                rule_name = clean_text_for_pdf(rule.get('rule_name', ''))
+                                rule_name = clean_text_for_pdf(rule.get('rule_name', ''), unicode_font)
                                 theory_parts.append(f"<br/>{i}. {rule_name}")
                             else:
-                                theory_parts.append(f"<br/>{i}. {clean_text_for_pdf(str(rule))}")
+                                theory_parts.append(f"<br/>{i}. {clean_text_for_pdf(str(rule), unicode_font)}")
                     theory_text = ' '.join(theory_parts)[:2000]  # Limit total length
                     story.append(Paragraph(theory_text, body_style))
                 else:
                     # Fallback for other types
-                    story.append(Paragraph(clean_text_for_pdf(str(theory))[:2000], body_style))
+                    story.append(Paragraph(clean_text_for_pdf(str(theory), unicode_font)[:2000], body_style))
                 story.append(Spacer(1, 0.1*inch))
             
             # Detailed concepts
@@ -1033,8 +1057,8 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             if concepts:
                 story.append(Paragraph("Cac Khai Niem Chi Tiet", subheading_style))
                 for concept in concepts[:3]:  # Limit to 3 concepts
-                    concept_name = clean_text_for_pdf(concept.get('concept_name', ''))
-                    explanation = clean_text_for_pdf(concept.get('explanation', ''))
+                    concept_name = clean_text_for_pdf(concept.get('concept_name', ''), unicode_font)
+                    explanation = clean_text_for_pdf(concept.get('explanation', ''), unicode_font)
                     story.append(Paragraph(f"<b>• {concept_name}:</b>", body_style))
                     story.append(Paragraph(explanation, body_style))
                 story.append(Spacer(1, 0.1*inch))
@@ -1044,7 +1068,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             if steps:
                 story.append(Paragraph("Phuong Phap Tung Buoc", subheading_style))
                 for i, step in enumerate(steps, 1):
-                    story.append(Paragraph(f"<b>Buoc {i}:</b> {clean_text_for_pdf(step)}", body_style))
+                    story.append(Paragraph(f"<b>Buoc {i}:</b> {clean_text_for_pdf(step, unicode_font)}", body_style))
                 story.append(Spacer(1, 0.1*inch))
             
             # Common mistakes
@@ -1052,7 +1076,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             if mistakes:
                 story.append(Paragraph("Loi Pho Bien", subheading_style))
                 for mistake in mistakes[:4]:  # Limit to 4 mistakes
-                    story.append(Paragraph(f"• {clean_text_for_pdf(mistake)}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(mistake, unicode_font)}", body_style))
                 story.append(Spacer(1, 0.1*inch))
             
             # Tips
@@ -1060,13 +1084,13 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             if tips_accuracy:
                 story.append(Paragraph("Meo Tang Ty Le Dung", subheading_style))
                 for tip in tips_accuracy[:3]:  # Limit to 3 tips
-                    story.append(Paragraph(f"• {clean_text_for_pdf(tip)}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(tip, unicode_font)}", body_style))
             
             tips_speed = topic.get('tips_for_speed', [])
             if tips_speed:
                 story.append(Paragraph("Meo Tang Toc Do", subheading_style))
                 for tip in tips_speed[:2]:  # Limit to 2 tips
-                    story.append(Paragraph(f"• {clean_text_for_pdf(tip)}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(tip, unicode_font)}", body_style))
             
             # Practice drills
             drills = topic.get('practice_drills', [])
@@ -1074,7 +1098,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
                 story.append(Spacer(1, 0.1*inch))
                 story.append(Paragraph("Bai Tap Luyen Tap", subheading_style))
                 for drill in drills[:4]:  # Limit to 4 drills
-                    story.append(Paragraph(f"• {clean_text_for_pdf(drill)}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(drill, unicode_font)}", body_style))
             
             # Key formulas
             formulas = topic.get('key_formulas', [])
@@ -1082,7 +1106,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
                 story.append(Spacer(1, 0.1*inch))
                 story.append(Paragraph("Cong Thuc Can Nho", subheading_style))
                 for formula in formulas[:4]:  # Limit to 4 formulas
-                    story.append(Paragraph(f"• {clean_text_for_pdf(formula)}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(formula, unicode_font)}", body_style))
         
         # Build PDF
         doc.build(story)
