@@ -841,22 +841,30 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
     """
     
     def _register_vn_font():
-        """Try to register a Unicode font that supports Vietnamese diacritics."""
+        """Try to register a Unicode font (prefer bundled) for Vietnamese diacritics."""
         try:
             from reportlab.pdfbase import pdfmetrics
             from reportlab.pdfbase.ttfonts import TTFont
+
+            base_dir = Path(__file__).resolve().parent
+            bundled = base_dir / "assets" / "fonts" / "DejaVuSans.ttf"
+
             font_candidates = [
-                ("DejaVuSans", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+                ("DejaVuSans", str(bundled)),
+                ("DejaVuSansSys", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
                 ("NotoSans", "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"),
                 ("ArialUnicode", "C:/Windows/Fonts/ARIALUNI.TTF"),
                 ("Arial", "C:/Windows/Fonts/arial.ttf"),
             ]
+
             for name, path in font_candidates:
                 if Path(path).exists():
                     pdfmetrics.registerFont(TTFont(name, path))
+                    print(f"✅ PDF font detected: {path}")
                     return name
-        except Exception:
-            return None
+            print("⚠️ No Unicode font found; falling back to ASCII-safe mode")
+        except Exception as font_err:
+            print(f"⚠️ Font registration failed: {font_err}")
         return None
 
     def clean_text_for_pdf(text, keep_unicode: bool):
@@ -929,6 +937,7 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
         unicode_font = bool(font_name)
         if not font_name:
             font_name = 'Helvetica'
+            print("PDF using Helvetica fallback (ASCII)")
         bold_font_name = font_name
 
         # Create PDF buffer
