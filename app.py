@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import time
 import random
+import re
 from dotenv import load_dotenv
 
 # Load environment variables FIRST (before any other imports)
@@ -314,6 +315,21 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- HÀM HỖ TRỢ ---
+def _clean_html(text):
+    """Strip basic HTML tags so the UI does not show raw markup."""
+    if text is None:
+        return ""
+    if not isinstance(text, str):
+        return str(text)
+    text = text.replace("<br />", "\n").replace("<br/>", "\n").replace("<br>", "\n")
+    text = re.sub(r"</p\s*>", "\n\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"</div\s*>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"<li\s*>", "• ", text, flags=re.IGNORECASE)
+    text = re.sub(r"</li\s*>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"<[^>]+>", "", text)
+    return text.replace("&nbsp;", " ").strip()
+
+
 def _format_theory_dict(theory_dict):
     """
     Convert structured theory dictionary to readable markdown text
@@ -329,27 +345,27 @@ def _format_theory_dict(theory_dict):
     
     # Title
     if 'title' in theory_dict:
-        lines.append(f"**{theory_dict['title']}**\n")
+        lines.append(f"**{_clean_html(theory_dict['title'])}**\n")
     
     # Definition
     if 'definition' in theory_dict:
-        lines.append(f"**📖 Định nghĩa:**\n{theory_dict['definition']}\n")
+        lines.append(f"**📖 Định nghĩa:**\n{_clean_html(theory_dict['definition'])}\n")
     
     # Main rules
     if 'main_rules' in theory_dict and theory_dict['main_rules']:
         lines.append("**📋 Quy tắc chính:**")
         for i, rule in enumerate(theory_dict['main_rules'], 1):
             if isinstance(rule, dict):
-                rule_name = rule.get('rule_name', '')
-                formula = rule.get('formula', '')
-                explanation = rule.get('explanation', '')
+                rule_name = _clean_html(rule.get('rule_name', ''))
+                formula = _clean_html(rule.get('formula', ''))
+                explanation = _clean_html(rule.get('explanation', ''))
                 lines.append(f"\n{i}. **{rule_name}**")
                 if formula:
                     lines.append(f"   - Công thức: `{formula}`")
                 if explanation:
                     lines.append(f"   - {explanation}")
             else:
-                lines.append(f"{i}. {rule}")
+                lines.append(f"{i}. {_clean_html(rule)}")
         lines.append("")
     
     # Application steps
@@ -357,10 +373,10 @@ def _format_theory_dict(theory_dict):
         steps_data = theory_dict['application_steps']
         if isinstance(steps_data, dict):
             if 'title' in steps_data:
-                lines.append(f"**📝 {steps_data['title']}:**")
+                lines.append(f"**📝 {_clean_html(steps_data['title'])}:**")
             if 'steps' in steps_data and steps_data['steps']:
                 for i, step in enumerate(steps_data['steps'], 1):
-                    lines.append(f"{i}. {step}")
+                    lines.append(f"{i}. {_clean_html(step)}")
                 lines.append("")
     
     # Example analysis
@@ -369,14 +385,14 @@ def _format_theory_dict(theory_dict):
         if isinstance(example, dict):
             lines.append("**💡 Ví dụ minh họa:**")
             if 'sequence' in example:
-                lines.append(f"- Dãy số: {example['sequence']}")
+                lines.append(f"- Dãy số: {_clean_html(example['sequence'])}")
             if 'solution' in example:
-                lines.append(f"- Lời giải: {example['solution']}")
+                lines.append(f"- Lời giải: {_clean_html(example['solution'])}")
             lines.append("")
     
     # Important notes
     if 'important_notes' in theory_dict:
-        lines.append(f"**⚠️ Lưu ý quan trọng:**\n{theory_dict['important_notes']}\n")
+        lines.append(f"**⚠️ Lưu ý quan trọng:**\n{_clean_html(theory_dict['important_notes'])}\n")
     
     return "\n".join(lines)
 
@@ -933,7 +949,8 @@ elif st.session_state.exam_state == "FINISHED":
                 else:
                     # Hiển thị tổng quan
                     if 'overall_summary' in study_data:
-                        st.info(f"📊 **Tổng quan:** {study_data['overall_summary']}")
+                        summary_text = _clean_html(study_data['overall_summary'])
+                        st.info(f"📊 **Tổng quan:** {summary_text}")
                     
                     # Hiển thị từng topic
                     topics = study_data.get('topics', [])
@@ -945,7 +962,8 @@ elif st.session_state.exam_state == "FINISHED":
                             wrong = stats.get('wrong', 0)
                             accuracy = (correct / total * 100) if total > 0 else 0
                             
-                            with st.expander(f"📚 {topic.get('topic', 'Chủ đề')} - {correct}/{total} đúng ({accuracy:.0f}%)"):
+                            topic_title = _clean_html(topic.get('topic', 'Chủ đề'))
+                            with st.expander(f"📚 {topic_title} - {correct}/{total} đúng ({accuracy:.0f}%)"):
                                 # Lý thuyết chi tiết
                                 if 'theory' in topic and topic['theory']:
                                     st.markdown("### 📖 Lý thuyết cơ bản")
@@ -953,6 +971,7 @@ elif st.session_state.exam_state == "FINISHED":
                                     theory_text = topic['theory']
                                     if isinstance(theory_text, str):
                                         # Replace escaped newlines with actual newlines for markdown rendering
+                                        theory_text = _clean_html(theory_text)
                                         theory_text = theory_text.replace('\\n\\n', '\n\n').replace('\\n', '\n')
                                         st.markdown(theory_text)
                                     elif isinstance(theory_text, dict):
@@ -968,8 +987,8 @@ elif st.session_state.exam_state == "FINISHED":
                                     st.markdown("### 💡 Các khái niệm chi tiết")
                                     for concept in topic['detailed_concepts']:
                                         with st.container():
-                                            st.markdown(f"**{concept.get('concept_name', '')}**")
-                                            st.write(concept.get('explanation', ''))
+                                            st.markdown(f"**{_clean_html(concept.get('concept_name', ''))}**")
+                                            st.write(_clean_html(concept.get('explanation', '')))
                                             if concept.get('example'):
                                                 st.code(concept['example'], language="text")
                                             st.markdown("")
@@ -979,7 +998,7 @@ elif st.session_state.exam_state == "FINISHED":
                                 if 'step_by_step_method' in topic and topic['step_by_step_method']:
                                     st.markdown("### 📝 Phương pháp làm bài từng bước")
                                     for step in topic['step_by_step_method']:
-                                        st.write(f"**{step}**")
+                                        st.write(f"**{_clean_html(step)}**")
                                     st.markdown("---")
                                 
                                 # Phân tích lỗi sai của học sinh
@@ -987,10 +1006,10 @@ elif st.session_state.exam_state == "FINISHED":
                                     st.markdown("### 🔍 Phân tích bài làm của bạn")
                                     for idx, mistake in enumerate(topic['mistake_analysis'], 1):
                                         with st.container():
-                                            st.markdown(f"**Câu {idx}: {mistake.get('question_summary', '')}**")
-                                            st.error(f"❌ **Lỗi của bạn:** {mistake.get('user_mistake', '')}")
-                                            st.warning(f"⚠️ **Tại sao sai:** {mistake.get('why_wrong', '')}")
-                                            st.success(f"✅ **Cách đúng:** {mistake.get('correct_approach', '')}")
+                                            st.markdown(f"**Câu {idx}: {_clean_html(mistake.get('question_summary', ''))}**")
+                                            st.error(f"❌ **Lỗi của bạn:** {_clean_html(mistake.get('user_mistake', ''))}")
+                                            st.warning(f"⚠️ **Tại sao sai:** {_clean_html(mistake.get('why_wrong', ''))}")
+                                            st.success(f"✅ **Cách đúng:** {_clean_html(mistake.get('correct_approach', ''))}")
                                             st.markdown("")
                                     st.markdown("---")
                                 
@@ -1001,21 +1020,21 @@ elif st.session_state.exam_state == "FINISHED":
                                     if 'common_mistakes' in topic and topic['common_mistakes']:
                                         st.markdown("### ⚠️ Lỗi phổ biến khác")
                                         for mistake in topic['common_mistakes']:
-                                            st.write(f"• {mistake}")
+                                            st.write(f"• {_clean_html(mistake)}")
                                         st.markdown("")
                                     
                                     # Mẹo tăng độ chính xác
                                     if 'tips_for_accuracy' in topic and topic['tips_for_accuracy']:
                                         st.markdown("### 🎯 Mẹo tăng tỷ lệ đúng")
                                         for tip in topic['tips_for_accuracy']:
-                                            st.write(f"• {tip}")
+                                            st.write(f"• {_clean_html(tip)}")
                                         st.markdown("")
                                     
                                     # Bài tập thực hành
                                     if 'practice_drills' in topic and topic['practice_drills']:
                                         st.markdown("### 🧪 Bài tập luyện thêm")
                                         for drill in topic['practice_drills']:
-                                            st.write(f"• {drill}")
+                                            st.write(f"• {_clean_html(drill)}")
                                 
                                 with col2:
                                     # Metric
@@ -1026,7 +1045,7 @@ elif st.session_state.exam_state == "FINISHED":
                                     if 'tips_for_speed' in topic and topic['tips_for_speed']:
                                         st.markdown("### ⚡ Mẹo tăng tốc độ")
                                         for tip in topic['tips_for_speed']:
-                                            st.write(f"• {tip}")
+                                            st.write(f"• {_clean_html(tip)}")
                                         st.markdown("")
                                     
                                     # Công thức quan trọng
@@ -1035,14 +1054,14 @@ elif st.session_state.exam_state == "FINISHED":
                                         for formula in topic['key_formulas']:
                                             if isinstance(formula, dict):
                                                 # Format formula dict
-                                                formula_text = f"**{formula.get('formula', '')}**\n\n"
+                                                formula_text = f"**{_clean_html(formula.get('formula', ''))}**\n\n"
                                                 if formula.get('explanation'):
-                                                    formula_text += f"*{formula['explanation']}*\n\n"
+                                                    formula_text += f"*{_clean_html(formula['explanation'])}*\n\n"
                                                 if formula.get('usage'):
-                                                    formula_text += f"Sử dụng: {formula['usage']}"
+                                                    formula_text += f"Sử dụng: {_clean_html(formula['usage'])}"
                                                 st.markdown(formula_text)
                                             else:
-                                                st.code(formula, language="text")
+                                                st.code(_clean_html(formula), language="text")
                     else:
                         st.warning("Không có dữ liệu ôn tập")
             
