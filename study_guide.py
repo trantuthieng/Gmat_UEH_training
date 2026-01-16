@@ -1081,7 +1081,47 @@ def generate_study_guide_text_formatted(study_data: Dict[str, Any]) -> str:
         if theory:
             text += "LÝ THUYẾT\n"
             text += "-" * 80 + "\n"
-            text += theory + "\n\n"
+            # Handle both string and dictionary theory formats
+            if isinstance(theory, str):
+                text += theory + "\n\n"
+            elif isinstance(theory, dict):
+                # Convert dictionary theory to formatted text
+                if 'title' in theory:
+                    text += f"{theory['title']}\n\n"
+                if 'definition' in theory:
+                    text += f"ĐỊNH NGHĨA:\n{theory['definition']}\n\n"
+                if 'main_rules' in theory and theory['main_rules']:
+                    text += "QUY TẮC CHÍNH:\n"
+                    for i, rule in enumerate(theory['main_rules'], 1):
+                        if isinstance(rule, dict):
+                            text += f"{i}. {rule.get('rule_name', '')}\n"
+                            if rule.get('formula'):
+                                text += f"   Công thức: {rule['formula']}\n"
+                            if rule.get('explanation'):
+                                text += f"   {rule['explanation']}\n"
+                        else:
+                            text += f"{i}. {rule}\n"
+                    text += "\n"
+                if 'application_steps' in theory and theory['application_steps']:
+                    steps_data = theory['application_steps']
+                    if isinstance(steps_data, dict) and 'steps' in steps_data:
+                        text += f"{steps_data.get('title', 'CÁC BƯỚC ÁP DỤNG')}:\n"
+                        for i, step in enumerate(steps_data['steps'], 1):
+                            text += f"{i}. {step}\n"
+                        text += "\n"
+                if 'example_analysis' in theory and theory['example_analysis']:
+                    example = theory['example_analysis']
+                    if isinstance(example, dict):
+                        text += "VÍ DỤ MINH HỌA:\n"
+                        if 'sequence' in example:
+                            text += f"Dãy: {example['sequence']}\n"
+                        if 'solution' in example:
+                            text += f"Lời giải: {example['solution']}\n"
+                        text += "\n"
+                if 'important_notes' in theory:
+                    text += f"LƯU Ý QUAN TRỌNG:\n{theory['important_notes']}\n\n"
+            else:
+                text += str(theory) + "\n\n"
         
         # Detailed concepts
         concepts = topic.get('detailed_concepts', [])
