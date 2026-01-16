@@ -33,6 +33,169 @@ def _get_study_model():
         print(f"Lỗi khởi tạo Study Model: {e}")
         return None
 
+@lru_cache(maxsize=1)
+def _get_study_model():
+    """Khởi tạo model Gemini cho ôn tập"""
+    key = _get_api_key()
+    if not key:
+        print("GEMINI_API_KEY not found")
+        return None
+    
+    try:
+        # Create client with API key for google-genai v1.56+
+        client = genai.Client(api_key=key)
+        return client
+    except Exception as e:
+        print(f"Lỗi khởi tạo Study Model: {e}")
+        return None
+
+def _get_topic_knowledge_base():
+    """Cơ sở dữ liệu kiến thức chi tiết cho từng topic GMAT"""
+    return {
+        'Letter Sequence': {
+            'theory': '''LÝ THUYẾT CHI TIẾT VỀ LETTER SEQUENCE (Dãy Chữ Cái)
+
+1. ĐỊNH NGHĨA:
+Letter Sequence là dạng bài toán yêu cầu bạn xác định quy luật (pattern) của một dãy các chữ cái, sau đó dự đoán chữ cái tiếp theo hoặc tìm kiếm chữ cái bị thiếu trong dãy. Quy luật có thể dựa trên vị trí chữ cái trong bảng chữ cái, khoảng cách giữa các chữ, hoặc kết hợp của nhiều yếu tố khác nhau.
+
+2. CÁC LOẠI PATTERN PHỔ BIẾN:
+- PATTERN CÓ ĐIỀU KIỆN: A, B, C, D, E... (cộng 1 trong bảng chữ cái)
+- PATTERN BỎ QUA: A, C, E, G... (bỏ qua 1 chữ cái)
+- PATTERN NƯỚC MUỐI: A, A, B, B, C, C... (lặp lại mỗi chữ 2 lần)
+- PATTERN NƯỚC KIẾM: A, B, A, B, C, B, C... (lặp lại không đều)
+- PATTERN KHOẢNG CÁCH THAY ĐỔI: A, B, D, G, K... (khoảng cách cộng dồn)
+- PATTERN NƯỚC NGỢ: A, Z, B, Y, C, X... (từ hai đầu của bảng chữ cái)
+
+3. CÁCH ÁP DỤNG - 4 BƯỚC GIẢI:
+Bước 1: Xác định chữ cái đầu tiên và tính vị trí trong bảng chữ cái (A=1, B=2...Z=26)
+Bước 2: Tìm khoảng cách/hiệu số giữa các chữ cái liên tiếp (A→B=+1, A→C=+2, v.v.)
+Bước 3: Phân tích quy luật khoảng cách (tăng, giảm, lặp lại, hay vô quy tắc)
+Bước 4: Áp dụng quy luật để tìm chữ cái tiếp theo
+
+4. VÍ DỤ MINH HỌA CHI TIẾT:
+Ví dụ 1 - Pattern tăng đều: A, C, E, G, ?
+- A=1, C=3, E=5, G=7
+- Quy luật: cộng 2 mỗi lần
+- Đáp án: I=9 (7+2)
+
+Ví dụ 2 - Pattern khoảng cách tăng: A, B, D, G, L, ?
+- A→B: +1, B→D: +2, D→G: +3, G→L: +5... không phải, G→L là +5, vậy tiếp theo +5? Không đúng
+- Phân tích lại: +1, +2, +3, +4... vậy L+5 = Q
+
+Ví dụ 3 - Pattern lặp lại: A, B, B, C, C, C, ?
+- Một lần, hai lần, ba lần...
+- Đáp án: D (lặp 4 lần, nhưng tính từ vị trí tiếp theo)
+
+5. LƯU Ý QUAN TRỌNG:
+- Luôn tính từ vị trí chữ cái trong bảng (A=1 đến Z=26), không phải vị trí trong dãy
+- Nếu khoảng cách vượt quá 26 hoặc nhỏ hơn 1, nó quay vòng: Z+1=A, A-1=Z
+- Khi không tìm được quy luật tuyến tính, hãy kiểm tra các pattern phức tạp (nước muối, nước kiếm, v.v.)
+- Trong bài thi GMAT, thường chỉ có 1-2 loại pattern, không quá phức tạp''',
+            'detailed_concepts': [
+                {
+                    'concept_name': 'Khoảng cách/Hiệu số (Gap Analysis)',
+                    'explanation': 'Đây là kỹ thuật cơ bản nhất. Tính hiệu số (số lần cộng thêm) giữa mỗi chữ cái liên tiếp. Nếu hiệu số không đổi, dãy là cấp số cộng. Nếu hiệu số thay đổi theo quy luật (tăng/giảm đều), ta cần xác định quy luật của hiệu số đó.',
+                    'example': 'A, D, G, J, M, ? → Hiệu: +3, +3, +3, +3 → Đáp án: P (+3)'
+                },
+                {
+                    'concept_name': 'Các Pattern Đặc Biệt (Special Patterns)',
+                    'explanation': 'Ngoài cấp số cộng, còn có các pattern lặp lại (repeating), nước muối (alternating), hay thậm chí kết hợp chữ cái từ hai phía của bảng. Học sinh cần nhận diện nhanh các pattern này để không lãng phí thời gian tìm quy luật tuyến tính.',
+                    'example': 'A, Z, C, X, E, V, ? → Nước muối từ hai đầu: A(1)↔Z(26), C(3)↔X(24), E(5)↔V(22) → Đáp án: G(7)'
+                },
+                {
+                    'concept_name': 'Lặp Lại & Tăng Tần Suất (Repetition with Increasing Frequency)',
+                    'explanation': 'Dãy bắt đầu với mỗi chữ cái xuất hiện số lần khác nhau theo quy luật. Ví dụ: A xuất hiện 1 lần, B xuất hiện 2 lần, C xuất hiện 3 lần, v.v.',
+                    'example': 'A, B, B, C, C, C, D, D, D, D, ? → Tần suất tăng → Đáp án: E (E xuất hiện 5 lần, nhưng câu hỏi chỉ hỏi chữ tiếp theo nên là E)'
+                }
+            ],
+            'step_by_step_method': [
+                'Bước 1: Ghi lại vị trí của mỗi chữ cái trong bảng (A=1, B=2...Z=26)',
+                'Bước 2: Tính khoảng cách/hiệu số giữa các vị trí liên tiếp',
+                'Bước 3: Phân tích quy luật: hiệu số có đều không, hay tăng/giảm, hay lặp lại?',
+                'Bước 4: Áp dụng quy luật để tìm chữ cái tiếp theo (lưu ý: quay vòng khi vượt Z hoặc dưới A)'
+            ],
+            'common_mistakes': [
+                'Lỗi 1: Quên rằng Z+1 quay về A. Nếu tìm được chữ số 27, phải convert thành A (27 mod 26 = 1)',
+                'Lỗi 2: Nhầm lẫn vị trí chữ cái trong dãy với vị trí trong bảng. Ví dụ: chữ cái thứ 3 trong dãy không phải C',
+                'Lỗi 3: Chỉ tìm quy luật tuyến tính mà bỏ qua các pattern đặc biệt như nước muối hay lặp lại',
+                'Lỗi 4: Tính nhầm khoảng cách. Ví dụ: từ A(1) đến D(4) là +3, không phải +4'
+            ],
+            'tips_for_accuracy': [
+                'Mẹo 1: Luôn viết ra vị trí số của mỗi chữ cái (A=1...Z=26). Dùng giấy nháp, không cần nhẩm tính',
+                'Mẹo 2: Kiểm tra 3 hiệu số đầu tiên. Nếu chúng bằng nhau, rất có thể là cấp số cộng',
+                'Mẹo 3: Nếu không tìm được quy luật tuyến tính, nhìn toàn cảnh dãy để phát hiện các pattern đặc biệt',
+                'Mẹo 4: Nếu dãy ngắn (3-4 chữ), hãy thử tất cả các pattern cơ bản trước khi bỏ cuộc'
+            ],
+            'tips_for_speed': [
+                'Mẹo tốc độ 1: Dùng các chữ cái đánh dấu (a, b, c) hoặc vẽ mũi tên để theo dõi quy luật nhanh hơn',
+                'Mẹo tốc độ 2: Nếu hiệu số cộng dồn (1, 2, 3, 4...), nhận diện ngay, không cần tính thêm'
+            ],
+            'practice_drills': [
+                'Bài tập 1: Thực hành tính vị trí 26 chữ cái một cách nhanh. Lập bảng A=1...Z=26 để ghi nhớ',
+                'Bài tập 2: Tìm quy luật cho 10 dãy chữ cái khác nhau, mỗi dãy 5-7 chữ',
+                'Bài tập 3: Phân loại các dãy theo pattern (tuyến tính, nước muối, lặp lại)',
+                'Bài tập 4: Luyện tập giải 5 bài Letter Sequence dưới áp lực thời gian (30-45 giây/bài)'
+            ],
+            'key_formulas': [
+                'Công thức vị trí: Nếu hiệu số là d, chữ cái tiếp theo = vị trí hiện tại + d',
+                'Quay vòng: Nếu kết quả > 26, trừ 26. Nếu < 1, cộng 26',
+                'Cấp số cộng: Vị trí = a + (n-1)d, với a = vị trí đầu, d = hiệu số, n = vị trí cần tìm'
+            ]
+        },
+        'Mixture Problems': {
+            'theory': '''LÝ THUYẾT ĐẦY ĐỦ VỀ MIXTURE PROBLEMS (Bài Toán Hỗn Hợp)
+
+1. ĐỊNH NGHĨA:
+Mixture Problems là dạng bài toán yêu cầu tính toán các thuộc tính (nồng độ, giá trị, tỷ lệ) của một hỗn hợp được tạo bằng cách kết hợp hai hoặc nhiều thành phần khác nhau. Chìa khóa là theo dõi một đại lượng cụ thể (chất tan, thành phần nguyên chất) qua quá trình pha trộn.
+
+2. CÁC CÔNG THỨC CHÍNH:
+- Nồng độ (%) = (Lượng chất tan / Tổng lượng dung dịch) × 100
+- Lượng chất tan = Nồng độ × Tổng lượng / 100
+- Phương trình cân bằng: C₁V₁ + C₂V₂ = C_final × (V₁ + V₂)
+
+3. CÁCH ÁP DỤNG:
+Bước 1: Phân tích và tóm tắt đề bài bằng bảng (Tên dung dịch, Khối lượng, Nồng độ %, Lượng chất tan)
+Bước 2: Xác định đại lượng cần tìm và đặt ẩn số x
+Bước 3: Lập phương trình dựa trên cân bằng chất tan hoặc bất biến
+Bước 4: Giải phương trình và kiểm tra tính hợp lý
+
+4. VÍ DỤ MINH HỌA:
+Trộn 30L dung dịch muối 10% với 20L dung dịch muối 25%. Nồng độ muối mới?
+- Dung dịch 1: 30L × 10% = 3L muối
+- Dung dịch 2: 20L × 25% = 5L muối
+- Tổng muối: 3 + 5 = 8L, Tổng thể tích: 50L
+- Nồng độ mới = 8/50 × 100 = 16%
+
+5. LƯU Ý QUAN TRỌNG:
+- Chất nguyên chất (axit, vàng) = 100% nồng độ
+- Nước/dung môi nguyên chất = 0% nồng độ
+- Khi bay hơi nước: lượng chất tan không đổi, nhưng tổng dung dịch giảm
+- Luôn kiểm tra: kết quả phải nằm giữa nồng độ của 2 thành phần ban đầu'''
+        },
+        'Number Properties': {
+            'theory': '''LÝ THUYẾT CHI TIẾT VỀ NUMBER PROPERTIES (Tính Chất Số)
+
+1. ĐỊNH NGHĨA:
+Number Properties là các đặc tính cơ bản của số (chẵn/lẻ, nguyên tố, chia hết, v.v.) được sử dụng để giải các bài toán logic và đại số trên GMAT.
+
+2. CÁC KHÁI NIỆM CHÍNH:
+- SỐ CHẴN/LẺ: Chẵn chia hết cho 2, lẻ không. Chẵn+Chẵn=Chẵn, Lẻ+Lẻ=Chẵn, Chẵn+Lẻ=Lẻ
+- SỐ NGUYÊN TỐ: Chỉ chia hết cho 1 và chính nó (2, 3, 5, 7, 11, 13, 17, 19, 23, 29...)
+- CHIA HẾT: a chia hết cho b nếu a = b×k (k là số nguyên)
+- ƯỚC CHUNG & BỘI CHUNG: GCD (ước lớn nhất), LCM (bội nhỏ nhất)
+
+3. CÁCH ÁP DỤNG:
+Bước 1: Xác định loại bài toán (chẵn/lẻ, chia hết, nguyên tố, hay phân tích thừa số)
+Bước 2: Liệt kê các tính chất của các số trong bài
+Bước 3: Áp dụng quy tắc phù hợp
+Bước 4: Kiểm tra bằng ví dụ cụ thể
+
+4. VÍ DỤ:
+Nếu x là số chẵn và y là số lẻ, x+y là?
+→ Chẵn + Lẻ = Lẻ'''
+        }
+    }
+
 def generate_study_guide(questions: List[Dict[str, Any]], user_answers: Dict[str, str]) -> Dict[str, Any]:
     """
     Tạo tài liệu ôn tập chi tiết dựa trên các câu hỏi trong bài thi
@@ -275,7 +438,18 @@ YÊU CẦU QUAN TRỌNG:
             # Replace }]}} with }]} 
             text = re.sub(r'\}\]\}\}+', '}]}', text)
             
+            # Validate JSON before parsing
+            if not text or text == '{}':
+                raise ValueError("Empty JSON response from API")
+            
             topic_guide = json.loads(text)
+            
+            # Validate required fields
+            required_fields = ['theory', 'detailed_concepts', 'step_by_step_method', 'common_mistakes', 'tips_for_accuracy']
+            missing_fields = [f for f in required_fields if f not in topic_guide or not topic_guide[f]]
+            if missing_fields:
+                print(f"⚠️ Missing fields in response for '{topic_name}': {missing_fields}")
+                raise ValueError(f"Missing required fields: {missing_fields}")
             
             # Thêm metadata
             topic_guide['topic'] = topic_name
@@ -292,34 +466,62 @@ YÊU CẦU QUAN TRỌNG:
             
         except Exception as e:
             print(f"⚠️ Lỗi phân tích topic '{topic_name}': {e}")
-            # Fallback đơn giản cho topic này
-            all_topics_guides.append({
-                'topic': topic_name,
-                'accuracy': round(accuracy, 0),
-                'importance': importance,
-                'priority_level': priority,
-                'theory': f"Cần ôn tập lại kiến thức cơ bản về {topic_name}. Hãy xem lại định nghĩa, công thức và cách áp dụng trong các bài toán. Luyện tập thêm để nắm vững.",
-                'detailed_concepts': [
-                    {'concept_name': f'Khái niệm cơ bản {topic_name}', 'explanation': 'Cần ôn lại từ đầu', 'example': 'Xem sách giáo khoa'}
-                ],
-                'step_by_step_method': [
-                    'Bước 1: Đọc kỹ đề bài',
-                    'Bước 2: Xác định dạng bài',
-                    'Bước 3: Áp dụng công thức',
-                    'Bước 4: Kiểm tra kết quả'
-                ],
-                'mistake_analysis': [],
-                'common_mistakes': [f"Bạn sai {wrong_count} câu ở {topic_name}. Cần ôn lại lý thuyết."],
-                'tips_for_accuracy': [f"Ôn lại lý thuyết {topic_name} từ sách cơ bản"],
-                'tips_for_speed': ["Luyện tập thêm để tăng tốc độ"],
-                'practice_drills': [f"Làm thêm {max(5, wrong_count * 2)} bài tập về {topic_name}"],
-                'key_formulas': ["Xem lại công thức cơ bản"],
-                'stats': {
-                    'total': data['total'],
-                    'correct': data['correct'],
-                    'wrong': data['wrong']
-                }
-            })
+            import traceback
+            traceback.print_exc()
+            
+            # Thử lấy từ knowledge base, nếu không có thì tạo fallback
+            knowledge_base = _get_topic_knowledge_base()
+            if topic_name in knowledge_base:
+                kb_data = knowledge_base[topic_name]
+                all_topics_guides.append({
+                    'topic': topic_name,
+                    'accuracy': round(accuracy, 0),
+                    'importance': importance,
+                    'priority_level': priority,
+                    'theory': kb_data['theory'],
+                    'detailed_concepts': kb_data.get('detailed_concepts', []),
+                    'step_by_step_method': kb_data.get('step_by_step_method', []),
+                    'mistake_analysis': [],
+                    'common_mistakes': kb_data.get('common_mistakes', [f"Bạn sai {wrong_count} câu ở {topic_name}. Cần ôn lại lý thuyết."]),
+                    'tips_for_accuracy': kb_data.get('tips_for_accuracy', []),
+                    'tips_for_speed': kb_data.get('tips_for_speed', []),
+                    'practice_drills': kb_data.get('practice_drills', []),
+                    'key_formulas': kb_data.get('key_formulas', []),
+                    'stats': {
+                        'total': data['total'],
+                        'correct': data['correct'],
+                        'wrong': data['wrong']
+                    }
+                })
+            else:
+                # Fallback chung chung cho topic không trong knowledge base
+                all_topics_guides.append({
+                    'topic': topic_name,
+                    'accuracy': round(accuracy, 0),
+                    'importance': importance,
+                    'priority_level': priority,
+                    'theory': f"Cần ôn tập lại kiến thức cơ bản về {topic_name}. Hãy xem lại định nghĩa, công thức và cách áp dụng trong các bài toán. Luyện tập thêm để nắm vững.",
+                    'detailed_concepts': [
+                        {'concept_name': f'Khái niệm cơ bản {topic_name}', 'explanation': 'Cần ôn lại từ đầu', 'example': 'Xem sách giáo khoa'}
+                    ],
+                    'step_by_step_method': [
+                        'Bước 1: Đọc kỹ đề bài',
+                        'Bước 2: Xác định dạng bài',
+                        'Bước 3: Áp dụng công thức',
+                        'Bước 4: Kiểm tra kết quả'
+                    ],
+                    'mistake_analysis': [],
+                    'common_mistakes': [f"Bạn sai {wrong_count} câu ở {topic_name}. Cần ôn lại lý thuyết."],
+                    'tips_for_accuracy': [f"Ôn lại lý thuyết {topic_name} từ sách cơ bản"],
+                    'tips_for_speed': ["Luyện tập thêm để tăng tốc độ"],
+                    'practice_drills': [f"Làm thêm {max(5, wrong_count * 2)} bài tập về {topic_name}"],
+                    'key_formulas': ["Xem lại công thức cơ bản"],
+                    'stats': {
+                        'total': data['total'],
+                        'correct': data['correct'],
+                        'wrong': data['wrong']
+                    }
+                })
     
     # Tạo tổng quan
     total_correct = sum(d['correct'] for d in topic_analysis.values())
@@ -625,3 +827,196 @@ def format_study_guide_html(study_data: Dict[str, Any]) -> str:
     html += "</div>"
     return html
 
+
+def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
+    """
+    Generate a beautifully formatted PDF from study guide data
+    
+    Args:
+        study_data: Study guide dictionary from generate_study_guide()
+    
+    Returns:
+        PDF file as bytes
+    """
+    try:
+        from io import BytesIO
+        from reportlab.lib.pagesizes import letter, A4
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image
+        from reportlab.lib import colors
+        from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
+        from datetime import datetime
+        
+        # Create PDF buffer
+        pdf_buffer = BytesIO()
+        
+        # Create PDF document with A4 size
+        doc = SimpleDocTemplate(
+            pdf_buffer,
+            pagesize=A4,
+            rightMargin=0.75*inch,
+            leftMargin=0.75*inch,
+            topMargin=0.75*inch,
+            bottomMargin=0.75*inch,
+            title="Study Guide GMAT"
+        )
+        
+        # Create styles
+        styles = getSampleStyleSheet()
+        
+        # Custom styles
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=24,
+            textColor=colors.HexColor('#0066cc'),
+            spaceAfter=12,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold'
+        )
+        
+        heading_style = ParagraphStyle(
+            'CustomHeading',
+            parent=styles['Heading2'],
+            fontSize=14,
+            textColor=colors.HexColor('#0066cc'),
+            spaceAfter=6,
+            spaceBefore=12,
+            fontName='Helvetica-Bold'
+        )
+        
+        subheading_style = ParagraphStyle(
+            'SubHeading',
+            parent=styles['Heading3'],
+            fontSize=12,
+            textColor=colors.HexColor('#333333'),
+            spaceAfter=6,
+            fontName='Helvetica-Bold'
+        )
+        
+        body_style = ParagraphStyle(
+            'CustomBody',
+            parent=styles['BodyText'],
+            fontSize=10,
+            alignment=TA_JUSTIFY,
+            spaceAfter=8,
+            leading=14
+        )
+        
+        # Story to hold all PDF elements
+        story = []
+        
+        # Title
+        story.append(Paragraph("📚 TÀI LIỆU ÔN TẬP GMAT CÁ NHÂN HÓA", title_style))
+        story.append(Paragraph(f"Được tạo vào: {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
+        story.append(Spacer(1, 0.2*inch))
+        
+        # Overall summary
+        overall = study_data.get('overall_summary', '')
+        if overall:
+            story.append(Paragraph("📊 Tổng Quan Kết Quả", heading_style))
+            story.append(Paragraph(overall, body_style))
+            story.append(Spacer(1, 0.2*inch))
+        
+        # Topics
+        topics = study_data.get('topics', [])
+        for idx, topic in enumerate(topics):
+            if idx > 0:
+                story.append(PageBreak())
+            
+            topic_name = topic.get('topic', 'Chủ đề')
+            stats = topic.get('stats', {})
+            accuracy = (stats.get('correct', 0) / stats.get('total', 1) * 100) if stats.get('total', 1) > 0 else 0
+            
+            # Topic header
+            story.append(Paragraph(f"📖 {topic_name}", heading_style))
+            
+            # Statistics
+            stats_text = f"Kết quả: {stats.get('correct', 0)}/{stats.get('total', 0)} đúng ({accuracy:.0f}%)"
+            story.append(Paragraph(stats_text, styles['Normal']))
+            story.append(Spacer(1, 0.15*inch))
+            
+            # Theory
+            theory = topic.get('theory', '')
+            if theory:
+                story.append(Paragraph("📚 Lý Thuyết", subheading_style))
+                # Clean up theory text for better PDF rendering
+                theory_clean = theory.replace('\n\n', '<br/><br/>').replace('\n', ' ')
+                story.append(Paragraph(theory_clean[:2000], body_style))  # Limit length
+                story.append(Spacer(1, 0.1*inch))
+            
+            # Detailed concepts
+            concepts = topic.get('detailed_concepts', [])
+            if concepts:
+                story.append(Paragraph("💡 Các Khái Niệm Chi Tiết", subheading_style))
+                for concept in concepts[:3]:  # Limit to 3 concepts
+                    concept_name = concept.get('concept_name', '')
+                    explanation = concept.get('explanation', '')
+                    story.append(Paragraph(f"<b>• {concept_name}:</b>", body_style))
+                    story.append(Paragraph(explanation, body_style))
+                story.append(Spacer(1, 0.1*inch))
+            
+            # Step by step method
+            steps = topic.get('step_by_step_method', [])
+            if steps:
+                story.append(Paragraph("📝 Phương Pháp Từng Bước", subheading_style))
+                for i, step in enumerate(steps, 1):
+                    story.append(Paragraph(f"<b>Bước {i}:</b> {step}", body_style))
+                story.append(Spacer(1, 0.1*inch))
+            
+            # Common mistakes
+            mistakes = topic.get('common_mistakes', [])
+            if mistakes:
+                story.append(Paragraph("⚠️ Lỗi Phổ Biến", subheading_style))
+                for mistake in mistakes[:4]:  # Limit to 4 mistakes
+                    story.append(Paragraph(f"• {mistake}", body_style))
+                story.append(Spacer(1, 0.1*inch))
+            
+            # Tips
+            tips_accuracy = topic.get('tips_for_accuracy', [])
+            if tips_accuracy:
+                story.append(Paragraph("🎯 Mẹo Tăng Tỷ Lệ Đúng", subheading_style))
+                for tip in tips_accuracy[:3]:  # Limit to 3 tips
+                    story.append(Paragraph(f"• {tip}", body_style))
+            
+            tips_speed = topic.get('tips_for_speed', [])
+            if tips_speed:
+                story.append(Paragraph("⚡ Mẹo Tăng Tốc Độ", subheading_style))
+                for tip in tips_speed[:2]:  # Limit to 2 tips
+                    story.append(Paragraph(f"• {tip}", body_style))
+            
+            # Practice drills
+            drills = topic.get('practice_drills', [])
+            if drills:
+                story.append(Spacer(1, 0.1*inch))
+                story.append(Paragraph("🧪 Bài Tập Luyện Tập", subheading_style))
+                for drill in drills[:4]:  # Limit to 4 drills
+                    story.append(Paragraph(f"• {drill}", body_style))
+            
+            # Key formulas
+            formulas = topic.get('key_formulas', [])
+            if formulas:
+                story.append(Spacer(1, 0.1*inch))
+                story.append(Paragraph("📐 Công Thức Cần Nhớ", subheading_style))
+                for formula in formulas[:4]:  # Limit to 4 formulas
+                    story.append(Paragraph(f"• {formula}", body_style))
+        
+        # Build PDF
+        doc.build(story)
+        
+        # Get PDF bytes
+        pdf_bytes = pdf_buffer.getvalue()
+        pdf_buffer.close()
+        
+        return pdf_bytes
+        
+    except ImportError as e:
+        print(f"⚠️ Lỗi: Cần cài đặt reportlab. Chạy: pip install reportlab")
+        print(f"Chi tiết lỗi: {e}")
+        return None
+    except Exception as e:
+        print(f"⚠️ Lỗi tạo PDF: {e}")
+        import traceback
+        traceback.print_exc()
+        return None

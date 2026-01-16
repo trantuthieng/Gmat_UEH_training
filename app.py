@@ -883,7 +883,14 @@ elif st.session_state.exam_state == "FINISHED":
                                 # Lý thuyết chi tiết
                                 if 'theory' in topic and topic['theory']:
                                     st.markdown("### 📖 Lý thuyết cơ bản")
-                                    st.info(topic['theory'])
+                                    # Convert theory to markdown format (it contains newlines that should be preserved)
+                                    theory_text = topic['theory']
+                                    if isinstance(theory_text, str):
+                                        # Replace escaped newlines with actual newlines for markdown rendering
+                                        theory_text = theory_text.replace('\\n\\n', '\n\n').replace('\\n', '\n')
+                                        st.markdown(theory_text)
+                                    else:
+                                        st.write(theory_text)
                                     st.markdown("---")
                                 
                                 # Chi tiết các khái niệm
@@ -964,14 +971,14 @@ elif st.session_state.exam_state == "FINISHED":
                 st.success("✅ Tài liệu đã được cache - không tốn thêm API quota khi xem lại!")
                 
                 # Download options
-                col1, col2 = st.columns(2)
+                col1, col2, col3 = st.columns(3)
                 
                 with col1:
                     # Thêm nút download JSON
                     import json
                     study_json = json.dumps(study_data, ensure_ascii=False, indent=2)
                     st.download_button(
-                        label="📥 Tải tài liệu (JSON)",
+                        label="📥 JSON",
                         data=study_json,
                         file_name=f"study_guide_{st.session_state.session_id[:8]}.json",
                         mime="application/json",
@@ -983,12 +990,30 @@ elif st.session_state.exam_state == "FINISHED":
                     import json
                     text_content = json.dumps(study_data, ensure_ascii=False, indent=2)
                     st.download_button(
-                        label="📥 Tải tài liệu (TXT)",
+                        label="📥 TXT",
                         data=text_content,
                         file_name=f"study_guide_{st.session_state.session_id[:8]}.txt",
                         mime="text/plain",
                         use_container_width=True
                     )
+                
+                with col3:
+                    # Download as PDF
+                    try:
+                        from study_guide import generate_study_guide_pdf
+                        pdf_bytes = generate_study_guide_pdf(study_data)
+                        if pdf_bytes:
+                            st.download_button(
+                                label="📥 PDF",
+                                data=pdf_bytes,
+                                file_name=f"study_guide_{st.session_state.session_id[:8]}.pdf",
+                                mime="application/pdf",
+                                use_container_width=True
+                            )
+                        else:
+                            st.warning("⚠️ Không thể tạo PDF. Cần cài đặt reportlab.")
+                    except Exception as e:
+                        st.warning(f"⚠️ Lỗi PDF: {e}")
                 
                 # Statistics
                 st.divider()
