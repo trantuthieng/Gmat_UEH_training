@@ -1033,7 +1033,16 @@ elif st.session_state.exam_state == "FINISHED":
                                     if 'key_formulas' in topic and topic['key_formulas']:
                                         st.markdown("### 📐 Công thức cần nhớ")
                                         for formula in topic['key_formulas']:
-                                            st.code(formula, language="text")
+                                            if isinstance(formula, dict):
+                                                # Format formula dict
+                                                formula_text = f"**{formula.get('formula', '')}**\n\n"
+                                                if formula.get('explanation'):
+                                                    formula_text += f"*{formula['explanation']}*\n\n"
+                                                if formula.get('usage'):
+                                                    formula_text += f"Sử dụng: {formula['usage']}"
+                                                st.markdown(formula_text)
+                                            else:
+                                                st.code(formula, language="text")
                     else:
                         st.warning("Không có dữ liệu ôn tập")
             
