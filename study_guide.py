@@ -836,17 +836,28 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
         study_data: Study guide dictionary from generate_study_guide()
     
     Returns:
-        PDF file as bytes
+        PDF file as bytes, or None if reportlab not available
     """
     try:
         from io import BytesIO
-        from reportlab.lib.pagesizes import letter, A4
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-        from reportlab.lib.units import inch
-        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image
-        from reportlab.lib import colors
-        from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
         from datetime import datetime
+        
+        # Try to import reportlab - if fails, show helpful message
+        try:
+            from reportlab.lib.pagesizes import letter, A4
+            from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+            from reportlab.lib.units import inch
+            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image
+            from reportlab.lib import colors
+            from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
+        except ImportError:
+            print("⚠️ ReportLab không được cài đặt trên Streamlit Cloud")
+            print("📋 Cách khắc phục:")
+            print("  1. Kiểm tra requirements.txt đã có 'reportlab' chưa")
+            print("  2. Nếu chưa, thêm dòng: reportlab")
+            print("  3. Commit và push code")
+            print("  4. Streamlit Cloud sẽ tự động cài đặt")
+            return None
         
         # Create PDF buffer
         pdf_buffer = BytesIO()
@@ -1020,3 +1031,128 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
         import traceback
         traceback.print_exc()
         return None
+
+
+def generate_study_guide_text_formatted(study_data: Dict[str, Any]) -> str:
+    """
+    Generate a beautifully formatted text document (alternative to PDF)
+    Can be easily converted to PDF using online tools
+    
+    Args:
+        study_data: Study guide dictionary
+    
+    Returns:
+        Formatted text content as string
+    """
+    from datetime import datetime
+    
+    text = ""
+    
+    # Title
+    text += "=" * 80 + "\n"
+    text += "TÀI LIỆU ÔN TẬP GMAT CÁ NHÂN HÓA\n"
+    text += "=" * 80 + "\n\n"
+    text += f"Được tạo vào: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n\n"
+    
+    # Overall summary
+    overall = study_data.get('overall_summary', '')
+    if overall:
+        text += "📊 TỔNG QUAN KẾT QUẢ\n"
+        text += "-" * 80 + "\n"
+        text += overall + "\n\n"
+    
+    # Topics
+    topics = study_data.get('topics', [])
+    for idx, topic in enumerate(topics, 1):
+        if idx > 1:
+            text += "\n" + "=" * 80 + "\n"
+        
+        topic_name = topic.get('topic', 'Chủ đề')
+        stats = topic.get('stats', {})
+        accuracy = (stats.get('correct', 0) / stats.get('total', 1) * 100) if stats.get('total', 1) > 0 else 0
+        
+        # Topic header
+        text += f"\nCHỦ ĐỀ {idx}: {topic_name}\n"
+        text += "=" * 80 + "\n"
+        text += f"Kết quả: {stats.get('correct', 0)}/{stats.get('total', 0)} đúng ({accuracy:.0f}%)\n\n"
+        
+        # Theory
+        theory = topic.get('theory', '')
+        if theory:
+            text += "LÝ THUYẾT\n"
+            text += "-" * 80 + "\n"
+            text += theory + "\n\n"
+        
+        # Detailed concepts
+        concepts = topic.get('detailed_concepts', [])
+        if concepts:
+            text += "CÁC KHÁI NIỆM CHI TIẾT\n"
+            text += "-" * 80 + "\n"
+            for i, concept in enumerate(concepts, 1):
+                concept_name = concept.get('concept_name', '')
+                explanation = concept.get('explanation', '')
+                example = concept.get('example', '')
+                text += f"\n{i}. {concept_name}\n"
+                text += f"   Giải thích: {explanation}\n"
+                if example:
+                    text += f"   Ví dụ: {example}\n"
+            text += "\n"
+        
+        # Step by step method
+        steps = topic.get('step_by_step_method', [])
+        if steps:
+            text += "PHƯƠNG PHÁP TỪNG BƯỚC\n"
+            text += "-" * 80 + "\n"
+            for i, step in enumerate(steps, 1):
+                text += f"{i}. {step}\n"
+            text += "\n"
+        
+        # Common mistakes
+        mistakes = topic.get('common_mistakes', [])
+        if mistakes:
+            text += "LỖI PHỔ BIẾN\n"
+            text += "-" * 80 + "\n"
+            for mistake in mistakes[:5]:
+                text += f"• {mistake}\n"
+            text += "\n"
+        
+        # Tips
+        tips_accuracy = topic.get('tips_for_accuracy', [])
+        if tips_accuracy:
+            text += "MẸO TĂNG TỶ LỆ ĐÚNG\n"
+            text += "-" * 80 + "\n"
+            for tip in tips_accuracy[:4]:
+                text += f"• {tip}\n"
+            text += "\n"
+        
+        tips_speed = topic.get('tips_for_speed', [])
+        if tips_speed:
+            text += "MẸO TĂNG TỐC ĐỘ\n"
+            text += "-" * 80 + "\n"
+            for tip in tips_speed[:3]:
+                text += f"• {tip}\n"
+            text += "\n"
+        
+        # Practice drills
+        drills = topic.get('practice_drills', [])
+        if drills:
+            text += "BÀI TẬP LUYỆN TẬP\n"
+            text += "-" * 80 + "\n"
+            for drill in drills[:4]:
+                text += f"• {drill}\n"
+            text += "\n"
+        
+        # Key formulas
+        formulas = topic.get('key_formulas', [])
+        if formulas:
+            text += "CÔNG THỨC CẦN NHỚ\n"
+            text += "-" * 80 + "\n"
+            for formula in formulas[:5]:
+                text += f"• {formula}\n"
+            text += "\n"
+    
+    text += "\n" + "=" * 80 + "\n"
+    text += "HẾT\n"
+    text += "=" * 80 + "\n"
+    
+    return text

@@ -986,15 +986,16 @@ elif st.session_state.exam_state == "FINISHED":
                     )
                 
                 with col2:
-                    # Download as text version instead of HTML
-                    import json
-                    text_content = json.dumps(study_data, ensure_ascii=False, indent=2)
+                    # Download as PDF-ready formatted text
+                    from study_guide import generate_study_guide_text_formatted
+                    text_formatted = generate_study_guide_text_formatted(study_data)
                     st.download_button(
-                        label="📥 TXT",
-                        data=text_content,
-                        file_name=f"study_guide_{st.session_state.session_id[:8]}.txt",
+                        label="📄 TXT (Định dạng)",
+                        data=text_formatted,
+                        file_name=f"study_guide_{st.session_state.session_id[:8]}_formatted.txt",
                         mime="text/plain",
-                        use_container_width=True
+                        use_container_width=True,
+                        help="Tài liệu định dạng sẵn, dễ chuyển sang PDF"
                     )
                 
                 with col3:
@@ -1011,9 +1012,26 @@ elif st.session_state.exam_state == "FINISHED":
                                 use_container_width=True
                             )
                         else:
-                            st.warning("⚠️ Không thể tạo PDF. Cần cài đặt reportlab.")
+                            st.info("""
+                            ⏳ **PDF đang chuẩn bị**
+                            
+                            ReportLab đang được cài đặt. Vui lòng:
+                            - Chờ 2-3 phút
+                            - Refresh trang (F5)
+                            - Thử lại tải PDF
+                            
+                            Trong khi đó, bạn có thể tải **TXT định dạng** bên cạnh để có tài liệu ngay lập tức.
+                            """)
+                    except ImportError as e:
+                        st.info("""
+                        ⏳ **PDF đang chuẩn bị**
+                        
+                        ReportLab còn đang cài đặt trên Streamlit Cloud.
+                        - Thử lại sau 2-3 phút
+                        - Hoặc tải TXT định dạng bên cạnh
+                        """)
                     except Exception as e:
-                        st.warning(f"⚠️ Lỗi PDF: {e}")
+                        st.warning(f"⚠️ Lỗi: {str(e)[:100]}")
                 
                 # Statistics
                 st.divider()
