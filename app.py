@@ -990,7 +990,8 @@ elif st.session_state.exam_state == "FINISHED":
                                             st.markdown(f"**{_clean_html(concept.get('concept_name', ''))}**")
                                             st.write(_clean_html(concept.get('explanation', '')))
                                             if concept.get('example'):
-                                                st.code(concept['example'], language="text")
+                                                example_txt = _clean_html(concept['example']).replace('`', '')
+                                                st.markdown(example_txt)
                                             st.markdown("")
                                     st.markdown("---")
                                 
@@ -1061,7 +1062,8 @@ elif st.session_state.exam_state == "FINISHED":
                                                     formula_text += f"Sử dụng: {_clean_html(formula['usage'])}"
                                                 st.markdown(formula_text)
                                             else:
-                                                st.code(_clean_html(formula), language="text")
+                                                    formula_txt = _clean_html(formula).replace('`', '')
+                                                    st.markdown(formula_txt)
                     else:
                         st.warning("Không có dữ liệu ôn tập")
             
