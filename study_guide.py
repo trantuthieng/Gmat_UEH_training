@@ -838,6 +838,55 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
     Returns:
         PDF file as bytes, or None if reportlab not available
     """
+    
+    def clean_text_for_pdf(text):
+        """Remove emojis and convert Vietnamese to ASCII-safe characters"""
+        if not isinstance(text, str):
+            text = str(text)
+        
+        # Vietnamese character mapping (most common)
+        vietnamese_map = {
+            'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
+            'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
+            'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
+            'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
+            'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
+            'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
+            'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
+            'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
+            'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
+            'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
+            'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
+            'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
+            'đ': 'd', 'Đ': 'D',
+            'À': 'A', 'Á': 'A', 'Ả': 'A', 'Ã': 'A', 'Ạ': 'A',
+            'Ă': 'A', 'Ằ': 'A', 'Ắ': 'A', 'Ẳ': 'A', 'Ẵ': 'A', 'Ặ': 'A',
+            'Â': 'A', 'Ầ': 'A', 'Ấ': 'A', 'Ẩ': 'A', 'Ẫ': 'A', 'Ậ': 'A',
+            'È': 'E', 'É': 'E', 'Ẻ': 'E', 'Ẽ': 'E', 'Ẹ': 'E',
+            'Ê': 'E', 'Ề': 'E', 'Ế': 'E', 'Ể': 'E', 'Ễ': 'E', 'Ệ': 'E',
+            'Ì': 'I', 'Í': 'I', 'Ỉ': 'I', 'Ĩ': 'I', 'Ị': 'I',
+            'Ò': 'O', 'Ó': 'O', 'Ỏ': 'O', 'Õ': 'O', 'Ọ': 'O',
+            'Ô': 'O', 'Ồ': 'O', 'Ố': 'O', 'Ổ': 'O', 'Ỗ': 'O', 'Ộ': 'O',
+            'Ơ': 'O', 'Ờ': 'O', 'Ớ': 'O', 'Ở': 'O', 'Ỡ': 'O', 'Ợ': 'O',
+            'Ù': 'U', 'Ú': 'U', 'Ủ': 'U', 'Ũ': 'U', 'Ụ': 'U',
+            'Ư': 'U', 'Ừ': 'U', 'Ứ': 'U', 'Ử': 'U', 'Ữ': 'U', 'Ự': 'U',
+            'Ỳ': 'Y', 'Ý': 'Y', 'Ỷ': 'Y', 'Ỹ': 'Y', 'Ỵ': 'Y',
+        }
+        
+        # Replace Vietnamese characters
+        for viet_char, ascii_char in vietnamese_map.items():
+            text = text.replace(viet_char, ascii_char)
+        
+        # Remove emojis and special unicode (keep basic ASCII + common punctuation)
+        cleaned = ''
+        for char in text:
+            if ord(char) < 128 or char in '°×÷±':  # Basic ASCII + math symbols
+                cleaned += char
+            elif ord(char) > 127 and ord(char) < 256:  # Extended ASCII (keep for now)
+                cleaned += char
+        
+        return cleaned
+    
     try:
         from io import BytesIO
         from datetime import datetime
@@ -919,15 +968,15 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
         story = []
         
         # Title
-        story.append(Paragraph("📚 TÀI LIỆU ÔN TẬP GMAT CÁ NHÂN HÓA", title_style))
-        story.append(Paragraph(f"Được tạo vào: {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
+        story.append(Paragraph("TAI LIEU ON TAP GMAT CA NHAN HOA", title_style))
+        story.append(Paragraph(f"Duoc tao vao: {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
         story.append(Spacer(1, 0.2*inch))
         
         # Overall summary
         overall = study_data.get('overall_summary', '')
         if overall:
-            story.append(Paragraph("📊 Tổng Quan Kết Quả", heading_style))
-            story.append(Paragraph(overall, body_style))
+            story.append(Paragraph("Tong Quan Ket Qua", heading_style))
+            story.append(Paragraph(clean_text_for_pdf(overall), body_style))
             story.append(Spacer(1, 0.2*inch))
         
         # Topics
@@ -936,26 +985,26 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             if idx > 0:
                 story.append(PageBreak())
             
-            topic_name = topic.get('topic', 'Chủ đề')
+            topic_name = clean_text_for_pdf(topic.get('topic', 'Chu de'))
             stats = topic.get('stats', {})
             accuracy = (stats.get('correct', 0) / stats.get('total', 1) * 100) if stats.get('total', 1) > 0 else 0
             
             # Topic header
-            story.append(Paragraph(f"📖 {topic_name}", heading_style))
+            story.append(Paragraph(topic_name, heading_style))
             
             # Statistics
-            stats_text = f"Kết quả: {stats.get('correct', 0)}/{stats.get('total', 0)} đúng ({accuracy:.0f}%)"
+            stats_text = f"Ket qua: {stats.get('correct', 0)}/{stats.get('total', 0)} dung ({accuracy:.0f}%)"
             story.append(Paragraph(stats_text, styles['Normal']))
             story.append(Spacer(1, 0.15*inch))
             
             # Theory
             theory = topic.get('theory', '')
             if theory:
-                story.append(Paragraph("📚 Lý Thuyết", subheading_style))
+                story.append(Paragraph("Ly Thuyet", subheading_style))
                 # Handle both string and dictionary theory formats
                 if isinstance(theory, str):
                     # Clean up theory text for better PDF rendering
-                    theory_clean = theory.replace('\n\n', '<br/><br/>').replace('\n', ' ')
+                    theory_clean = clean_text_for_pdf(theory).replace('\n\n', '<br/><br/>').replace('\n', ' ')
                     story.append(Paragraph(theory_clean[:2000], body_style))  # Limit length
                 elif isinstance(theory, dict):
                     # Convert dictionary theory to formatted text
@@ -963,29 +1012,29 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
                     if 'title' in theory:
                         theory_parts.append(f"<b>{theory['title']}</b>")
                     if 'definition' in theory:
-                        theory_parts.append(f"<br/><b>Định nghĩa:</b> {theory['definition'][:500]}")
+                        theory_parts.append(f"<br/><b>Dinh nghia:</b> {clean_text_for_pdf(theory['definition'][:500])}")
                     if 'main_rules' in theory and theory['main_rules']:
-                        theory_parts.append("<br/><b>Quy tắc chính:</b>")
+                        theory_parts.append("<br/><b>Quy tac chinh:</b>")
                         for i, rule in enumerate(theory['main_rules'][:3], 1):
                             if isinstance(rule, dict):
-                                rule_name = rule.get('rule_name', '')
+                                rule_name = clean_text_for_pdf(rule.get('rule_name', ''))
                                 theory_parts.append(f"<br/>{i}. {rule_name}")
                             else:
-                                theory_parts.append(f"<br/>{i}. {rule}")
+                                theory_parts.append(f"<br/>{i}. {clean_text_for_pdf(str(rule))}")
                     theory_text = ' '.join(theory_parts)[:2000]  # Limit total length
                     story.append(Paragraph(theory_text, body_style))
                 else:
                     # Fallback for other types
-                    story.append(Paragraph(str(theory)[:2000], body_style))
+                    story.append(Paragraph(clean_text_for_pdf(str(theory))[:2000], body_style))
                 story.append(Spacer(1, 0.1*inch))
             
             # Detailed concepts
             concepts = topic.get('detailed_concepts', [])
             if concepts:
-                story.append(Paragraph("💡 Các Khái Niệm Chi Tiết", subheading_style))
+                story.append(Paragraph("Cac Khai Niem Chi Tiet", subheading_style))
                 for concept in concepts[:3]:  # Limit to 3 concepts
-                    concept_name = concept.get('concept_name', '')
-                    explanation = concept.get('explanation', '')
+                    concept_name = clean_text_for_pdf(concept.get('concept_name', ''))
+                    explanation = clean_text_for_pdf(concept.get('explanation', ''))
                     story.append(Paragraph(f"<b>• {concept_name}:</b>", body_style))
                     story.append(Paragraph(explanation, body_style))
                 story.append(Spacer(1, 0.1*inch))
@@ -993,47 +1042,47 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             # Step by step method
             steps = topic.get('step_by_step_method', [])
             if steps:
-                story.append(Paragraph("📝 Phương Pháp Từng Bước", subheading_style))
+                story.append(Paragraph("Phuong Phap Tung Buoc", subheading_style))
                 for i, step in enumerate(steps, 1):
-                    story.append(Paragraph(f"<b>Bước {i}:</b> {step}", body_style))
+                    story.append(Paragraph(f"<b>Buoc {i}:</b> {clean_text_for_pdf(step)}", body_style))
                 story.append(Spacer(1, 0.1*inch))
             
             # Common mistakes
             mistakes = topic.get('common_mistakes', [])
             if mistakes:
-                story.append(Paragraph("⚠️ Lỗi Phổ Biến", subheading_style))
+                story.append(Paragraph("Loi Pho Bien", subheading_style))
                 for mistake in mistakes[:4]:  # Limit to 4 mistakes
-                    story.append(Paragraph(f"• {mistake}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(mistake)}", body_style))
                 story.append(Spacer(1, 0.1*inch))
             
             # Tips
             tips_accuracy = topic.get('tips_for_accuracy', [])
             if tips_accuracy:
-                story.append(Paragraph("🎯 Mẹo Tăng Tỷ Lệ Đúng", subheading_style))
+                story.append(Paragraph("Meo Tang Ty Le Dung", subheading_style))
                 for tip in tips_accuracy[:3]:  # Limit to 3 tips
-                    story.append(Paragraph(f"• {tip}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(tip)}", body_style))
             
             tips_speed = topic.get('tips_for_speed', [])
             if tips_speed:
-                story.append(Paragraph("⚡ Mẹo Tăng Tốc Độ", subheading_style))
+                story.append(Paragraph("Meo Tang Toc Do", subheading_style))
                 for tip in tips_speed[:2]:  # Limit to 2 tips
-                    story.append(Paragraph(f"• {tip}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(tip)}", body_style))
             
             # Practice drills
             drills = topic.get('practice_drills', [])
             if drills:
                 story.append(Spacer(1, 0.1*inch))
-                story.append(Paragraph("🧪 Bài Tập Luyện Tập", subheading_style))
+                story.append(Paragraph("Bai Tap Luyen Tap", subheading_style))
                 for drill in drills[:4]:  # Limit to 4 drills
-                    story.append(Paragraph(f"• {drill}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(drill)}", body_style))
             
             # Key formulas
             formulas = topic.get('key_formulas', [])
             if formulas:
                 story.append(Spacer(1, 0.1*inch))
-                story.append(Paragraph("📐 Công Thức Cần Nhớ", subheading_style))
+                story.append(Paragraph("Cong Thuc Can Nho", subheading_style))
                 for formula in formulas[:4]:  # Limit to 4 formulas
-                    story.append(Paragraph(f"• {formula}", body_style))
+                    story.append(Paragraph(f"• {clean_text_for_pdf(formula)}", body_style))
         
         # Build PDF
         doc.build(story)
