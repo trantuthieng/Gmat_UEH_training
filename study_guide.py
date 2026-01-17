@@ -194,6 +194,94 @@ Bước 4: Kiểm tra bằng ví dụ cụ thể
 4. VÍ DỤ:
 Nếu x là số chẵn và y là số lẻ, x+y là?
 → Chẵn + Lẻ = Lẻ'''
+        },
+        'Number Sequence': {
+            'theory': '''LÝ THUYẾT ĐẦY ĐỦ VỀ NUMBER SEQUENCE (Dãy Số)
+
+1. ĐỊNH NGHĨA:
+Number Sequence là dãy các số tuân theo một quy luật (pattern) nhất định. Nhiệm vụ là nhận diện quy luật để tìm số tiếp theo hoặc số bị thiếu.
+
+2. CÁC LOẠI QUY LUẬT PHỔ BIẾN:
+- Cấp số cộng (Arithmetic): cộng/ trừ hằng số d mỗi bước.
+- Cấp số nhân (Geometric): nhân/ chia hằng số r mỗi bước.
+- Hiệu số bậc hai: hiệu số giữa các hiệu số là hằng số (pattern bậc hai).
+- Luân phiên (Alternating): xen kẽ hai quy luật khác nhau cho vị trí chẵn/ lẻ.
+- Kết hợp: ghép hai dãy con (tăng dần và giảm dần), hoặc chèn số đặc biệt (bình phương, lập phương).
+
+3. CÔNG THỨC TRỌNG TÂM:
+- Cấp số cộng: a_n = a_1 + (n-1)d.
+- Cấp số nhân: a_n = a_1 · r^(n-1).
+- Hiệu số bậc hai: nếu Δ1, Δ2, Δ3 tạo thành cấp số cộng, hãy tính tiếp Δ để suy ra số tiếp theo.
+- Luân phiên: tách dãy thành hai nhánh (vị trí chẵn/ lẻ), phân tích riêng từng nhánh.
+
+4. CÁCH ÁP DỤNG (4 BƯỚC):
+Bước 1: Tính hiệu số liên tiếp; nếu ổn định → cấp số cộng. Nếu tỉ số ổn định → cấp số nhân.
+Bước 2: Nếu hiệu số không ổn định, tính tiếp hiệu của hiệu (bậc hai). Nếu ổn định → pattern bậc hai.
+Bước 3: Kiểm tra luân phiên: tách các số ở vị trí chẵn/ lẻ và phân tích từng nhánh.
+Bước 4: Thử ghép quy luật đã tìm được để suy ra số tiếp theo, kiểm tra lại với toàn bộ dãy.
+
+5. VÍ DỤ MINH HỌA:
+- Cấp số cộng: 5, 8, 11, 14, ? → d=3 → tiếp theo 17.
+- Cấp số nhân: 3, 6, 12, 24, ? → r=2 → tiếp theo 48.
+- Bậc hai: 2, 5, 10, 17, ? → hiệu: +3, +5, +7, ⇒ +9 → tiếp theo 26.
+- Luân phiên: 2, 10, 4, 12, 6, ? → nhánh1 (vị trí lẻ): 2,4,6 (+2) → kế 8; nhánh2 (vị trí chẵn): 10,12 (+2) → kế 14 → số tiếp theo 8.
+
+6. LƯU Ý QUAN TRỌNG:
+- Luôn thử cấp số cộng/ nhân trước vì thường gặp nhất.
+- Khi nghi bậc hai, hãy tính hiệu của hiệu; nếu ổn định, áp dụng.
+- Với dãy trộn, tách nhánh chẵn/ lẻ để giảm nhiễu.
+- Kiểm tra tính hợp lý với toàn bộ dãy trước khi chốt đáp án.''',
+            'detailed_concepts': [
+                {
+                    'concept_name': 'Nhận diện cấp số cộng/ nhân nhanh',
+                    'explanation': 'Tính 2-3 hiệu số liên tiếp và 2-3 tỉ số liên tiếp. Nếu ổn định, xác nhận ngay quy luật để tiết kiệm thời gian.',
+                    'example': '7, 10, 13, 16 → hiệu luôn +3 → cấp số cộng.'
+                },
+                {
+                    'concept_name': 'Hiệu số bậc hai',
+                    'explanation': 'Nếu hiệu số không ổn định nhưng hiệu của hiệu ổn định, dãy là bậc hai. Khi đó cộng tiếp giá trị hiệu bậc hai để tìm hiệu kế tiếp.',
+                    'example': '1, 4, 9, 16, ? → hiệu: 3,5,7 → hiệu của hiệu: +2 → hiệu kế +9 → số tiếp theo 25.'
+                },
+                {
+                    'concept_name': 'Dãy luân phiên (Alternating)',
+                    'explanation': 'Tách vị trí chẵn và lẻ thành hai dãy con. Phân tích từng dãy con độc lập, sau đó ghép lại.',
+                    'example': '3, 9, 5, 11, 7, ? → dãy lẻ: 3,5,7 (+2); dãy chẵn: 9,11 (+2) → tiếp theo 13; ghép lại: ?, nên số tiếp theo 13.'
+                }
+            ],
+            'step_by_step_method': [
+                'Bước 1: Viết dãy ra, tính hiệu số và tỉ số 2-3 lần đầu.',
+                'Bước 2: Nếu chưa ra, tính hiệu của hiệu để kiểm tra bậc hai.',
+                'Bước 3: Kiểm tra pattern luân phiên bằng cách tách chẵn/ lẻ.',
+                'Bước 4: Suy ra số tiếp theo và kiểm tra ngược toàn bộ dãy.'
+            ],
+            'common_mistakes': [
+                'Chỉ thử một quy luật và bỏ qua kiểm tra ngược với cả dãy.',
+                'Không tách nhánh khi dãy là luân phiên, dẫn tới kết luận sai.',
+                'Quên xem xét hiệu bậc hai nên bỏ lỡ pattern bậc hai.',
+                'Áp dụng nhầm tỉ số khi có số 0 hoặc số âm (cần dùng hiệu thay vì tỉ số).'
+            ],
+            'tips_for_accuracy': [
+                'Luôn thử hiệu trước, tỉ số sau; nếu không ổn định, chuyển sang bậc hai.',
+                'Vẽ nhanh hai hàng: hàng số, hàng hiệu; đôi khi cần thêm hàng hiệu của hiệu.',
+                'Tách nhánh chẵn/ lẻ khi nghi dãy luân phiên.',
+                'Kiểm tra kết quả bằng cách thế ngược vào 3-4 phần tử cuối.'
+            ],
+            'tips_for_speed': [
+                'Ghi nhanh hiệu số ba bước đầu; nếu không ổn định → thử bậc hai ngay.',
+                'Khi dãy dài, chỉ cần 5-6 phần tử đầu để đoán pattern, sau đó xác nhận ở 2 phần tử cuối.',
+                'Ưu tiên pattern đơn giản (cộng/nhân) trước khi thử luân phiên.'
+            ],
+            'practice_drills': [
+                'Giải 10 dãy cấp số cộng/nhân đơn giản trong 3 phút.',
+                'Giải 5 dãy bậc hai (hiệu không ổn định nhưng hiệu của hiệu ổn định).',
+                'Giải 5 dãy luân phiên, tách nhánh chẵn/ lẻ và tìm số tiếp theo.',
+                'Tạo một dãy mới có pattern riêng và trao đổi với bạn học để giải.'
+            ],
+            'key_formulas': [
+                'Cấp số cộng: a_n = a_1 + (n-1)d; S_n = n/2 · (2a_1 + (n-1)d)',
+                'Cấp số nhân: a_n = a_1 · r^(n-1); S_n = a_1 · (1 - r^n) / (1 - r) (r ≠ 1)',
+                'Bậc hai: dùng bảng hiệu và hiệu của hiệu; nếu ΔΔ = hằng số k, hiệu tiếp theo = hiệu cuối + k'
+            ]
         }
     }
 
