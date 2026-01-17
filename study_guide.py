@@ -53,6 +53,94 @@ def _get_study_model():
 def _get_topic_knowledge_base():
     """Cơ sở dữ liệu kiến thức chi tiết cho từng topic GMAT"""
     return {
+        'Permutations': {
+            'theory': '''LÝ THUYẾT CHI TIẾT VỀ PERMUTATIONS (Hoán vị)
+
+1. ĐỊNH NGHĨA:
+Permutations đếm số cách sắp xếp có thứ tự của một tập phần tử. Khác combinations, thứ tự LÀM THAY ĐỔI kết quả.
+
+2. CÔNG THỨC CỐT LÕI:
+- Hoán vị đầy đủ n phần tử: n! (factorial)
+- Chỉnh hợp (partial permutation) k phần tử từ n: P(n, k) = n! / (n-k)!
+- Hoán vị với phần tử lặp: n! / (m1! * m2! * ...)
+- Hoán vị vòng tròn: (n-1)!
+
+3. KHI NÀO DÙNG:
+- Thứ tự quan trọng (ghế A khác ghế B).
+- Sắp xếp các chữ cái/số/ký hiệu phân biệt (hoặc có lặp) thành một chuỗi có thứ tự.
+- Bài ghế ngồi, bốc thăm, xếp lịch có vị trí cụ thể.
+
+4. VÍ DỤ NHANH:
+- Bao nhiêu cách sắp xếp 5 học sinh vào 5 ghế thẳng hàng? → 5! = 120.
+- Chọn và xếp 3 người từ 7 vào 3 ghế: P(7,3) = 7*6*5 = 210.
+- Từ chữ "BALLOON" (7 chữ, có 2 L, 2 O), số hoán vị = 7! / (2!*2!) = 1260.
+- Vòng tròn 5 người bắt tay (chỉ xoay, không lật): (5-1)! = 24.
+
+5. BẪY THƯỜNG GẶP:
+- Nhầm permutations với combinations (quên yếu tố thứ tự).
+- Quên chia cho factorial của phần tử lặp (chữ cái lặp).
+- Ghế vòng tròn: phải chia cho n do quay cả vòng vẫn giống; nếu phân biệt hướng thì khác.
+- Ràng buộc "đi cùng/không đi cùng": cần gộp nhóm hoặc trừ trường hợp cấm.
+''',
+            'detailed_concepts': [
+                {
+                    'concept_name': 'Phân biệt Permutation vs Combination',
+                    'explanation': 'Permutation: thứ tự QUAN TRỌNG (xếp ghế A/B khác nhau). Combination: chỉ cần chọn, không quan tâm thứ tự.',
+                    'example': 'Chọn 2 người từ 4: C(4,2)=6; Xếp 2 ghế từ 4: P(4,2)=12.'
+                },
+                {
+                    'concept_name': 'Chỉnh hợp k từ n (P(n,k))',
+                    'explanation': 'Dùng khi chọn k vị trí cụ thể từ n người/vật, thứ tự ghế quan trọng.',
+                    'example': 'Xếp 3 vị trí leader từ 8 người: P(8,3) = 8*7*6 = 336.'
+                },
+                {
+                    'concept_name': 'Hoán vị có lặp',
+                    'explanation': 'Khi chuỗi có ký tự trùng, phải chia cho factorial từng nhóm lặp để tránh đếm lặp.',
+                    'example': 'Từ "MISSISSIPPI" (11 chữ, 4 I, 4 S, 2 P, 1 M): 11!/(4!*4!*2!) = 34,650.'
+                },
+                {
+                    'concept_name': 'Hoán vị vòng tròn',
+                    'explanation': 'Chỉ xoay cả vòng không tạo sắp xếp mới, nên chia cho n (tương đương (n-1)!). Nếu phân biệt chiều kim đồng hồ/chống kim đồng hồ, nhân 2.',
+                    'example': 'Bàn tròn 6 người: (6-1)! = 120. Nếu có chỗ cố định 1 người, quay về dạng hàng: 5! = 120.'
+                }
+            ],
+            'step_by_step_method': [
+                'Bước 1: Xác định xem THỨ TỰ có quan trọng không. Nếu có → Permutation.',
+                'Bước 2: Kiểm tra có phần tử lặp hoặc cấu trúc vòng tròn không.',
+                'Bước 3: Chọn công thức phù hợp: n!, P(n,k), hoán vị lặp, hay vòng tròn.',
+                'Bước 4: Xử lý ràng buộc (đi cùng, không đi cùng, đứng cạnh): gộp nhóm hoặc dùng đếm-bổ-sung.',
+                'Bước 5: Tính nhanh bằng phân rã factorial, giản ước sớm để tránh số lớn.'
+            ],
+            'common_mistakes': [
+                'Quên yếu tố thứ tự: dùng C thay vì P.',
+                'Không chia cho factorial của phần tử lặp trong chuỗi chữ cái.',
+                'Ghế vòng tròn nhưng tính như ghế thẳng hàng (quên chia cho n hoặc dùng (n-1)!).',
+                'Ràng buộc “đi cùng/không đi cùng” nhưng không gộp nhóm hoặc trừ trường hợp cấm.'
+            ],
+            'tips_for_accuracy': [
+                'Nhớ quy tắc “Permutation = order matters”. Nếu ghế/slot khác nhau → P.',
+                'Viết nhanh cấu trúc factorial rồi giản ước thay vì bấm máy với số lớn.',
+                'Khi có lặp, luôn ghi phân số n!/(m1!*m2!*...).',
+                'Vòng tròn: mặc định (n-1)!; nếu có chỗ cố định một người thì quay về hàng thẳng.'
+            ],
+            'tips_for_speed': [
+                'Ghi P(n,k)=n×(n-1)×...×(n-k+1) để tính nhẩm nhanh, dừng sau k thừa số.',
+                'Ưu tiên giản ước chéo trước khi nhân để tránh tràn số.',
+                'Nhận diện nhanh bài có lặp để áp dụng chia factorial, tránh đếm tay.'
+            ],
+            'practice_drills': [
+                'Đếm số hoán vị từ 6 chữ phân biệt vào 4 ghế: P(6,4).',
+                'Chuỗi với ký tự lặp: tính số cách sắp xếp "STATISTICS".',
+                'Bàn tròn 7 người, 2 người phải ngồi cạnh nhau: gộp cặp thành 1 khối.',
+                'So sánh kết quả dùng Combination vs Permutation cho cùng bài để thấy khác biệt.'
+            ],
+            'key_formulas': [
+                'Hoán vị đầy đủ: n!',
+                'Chỉnh hợp: P(n,k) = n! / (n-k)!',
+                'Hoán vị có lặp: n! / (m1! * m2! * ...)',
+                'Hoán vị vòng tròn: (n-1)!'
+            ]
+        },
         'Letter Sequence': {
             'theory': '''LÝ THUYẾT CHI TIẾT VỀ LETTER SEQUENCE (Dãy Chữ Cái)
 
@@ -356,6 +444,31 @@ def generate_study_guide(questions: List[Dict[str, Any]], user_answers: Dict[str
     )
     
     all_topics_guides = []
+
+    def _looks_generic_guide(guide: Dict[str, Any]) -> bool:
+        """Heuristic to catch vague/short guides and force richer fallback."""
+        theory = (guide.get('theory') or '').strip()
+        if len(theory) < 500:
+            return True
+        lowered = theory.lower()
+        generic_markers = [
+            'xem lại', 'cần ôn', 'ôn lại từ đầu', 'xem sách giáo khoa', 'luyện tập thêm để', 'cơ bản'
+        ]
+        if any(m in lowered for m in generic_markers):
+            return True
+        concepts = guide.get('detailed_concepts') or []
+        if len(concepts) < 3:
+            return True
+        for item in concepts:
+            if isinstance(item, dict) and len((item.get('explanation') or '')) < 80:
+                return True
+        steps = guide.get('step_by_step_method') or []
+        if len(steps) < 4:
+            return True
+        key_formulas = guide.get('key_formulas') or []
+        if len(key_formulas) < 3:
+            return True
+        return False
     
     for topic_name, data in sorted_topics:
         accuracy = (data['correct'] / data['total'] * 100) if data['total'] > 0 else 0
@@ -497,6 +610,9 @@ YÊU CẦU QUAN TRỌNG:
 - Phần "step_by_step_method" PHẢI có ít nhất 4 bước chi tiết
 - Phân tích CỤ THỂ dựa trên các câu sai được cung cấp
 - MỖI MỤC phải dài, chi tiết, CÓ VÍ DỤ
+- Theory tối thiểu 500 ký tự và phải có ít nhất 1 ví dụ số kèm lời giải ngắn
+- Mỗi "detailed_concept" phải có ví dụ số/hình dung cụ thể (không được ghi chung chung)
+- "practice_drills" phải là bài tập cụ thể (ghi rõ dữ kiện/số liệu), không phải lời khuyên chung chung
 - Không viết chung chung - phải cụ thể, áp dụng được ngay
 - Trả về JSON thuần, không có markdown
 """
@@ -526,12 +642,50 @@ YÊU CẦU QUAN TRỌNG:
             text = re.sub(r'\}\}\}+\s*$', '}}', text)
             # Replace }]}} with }]} 
             text = re.sub(r'\}\]\}\}+', '}]}', text)
-            
+
+            def _repair_json_payload(payload: str) -> str:
+                """Best-effort fix for truncated/unterminated JSON."""
+                cleaned = payload.strip().rstrip('`')
+                # Balance quotes
+                if len(re.findall(r'(?<!\\)"', cleaned)) % 2 != 0:
+                    cleaned += '"'
+                # Trim to last closing brace/bracket to drop trailing noise
+                last_brace = max(cleaned.rfind('}'), cleaned.rfind(']'))
+                if last_brace != -1:
+                    cleaned = cleaned[: last_brace + 1]
+                # Remove trailing commas before the final brace/bracket
+                cleaned = re.sub(r',\s*(\}|\])', r'\1', cleaned)
+                # Ensure ends with brace if nothing else
+                if cleaned and cleaned[-1] not in ['}', ']']:
+                    cleaned += '}'
+                return cleaned
+
             # Validate JSON before parsing
             if not text or text == '{}':
                 raise ValueError("Empty JSON response from API")
-            
-            topic_guide = json.loads(text)
+
+            # First attempt: try to parse after trimming obvious trailing chunks
+            try:
+                topic_guide = json.loads(text)
+            except json.JSONDecodeError:
+                # Second attempt: repair common truncation/unterminated cases
+                repaired = _repair_json_payload(text)
+                try:
+                    print(f"ℹ️ Repairing JSON for topic '{topic_name}'")
+                    topic_guide = json.loads(repaired)
+                except json.JSONDecodeError as e2:
+                    # Final attempt: remove any trailing partial lines and re-close braces
+                    lines = cleaned = repaired.splitlines()
+                    while lines:
+                        candidate = "\n".join(lines).rstrip()
+                        candidate = re.sub(r",\s*(\}|\])", r"\1", candidate)
+                        try:
+                            topic_guide = json.loads(candidate)
+                            break
+                        except json.JSONDecodeError:
+                            lines = lines[:-1]  # drop last line and retry
+                    else:
+                        raise e2
             
             # Validate required fields
             required_fields = ['theory', 'detailed_concepts', 'step_by_step_method', 'common_mistakes', 'tips_for_accuracy']
@@ -539,6 +693,13 @@ YÊU CẦU QUAN TRỌNG:
             if missing_fields:
                 print(f"⚠️ Missing fields in response for '{topic_name}': {missing_fields}")
                 raise ValueError(f"Missing required fields: {missing_fields}")
+
+            # If content is too generic/short, fall back to curated knowledge base
+            knowledge_base = _get_topic_knowledge_base()
+            if _looks_generic_guide(topic_guide) and topic_name in knowledge_base:
+                print(f"ℹ️ Using knowledge base fallback for '{topic_name}' due to generic content")
+                kb_data = knowledge_base[topic_name]
+                topic_guide = {**kb_data}
             
             # Thêm metadata
             topic_guide['topic'] = topic_name
@@ -919,16 +1080,230 @@ def format_study_guide_html(study_data: Dict[str, Any]) -> str:
 
 def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
     """
-    Generate a beautifully formatted PDF from study guide data
+    Generate a beautifully formatted PDF with emoji support using fpdf2
     
     Args:
         study_data: Study guide dictionary from generate_study_guide()
     
     Returns:
-        PDF file as bytes, or None if reportlab not available
+        PDF file as bytes
     """
+    try:
+        from fpdf import FPDF
+        from datetime import datetime
+        from pathlib import Path
+    except ImportError:
+        print("⚠️ fpdf2 chưa cài đặt. Chạy: pip install fpdf2")
+        return None
     
-    def _register_vn_font():
+    try:
+        # Try to find a Vietnamese-supporting font
+        font_path = None
+        font_name = "DejaVu"
+        
+        # Check bundled font first
+        base_dir = Path(__file__).resolve().parent
+        bundled = base_dir / "assets" / "fonts" / "DejaVuSans.ttf"
+        if bundled.exists():
+            font_path = str(bundled)
+        else:
+            # Check system fonts
+            system_fonts = [
+                "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+                "C:/Windows/Fonts/arial.ttf",
+                "/System/Library/Fonts/Arial.ttf"
+            ]
+            for sys_font in system_fonts:
+                if Path(sys_font).exists():
+                    font_path = sys_font
+                    break
+        
+        # Create PDF with A4 size
+        pdf = FPDF(format='A4')
+        pdf.add_page()
+        
+        # Register font if found
+        if font_path:
+            pdf.add_font(font_name, '', font_path)
+            pdf.set_font(font_name, '', 11)
+        else:
+            pdf.set_font("Arial", "", 11)
+            font_name = "Arial"
+        
+        # ============ TITLE ============
+        pdf.set_font(font_name, 'B', 20)
+        pdf.set_text_color(0, 102, 204)
+        pdf.cell(0, 12, "📘 TÀI LIỆU ÔN TẬP GMAT CÁ NHÂN HÓA", ln=True, align='C')
+        
+        # Date
+        pdf.set_font(font_name, '', 9)
+        pdf.set_text_color(100, 100, 100)
+        pdf.cell(0, 8, f"🗓️  Được tạo vào: {datetime.now().strftime('%d/%m/%Y %H:%M')}", ln=True, align='C')
+        pdf.ln(4)
+        
+        # ============ OVERALL SUMMARY ============
+        overall = study_data.get('overall_summary', '')
+        if overall:
+            pdf.set_font(font_name, 'B', 13)
+            pdf.set_text_color(0, 102, 204)
+            pdf.cell(0, 10, "📊 Tổng Quan Kết Quả", ln=True)
+            
+            pdf.set_font(font_name, '', 10)
+            pdf.set_text_color(0, 0, 0)
+            pdf.multi_cell(0, 5, overall, align='L')
+            pdf.ln(3)
+        
+        # ============ TOPICS ============
+        topics = study_data.get('topics', [])
+        for idx, topic in enumerate(topics):
+            if idx > 0:
+                pdf.add_page()
+            
+            topic_name = topic.get('topic', 'Chủ đề')
+            stats = topic.get('stats', {})
+            accuracy = (stats.get('correct', 0) / stats.get('total', 1) * 100) if stats.get('total', 1) > 0 else 0
+            stats_text = f"{stats.get('correct', 0)}/{stats.get('total', 0)} đúng ({accuracy:.0f}%)"
+            
+            # Topic header
+            pdf.set_font(font_name, 'B', 14)
+            pdf.set_text_color(0, 102, 204)
+            pdf.cell(0, 10, f"🧠 {topic_name}", ln=True)
+            
+            # Stats badge
+            pdf.set_font(font_name, 'B', 9)
+            pdf.set_text_color(30, 136, 229)
+            pdf.cell(0, 8, f"📈 {stats_text}", ln=True)
+            pdf.ln(2)
+            
+            # ---- THEORY ----
+            theory = topic.get('theory', '')
+            if theory:
+                pdf.set_font(font_name, 'B', 11)
+                pdf.set_text_color(11, 83, 148)
+                pdf.cell(0, 8, "☑️  LÝ THUYẾT", ln=True)
+                
+                pdf.set_font(font_name, '', 10)
+                pdf.set_text_color(0, 0, 0)
+                if isinstance(theory, str):
+                    theory_text = theory[:800]  # Limit length
+                    pdf.multi_cell(0, 4, theory_text, align='L')
+                pdf.ln(2)
+            
+            # ---- CONCEPTS ----
+            concepts = topic.get('detailed_concepts', [])
+            if concepts:
+                pdf.set_font(font_name, 'B', 11)
+                pdf.set_text_color(11, 83, 148)
+                pdf.cell(0, 8, "💡 CÁC KHÁI NIỆM CHI TIẾT", ln=True)
+                
+                pdf.set_font(font_name, '', 9)
+                pdf.set_text_color(0, 0, 0)
+                for concept in concepts[:3]:
+                    concept_name = concept.get('concept_name', '')
+                    explanation = concept.get('explanation', '')
+                    example = concept.get('example', '')
+                    
+                    pdf.set_font(font_name, 'B', 9)
+                    pdf.cell(0, 6, f"• {concept_name}", ln=True)
+                    
+                    pdf.set_font(font_name, '', 9)
+                    pdf.multi_cell(0, 4, explanation[:200], align='L')
+                    
+                    if example:
+                        pdf.set_font(font_name, 'I', 8)
+                        pdf.set_text_color(100, 100, 100)
+                        pdf.multi_cell(0, 4, f"Ví dụ: {example[:150]}", align='L')
+                        pdf.set_text_color(0, 0, 0)
+                    pdf.ln(1)
+                pdf.ln(1)
+            
+            # ---- STEP BY STEP ----
+            steps = topic.get('step_by_step_method', [])
+            if steps:
+                pdf.set_font(font_name, 'B', 11)
+                pdf.set_text_color(11, 83, 148)
+                pdf.cell(0, 8, "▶️  PHƯƠNG PHÁP TỪNG BƯỚC", ln=True)
+                
+                pdf.set_font(font_name, '', 9)
+                pdf.set_text_color(0, 0, 0)
+                for i, step in enumerate(steps[:4], 1):
+                    pdf.multi_cell(0, 4, f"{i}. {step[:120]}", align='L')
+                pdf.ln(1)
+            
+            # ---- MISTAKES ----
+            mistakes = topic.get('common_mistakes', [])
+            if mistakes:
+                pdf.set_font(font_name, 'B', 11)
+                pdf.set_text_color(198, 40, 40)
+                pdf.cell(0, 8, "⚠️  LỖI PHỔ BIẾN", ln=True)
+                
+                pdf.set_font(font_name, '', 9)
+                pdf.set_text_color(0, 0, 0)
+                for mistake in mistakes[:3]:
+                    pdf.multi_cell(0, 4, f"• {mistake[:120]}", align='L')
+                pdf.ln(1)
+            
+            # ---- TIPS ----
+            tips_accuracy = topic.get('tips_for_accuracy', [])
+            if tips_accuracy:
+                pdf.set_font(font_name, 'B', 11)
+                pdf.set_text_color(76, 175, 80)
+                pdf.cell(0, 8, "✅ MẸO TĂNG TỶ LỆ ĐÚNG", ln=True)
+                
+                pdf.set_font(font_name, '', 9)
+                pdf.set_text_color(0, 0, 0)
+                for tip in tips_accuracy[:3]:
+                    pdf.multi_cell(0, 4, f"✓ {tip[:130]}", align='L')
+                pdf.ln(1)
+            
+            # ---- SPEED TIPS ----
+            tips_speed = topic.get('tips_for_speed', [])
+            if tips_speed:
+                pdf.set_font(font_name, 'B', 11)
+                pdf.set_text_color(255, 152, 0)
+                pdf.cell(0, 8, "⚡ MẸO TĂNG TỐC ĐỘ", ln=True)
+                
+                pdf.set_font(font_name, '', 9)
+                pdf.set_text_color(0, 0, 0)
+                for tip in tips_speed[:2]:
+                    pdf.multi_cell(0, 4, f"➤ {tip[:130]}", align='L')
+                pdf.ln(1)
+            
+            # ---- DRILLS ----
+            drills = topic.get('practice_drills', [])
+            if drills:
+                pdf.set_font(font_name, 'B', 11)
+                pdf.set_text_color(103, 58, 183)
+                pdf.cell(0, 8, "🧪 BÀI TẬP LUYỆN TẬP", ln=True)
+                
+                pdf.set_font(font_name, '', 9)
+                pdf.set_text_color(0, 0, 0)
+                for drill in drills[:3]:
+                    pdf.multi_cell(0, 4, f"• {drill[:130]}", align='L')
+                pdf.ln(1)
+            
+            # ---- FORMULAS ----
+            formulas = topic.get('key_formulas', [])
+            if formulas:
+                pdf.set_font(font_name, 'B', 11)
+                pdf.set_text_color(158, 158, 158)
+                pdf.cell(0, 8, "📐 CÔNG THỨC CẦN NHỚ", ln=True)
+                
+                pdf.set_font(font_name, '', 9)
+                pdf.set_text_color(0, 0, 0)
+                for formula in formulas[:4]:
+                    pdf.multi_cell(0, 4, f"• {formula[:130]}", align='L')
+        
+        # Generate PDF bytes
+        pdf_bytes = pdf.output()
+        return pdf_bytes
+        
+    except Exception as e:
+        print(f"⚠️ Lỗi tạo PDF: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
         """Try to register a Unicode font (prefer bundled) for Vietnamese diacritics."""
         try:
             from reportlab.pdfbase import pdfmetrics
@@ -1020,12 +1395,14 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             print("  4. Streamlit Cloud sẽ tự động cài đặt")
             return None
         
-        # Try register Unicode font for Vietnamese
+        # Try register Unicode font for Vietnamese; only treat as Unicode-safe if not fallback
         font_name = _register_vn_font()
-        unicode_font = bool(font_name)
         if not font_name:
             font_name = 'Helvetica'
+            unicode_font = False
             print("PDF using Helvetica fallback (ASCII)")
+        else:
+            unicode_font = font_name not in ['Helvetica', 'Times-Roman']
         bold_font_name = font_name
 
         # Create PDF buffer
@@ -1084,21 +1461,59 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             leading=14,
             fontName=font_name
         )
+
+        section_label_style = ParagraphStyle(
+            'SectionLabel',
+            parent=styles['Heading4'],
+            fontSize=11,
+            textColor=colors.HexColor('#0b5394'),
+            spaceAfter=4,
+            spaceBefore=8,
+            fontName=bold_font_name,
+        )
+
+        tag_style = ParagraphStyle(
+            'Tag',
+            parent=styles['BodyText'],
+            fontSize=9,
+            textColor=colors.white,
+            alignment=TA_CENTER,
+            fontName=bold_font_name
+        )
+
+        stat_style = ParagraphStyle(
+            'Stat',
+            parent=styles['BodyText'],
+            fontSize=9,
+            textColor=colors.HexColor('#1b2838'),
+            fontName=bold_font_name
+        )
         
         # Story to hold all PDF elements
         story = []
         
         # Title
-        story.append(Paragraph("TAI LIEU ON TAP GMAT CA NHAN HOA", title_style))
-        story.append(Paragraph(f"Duoc tao vao: {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
+        story.append(Paragraph("✪ TÀI LIỆU ÔN TẬP GMAT CÁ NHÂN HÓA", title_style))
+        story.append(Paragraph(f"◆ Được tạo vào: {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
         story.append(Spacer(1, 0.2*inch))
         
-        # Overall summary
+        # Overall summary as a highlighted card
         overall = study_data.get('overall_summary', '')
         if overall:
-            story.append(Paragraph("Tong Quan Ket Qua", heading_style))
-            story.append(Paragraph(clean_text_for_pdf(overall, unicode_font), body_style))
-            story.append(Spacer(1, 0.2*inch))
+            overall_card = Table(
+                [
+                    [Paragraph("◆ Tổng Quan Kết Quả", heading_style)],
+                    [Paragraph(clean_text_for_pdf(overall, unicode_font), body_style)],
+                ],
+                colWidths=[doc.width],
+            )
+            overall_card.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#e8f1fb')),
+                ('BOX', (0, 0), (-1, -1), 0.75, colors.HexColor('#b6d0f5')),
+                ('INNERPADDING', (0, 0), (-1, -1), 8),
+            ]))
+            story.append(overall_card)
+            story.append(Spacer(1, 0.25*inch))
         
         # Topics
         topics = study_data.get('topics', [])
@@ -1106,104 +1521,138 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
             if idx > 0:
                 story.append(PageBreak())
             
-            topic_name = clean_text_for_pdf(topic.get('topic', 'Chu de'), unicode_font)
+            topic_name = clean_text_for_pdf(topic.get('topic', 'Chủ đề'), unicode_font)
             stats = topic.get('stats', {})
             accuracy = (stats.get('correct', 0) / stats.get('total', 1) * 100) if stats.get('total', 1) > 0 else 0
-            
-            # Topic header
-            story.append(Paragraph(topic_name, heading_style))
-            
-            # Statistics
-            stats_text = f"Ket qua: {stats.get('correct', 0)}/{stats.get('total', 0)} dung ({accuracy:.0f}%)"
-            story.append(Paragraph(stats_text, styles['Normal']))
-            story.append(Spacer(1, 0.15*inch))
+            stats_text = f"{stats.get('correct', 0)}/{stats.get('total', 0)} đúng ({accuracy:.0f}%)"
+
+            # Topic header card
+            header_table = Table(
+                [
+                    [
+                        Paragraph(f"★ {topic_name}", heading_style),
+                        Paragraph(stats_text, tag_style)
+                    ]
+                ],
+                colWidths=[doc.width - 1.6*inch, 1.6*inch],
+            )
+            header_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (0, 0), colors.HexColor('#f2f5ff')),
+                ('BACKGROUND', (1, 0), (1, 0), colors.HexColor('#1e88e5')),
+                ('TEXTCOLOR', (1, 0), (1, 0), colors.white),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('INNERPADDING', (0, 0), (-1, -1), 8),
+                ('BOX', (0, 0), (-1, -1), 0.75, colors.HexColor('#c5d5f5')),
+            ]))
+            story.append(header_table)
+            story.append(Spacer(1, 0.14*inch))
             
             # Theory
             theory = topic.get('theory', '')
             if theory:
-                story.append(Paragraph("Ly Thuyet", subheading_style))
-                # Handle both string and dictionary theory formats
+                story.append(Paragraph("☑ Lý Thuyết", section_label_style))
                 if isinstance(theory, str):
-                    # Clean up theory text for better PDF rendering
-                    theory_clean = clean_text_for_pdf(theory, unicode_font).replace('\n\n', '<br/><br/>').replace('\n', ' ')
-                    story.append(Paragraph(theory_clean[:2000], body_style))  # Limit length
+                    theory_clean = clean_text_for_pdf(theory, unicode_font)
+                    # Preserve paragraph structure: replace double newlines with paragraph breaks
+                    theory_clean = theory_clean.replace('\n\n', '</p><p>').replace('\n', ' ')
+                    theory_clean = f"<p>{theory_clean}</p>"
+                    story.append(Paragraph(theory_clean, body_style))
                 elif isinstance(theory, dict):
-                    # Convert dictionary theory to formatted text
                     theory_parts = []
                     if 'title' in theory:
                         theory_parts.append(f"<b>{clean_text_for_pdf(theory['title'], unicode_font)}</b>")
                     if 'definition' in theory:
-                        theory_parts.append(f"<br/><b>Dinh nghia:</b> {clean_text_for_pdf(theory['definition'][:500], unicode_font)}")
+                        theory_parts.append(f"<br/><b>Định nghĩa:</b> {clean_text_for_pdf(theory['definition'], unicode_font)}")
                     if 'main_rules' in theory and theory['main_rules']:
-                        theory_parts.append("<br/><b>Quy tac chinh:</b>")
-                        for i, rule in enumerate(theory['main_rules'][:3], 1):
+                        theory_parts.append("<br/><b>Quy tắc chính:</b>")
+                        for i, rule in enumerate(theory['main_rules'], 1):
                             if isinstance(rule, dict):
                                 rule_name = clean_text_for_pdf(rule.get('rule_name', ''), unicode_font)
                                 theory_parts.append(f"<br/>{i}. {rule_name}")
                             else:
                                 theory_parts.append(f"<br/>{i}. {clean_text_for_pdf(str(rule), unicode_font)}")
-                    theory_text = ' '.join(theory_parts)[:2000]  # Limit total length
+                    theory_text = ' '.join(theory_parts)
                     story.append(Paragraph(theory_text, body_style))
                 else:
-                    # Fallback for other types
-                    story.append(Paragraph(clean_text_for_pdf(str(theory), unicode_font)[:2000], body_style))
-                story.append(Spacer(1, 0.1*inch))
+                    story.append(Paragraph(clean_text_for_pdf(str(theory), unicode_font), body_style))
+                story.append(Spacer(1, 0.08*inch))
             
             # Detailed concepts
             concepts = topic.get('detailed_concepts', [])
             if concepts:
-                story.append(Paragraph("Cac Khai Niem Chi Tiet", subheading_style))
-                for concept in concepts[:3]:  # Limit to 3 concepts
+                story.append(Paragraph("⚡ Các Khái Niệm Chi Tiết", section_label_style))
+                for concept in concepts[:4]:
                     concept_name = clean_text_for_pdf(concept.get('concept_name', ''), unicode_font)
                     explanation = clean_text_for_pdf(concept.get('explanation', ''), unicode_font)
-                    story.append(Paragraph(f"<b>• {concept_name}:</b>", body_style))
+                    example = clean_text_for_pdf(concept.get('example', ''), unicode_font)
+                    story.append(Paragraph(f"• <b>{concept_name}</b>", body_style))
                     story.append(Paragraph(explanation, body_style))
-                story.append(Spacer(1, 0.1*inch))
+                    if example:
+                        story.append(Paragraph(f"➤ Ví dụ: {example}", body_style))
+                story.append(Spacer(1, 0.08*inch))
             
             # Step by step method
             steps = topic.get('step_by_step_method', [])
             if steps:
-                story.append(Paragraph("Phuong Phap Tung Buoc", subheading_style))
+                story.append(Paragraph("▶ Phương Pháp Từng Bước", section_label_style))
                 for i, step in enumerate(steps, 1):
-                    story.append(Paragraph(f"<b>Buoc {i}:</b> {clean_text_for_pdf(step, unicode_font)}", body_style))
-                story.append(Spacer(1, 0.1*inch))
+                    step_text = clean_text_for_pdf(step, unicode_font).replace('\n', ' ')
+                    story.append(Paragraph(f"→ Bước {i}: {step_text}", body_style))
+                    if i < len(steps):
+                        story.append(Spacer(1, 0.04*inch))
+                story.append(Spacer(1, 0.08*inch))
             
             # Common mistakes
             mistakes = topic.get('common_mistakes', [])
             if mistakes:
-                story.append(Paragraph("Loi Pho Bien", subheading_style))
-                for mistake in mistakes[:4]:  # Limit to 4 mistakes
-                    story.append(Paragraph(f"• {clean_text_for_pdf(mistake, unicode_font)}", body_style))
-                story.append(Spacer(1, 0.1*inch))
+                story.append(Paragraph("⚠ Lỗi Phổ Biến", section_label_style))
+                for i, mistake in enumerate(mistakes[:4]):
+                    mistake_text = clean_text_for_pdf(mistake, unicode_font).replace('\n', ' ')
+                    story.append(Paragraph(f"• {mistake_text}", body_style))
+                    if i < min(4, len(mistakes)) - 1:
+                        story.append(Spacer(1, 0.04*inch))
+                story.append(Spacer(1, 0.08*inch))
             
             # Tips
             tips_accuracy = topic.get('tips_for_accuracy', [])
-            if tips_accuracy:
-                story.append(Paragraph("Meo Tang Ty Le Dung", subheading_style))
-                for tip in tips_accuracy[:3]:  # Limit to 3 tips
-                    story.append(Paragraph(f"• {clean_text_for_pdf(tip, unicode_font)}", body_style))
-            
             tips_speed = topic.get('tips_for_speed', [])
+            if tips_accuracy:
+                story.append(Paragraph("✓ Mẹo Tăng Tỷ Lệ Đúng", section_label_style))
+                for i, tip in enumerate(tips_accuracy[:4]):
+                    tip_text = clean_text_for_pdf(tip, unicode_font).replace('\n', ' ')
+                    story.append(Paragraph(f"✓ {tip_text}", body_style))
+                    if i < min(4, len(tips_accuracy)) - 1:
+                        story.append(Spacer(1, 0.03*inch))
             if tips_speed:
-                story.append(Paragraph("Meo Tang Toc Do", subheading_style))
-                for tip in tips_speed[:2]:  # Limit to 2 tips
-                    story.append(Paragraph(f"• {clean_text_for_pdf(tip, unicode_font)}", body_style))
+                story.append(Spacer(1, 0.06*inch))
+                story.append(Paragraph("➤ Mẹo Tăng Tốc Độ", section_label_style))
+                for i, tip in enumerate(tips_speed[:3]):
+                    tip_text = clean_text_for_pdf(tip, unicode_font).replace('\n', ' ')
+                    story.append(Paragraph(f"➤ {tip_text}", body_style))
+                    if i < min(3, len(tips_speed)) - 1:
+                        story.append(Spacer(1, 0.03*inch))
             
             # Practice drills
             drills = topic.get('practice_drills', [])
             if drills:
-                story.append(Spacer(1, 0.1*inch))
-                story.append(Paragraph("Bai Tap Luyen Tap", subheading_style))
-                for drill in drills[:4]:  # Limit to 4 drills
-                    story.append(Paragraph(f"• {clean_text_for_pdf(drill, unicode_font)}", body_style))
+                story.append(Spacer(1, 0.08*inch))
+                story.append(Paragraph("◆ Bài Tập Luyện Tập", section_label_style))
+                for i, drill in enumerate(drills[:4]):
+                    drill_text = clean_text_for_pdf(drill, unicode_font).replace('\n', ' ')
+                    story.append(Paragraph(f"• {drill_text}", body_style))
+                    if i < min(4, len(drills)) - 1:
+                        story.append(Spacer(1, 0.03*inch))
             
             # Key formulas
             formulas = topic.get('key_formulas', [])
             if formulas:
-                story.append(Spacer(1, 0.1*inch))
-                story.append(Paragraph("Cong Thuc Can Nho", subheading_style))
-                for formula in formulas[:4]:  # Limit to 4 formulas
-                    story.append(Paragraph(f"• {clean_text_for_pdf(formula, unicode_font)}", body_style))
+                story.append(Spacer(1, 0.08*inch))
+                story.append(Paragraph("✚ Công Thức Cần Nhớ", section_label_style))
+                for i, formula in enumerate(formulas[:5]):
+                    formula_text = clean_text_for_pdf(formula, unicode_font).replace('\n', ' ')
+                    story.append(Paragraph(f"• {formula_text}", body_style))
+                    if i < min(5, len(formulas)) - 1:
+                        story.append(Spacer(1, 0.03*inch))
         
         # Build PDF
         doc.build(story)

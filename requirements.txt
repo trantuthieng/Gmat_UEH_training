@@ -4,3 +4,4 @@ python-dotenv
 psycopg2-binary
 reportlab
 pypdf
+fpdf2

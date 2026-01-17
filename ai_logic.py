@@ -165,10 +165,10 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
         Chủ đề: {topic}
         Câu mẫu: "{seed_question['content']}"
 
-        Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI dựa trên logic của câu mẫu:
-        1. Toán học: Thay đổi số liệu nhưng PHẢI TỰ TÍNH TOÁN LẠI ĐÁP ÁN chính xác.
-        2. Logic: Giữ cấu trúc suy luận, thay đổi ngữ cảnh.
-        3. Pattern: Tạo quy luật mới rõ ràng.
+        Nhiệm vụ: Tạo 1 câu hỏi trắc nghiệm MỚI cùng DẠNG/KỸ NĂNG với câu mẫu (không cần giữ nguyên cấu trúc), nhưng KHÓ HƠN:
+        1. Toán học: Tăng độ khó bằng số liệu lẻ (không tròn), kết hợp 2-3 bước tính hoặc 2 khái niệm trong cùng một bài.
+        2. Logic: Giữ loại suy luận nhưng có thể đổi cấu trúc câu hỏi; thêm bẫy lựa chọn gần đúng, distractor sát đáp án đúng.
+        3. Pattern: Quy luật mới phức tạp hơn (ít nhất 2 tầng quy luật) nhưng vẫn nhất quán và giải được.
 
         YÊU CẦU QUAN TRỌNG (bắt buộc):
         - Hãy suy nghĩ từng bước (Chain of Thought) và ghi rõ phép tính số học cụ thể (không nói chung chung).
@@ -195,7 +195,7 @@ def generate_question_variant(seed_question, max_attempts: int = 3):
                 model='gemini-2.5-pro',
                 contents=prompt,
                 config={
-                    'temperature': 0.7,
+                    'temperature': 0.9,
                     'max_output_tokens': 8192
                 }
             )
@@ -361,7 +361,7 @@ def generate_question_batch(seeds, start_idx=0, progress_callback=None):
 
 def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_callback=None, max_retries_per_question=4, user_id=None):
     """
-    Tạo bộ đề thi: Trộn 50% câu hỏi cũ từ Cache và 50% câu hỏi mới từ AI.
+    Tạo bộ đề thi: Ưu tiên câu hỏi mới từ AI (~70%) trộn với câu hỏi cũ (~30%).
     Ưu tiên các topic mà user hay trả lời sai (nếu có user_id).
     
     Args:
@@ -373,15 +373,15 @@ def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_call
         print("❌ Không có seed data")
         return exam_questions
 
-    # 1. CẤU HÌNH TỈ LỆ (50% cũ - 50% mới)
-    target_cached = int(num_questions * 0.5)  # 15 câu cũ
-    target_new = num_questions - target_cached # 15 câu mới
+    # 1. CẤU HÌNH TỈ LỆ (ưu tiên câu mới để tăng độ đa dạng/khó)
+    target_cached = int(num_questions * 0.3)  # 30% cũ
+    target_new = num_questions - target_cached # 70% mới
 
     print(f"📋 Kế hoạch tạo đề: {target_cached} câu cũ (DB) + {target_new} câu mới (AI)")
     
     # 1.5 LẤY WEAK TOPICS NẾU CÓ USER_ID
     weak_topics = []
-    weak_topic_boost_ratio = 0.3  # 30% câu sẽ ưu tiên weak topics
+    weak_topic_boost_ratio = 0.45  # Tăng tỷ lệ ưu tiên topic yếu để luyện tập trọng tâm
     if user_id:
         try:
             from db import get_weak_topics
@@ -428,8 +428,10 @@ def generate_full_exam(seed_data, num_questions=30, num_general=0, progress_call
         remaining_needed = actual_needed_new - len(selected_seeds)
         bucket_list = list(topic_buckets.values())
         random.shuffle(bucket_list)
-        
+
+        # Lấy xen kẽ giữa các bucket để tăng độ trộn, mỗi vòng lại xáo thứ tự bucket
         while len(selected_seeds) < actual_needed_new and bucket_list:
+            random.shuffle(bucket_list)
             for bucket in bucket_list:
                 if bucket:
                     selected_seeds.append(random.choice(bucket))
