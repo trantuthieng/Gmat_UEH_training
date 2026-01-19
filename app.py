@@ -4,9 +4,29 @@ import time
 import random
 import re
 from dotenv import load_dotenv
+from pathlib import Path
+import sys
 
-# Load environment variables FIRST (before any other imports)
-load_dotenv()
+# Load environment variables FIRST (robust for PyInstaller EXE)
+def _load_env():
+    try:
+        base_dir = Path(
+            getattr(
+                sys,
+                "_MEIPASS",
+                Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent,
+            )
+        )
+        env_path = base_dir / ".env"
+        if env_path.exists():
+            load_dotenv(dotenv_path=env_path)
+        else:
+            load_dotenv()
+    except Exception:
+        # Fallback: default search in CWD and parents
+        load_dotenv()
+
+_load_env()
 
 # --- CẤU HÌNH TRANG (Phải để đầu tiên) ---
 st.set_page_config(

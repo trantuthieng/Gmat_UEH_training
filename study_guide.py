@@ -6,6 +6,80 @@ from pathlib import Path
 from typing import List, Dict, Any
 from functools import lru_cache
 
+def _get_cached_guide(topic_name: str) -> Dict[str, Any] | None:
+    """Lấy study guide từ cache DB nếu có"""
+    try:
+        from db import get_conn, _get_db_type
+        db_type = _get_db_type()
+        
+        with get_conn() as conn:
+            c = conn.cursor()
+            if db_type == "postgresql":
+                c.execute(
+                    """UPDATE study_guide_cache 
+                       SET accessed_count = accessed_count + 1, last_accessed_at = CURRENT_TIMESTAMP 
+                       WHERE topic = %s 
+                       RETURNING guide_data""",
+                    (topic_name,)
+                )
+                row = c.fetchone()
+                conn.commit()
+                if row:
+                    return row[0]  # JSONB automatically parsed
+            else:
+                c.execute("SELECT guide_data FROM study_guide_cache WHERE topic = ?", (topic_name,))
+                row = c.fetchone()
+                if row:
+                    c.execute(
+                        """UPDATE study_guide_cache 
+                           SET accessed_count = accessed_count + 1, last_accessed_at = CURRENT_TIMESTAMP 
+                           WHERE topic = ?""",
+                        (topic_name,)
+                    )
+                    conn.commit()
+                    return json.loads(row[0])
+        return None
+    except Exception as e:
+        print(f"⚠️ Cache lookup error for '{topic_name}': {e}")
+        return None
+
+def _save_guide_to_cache(topic_name: str, guide_data: Dict[str, Any]) -> None:
+    """Lưu study guide vào cache DB - increment version nếu update lại cùng topic"""
+    try:
+        from db import get_conn, _get_db_type
+        db_type = _get_db_type()
+        
+        with get_conn() as conn:
+            c = conn.cursor()
+            if db_type == "postgresql":
+                import psycopg2.extras
+                # ON CONFLICT: Update guide_data + increment version + update timestamp
+                c.execute(
+                    """INSERT INTO study_guide_cache (topic, guide_data, version) 
+                       VALUES (%s, %s, 1) 
+                       ON CONFLICT (topic) DO UPDATE SET 
+                           guide_data = EXCLUDED.guide_data,
+                           version = study_guide_cache.version + 1,
+                           updated_at = CURRENT_TIMESTAMP""",
+                    (topic_name, psycopg2.extras.Json(guide_data))
+                )
+            else:
+                # SQLite: Check if exists first
+                c.execute("SELECT version FROM study_guide_cache WHERE topic = ?", (topic_name,))
+                row = c.fetchone()
+                new_version = (row[0] + 1) if row else 1
+                
+                c.execute(
+                    """INSERT OR REPLACE INTO study_guide_cache 
+                       (topic, guide_data, version, updated_at) 
+                       VALUES (?, ?, ?, CURRENT_TIMESTAMP)""",
+                    (topic_name, json.dumps(guide_data, ensure_ascii=False), new_version)
+                )
+            conn.commit()
+            print(f"💾 Cached guide for '{topic_name}' to database")
+    except Exception as e:
+        print(f"⚠️ Cache save error for '{topic_name}': {e}")
+
 @lru_cache(maxsize=1)
 def _get_api_key() -> str | None:
     """Lấy API key từ env hoặc Streamlit secrets"""
@@ -447,7 +521,13 @@ def generate_study_guide(questions: List[Dict[str, Any]], user_answers: Dict[str
 
     def _looks_generic_guide(guide: Dict[str, Any]) -> bool:
         """Heuristic to catch vague/short guides and force richer fallback."""
-        theory = (guide.get('theory') or '').strip()
+        theory_val = guide.get('theory')
+        # Accept both string and structured theory; serialize safely
+        if isinstance(theory_val, dict):
+            theory = json.dumps(theory_val, ensure_ascii=False)
+        else:
+            theory = str(theory_val or '')
+        theory = theory.strip()
         if len(theory) < 500:
             return True
         lowered = theory.lower()
@@ -500,6 +580,20 @@ def generate_study_guide(questions: List[Dict[str, Any]], user_answers: Dict[str
         # TẠO PROMPT CHI TIẾT CHO TỪNG TOPIC - BAO GỒM CÂU HỎI SAI ĐẦY ĐỦ
         importance = 'high' if accuracy < 60 else ('medium' if accuracy < 80 else 'low')
         priority = 1 if importance == 'high' else (2 if importance == 'medium' else 3)
+        
+        # 1. Check cache first (instant retrieval)
+        cached = _get_cached_guide(topic_name)
+        if cached:
+            print(f"✓ Loaded '{topic_name}' from cache (DB)")
+            all_topics_guides.append(cached)
+            continue
+        
+        # 2. Gọi AI nếu chưa có cache
+        model = _get_study_model()
+        if not model:
+            print(f"⚠️ AI model not available, using fallback for '{topic_name}'")
+            all_topics_guides.append(_get_fallback_guide(topic_name, data))
+            continue
         
         # Chuẩn bị chi tiết các câu SAI để phân tích
         wrong_details = []
@@ -614,7 +708,14 @@ YÊU CẦU QUAN TRỌNG:
 - Mỗi "detailed_concept" phải có ví dụ số/hình dung cụ thể (không được ghi chung chung)
 - "practice_drills" phải là bài tập cụ thể (ghi rõ dữ kiện/số liệu), không phải lời khuyên chung chung
 - Không viết chung chung - phải cụ thể, áp dụng được ngay
-- Trả về JSON thuần, không có markdown
+
+**CRITICAL JSON RULES:**
+- Return ONLY valid JSON (no markdown code blocks)
+- Escape all quotes inside strings with backslash
+- Close ALL string values with double quotes
+- Add comma after every field except the last one
+- Do NOT truncate - complete all fields fully
+- Test JSON validity before returning
 """
 
         try:
@@ -644,48 +745,89 @@ YÊU CẦU QUAN TRỌNG:
             text = re.sub(r'\}\]\}\}+', '}]}', text)
 
             def _repair_json_payload(payload: str) -> str:
-                """Best-effort fix for truncated/unterminated JSON."""
-                cleaned = payload.strip().rstrip('`')
-                # Balance quotes
-                if len(re.findall(r'(?<!\\)"', cleaned)) % 2 != 0:
-                    cleaned += '"'
-                # Trim to last closing brace/bracket to drop trailing noise
+                """Advanced JSON repair with multi-stage healing."""
+                cleaned = payload.strip().rstrip('`').rstrip(',')
+                
+                # Stage 1: Fix unterminated strings (add closing quote before newline/brace)
+                cleaned = re.sub(r'"([^"]*?)\n\s*([,}\]])', r'"\1"\2', cleaned)
+                cleaned = re.sub(r'"([^"]*?)$', r'"\1"', cleaned)
+                
+                # Stage 2: Balance quotes globally
+                quote_count = len(re.findall(r'(?<!\\)"', cleaned))
+                if quote_count % 2 != 0:
+                    # Find last unbalanced quote position
+                    last_quote = cleaned.rfind('"')
+                    if last_quote > 0 and cleaned[last_quote-1] != '\\':
+                        # Add closing quote before next structural character
+                        next_struct = len(cleaned)
+                        for char_pos in range(last_quote + 1, len(cleaned)):
+                            if cleaned[char_pos] in [',', '}', ']', '\n']:
+                                next_struct = char_pos
+                                break
+                        cleaned = cleaned[:next_struct] + '"' + cleaned[next_struct:]
+                
+                # Stage 3: Fix missing commas between array/object elements
+                cleaned = re.sub(r'}\s*{', r'},{', cleaned)  # Between objects
+                cleaned = re.sub(r']\s*\[', r'],[', cleaned)  # Between arrays
+                cleaned = re.sub(r'"\s*"', r'","', cleaned)  # Between strings
+                
+                # Stage 4: Remove trailing commas
+                cleaned = re.sub(r',\s*(\}|\])', r'\1', cleaned)
+                
+                # Stage 5: Trim to last valid closing brace/bracket
                 last_brace = max(cleaned.rfind('}'), cleaned.rfind(']'))
                 if last_brace != -1:
                     cleaned = cleaned[: last_brace + 1]
-                # Remove trailing commas before the final brace/bracket
-                cleaned = re.sub(r',\s*(\}|\])', r'\1', cleaned)
-                # Ensure ends with brace if nothing else
-                if cleaned and cleaned[-1] not in ['}', ']']:
-                    cleaned += '}'
+                
+                # Stage 6: Ensure proper closure
+                open_braces = cleaned.count('{') - cleaned.count('}')
+                open_brackets = cleaned.count('[') - cleaned.count(']')
+                cleaned += '}' * open_braces + ']' * open_brackets
+                
                 return cleaned
 
             # Validate JSON before parsing
             if not text or text == '{}':
                 raise ValueError("Empty JSON response from API")
 
-            # First attempt: try to parse after trimming obvious trailing chunks
+            # Multi-stage JSON parsing with progressive repair
+            parse_error = None
+            
+            # Attempt 1: Direct parse (best case)
             try:
                 topic_guide = json.loads(text)
-            except json.JSONDecodeError:
-                # Second attempt: repair common truncation/unterminated cases
-                repaired = _repair_json_payload(text)
+            except json.JSONDecodeError as e1:
+                parse_error = e1
+                
+                # Attempt 2: Basic repair (unterminated strings, missing commas)
                 try:
+                    repaired = _repair_json_payload(text)
                     print(f"ℹ️ Repairing JSON for topic '{topic_name}'")
                     topic_guide = json.loads(repaired)
+                    parse_error = None
                 except json.JSONDecodeError as e2:
-                    # Final attempt: remove any trailing partial lines and re-close braces
-                    lines = cleaned = repaired.splitlines()
-                    while lines:
-                        candidate = "\n".join(lines).rstrip()
+                    parse_error = e2
+                    
+                    # Attempt 3: Line-by-line truncation (drop bad tail)
+                    lines = repaired.splitlines()
+                    for trim_lines in range(1, min(10, len(lines))):
+                        candidate = "\n".join(lines[:-trim_lines]).rstrip()
                         candidate = re.sub(r",\s*(\}|\])", r"\1", candidate)
+                        # Ensure proper closure
+                        open_braces = candidate.count('{') - candidate.count('}')
+                        open_brackets = candidate.count('[') - candidate.count(']')
+                        candidate += '}' * open_braces + ']' * open_brackets
                         try:
                             topic_guide = json.loads(candidate)
+                            print(f"✓ Recovered by trimming {trim_lines} lines")
+                            parse_error = None
                             break
                         except json.JSONDecodeError:
-                            lines = lines[:-1]  # drop last line and retry
-                    else:
-                        raise e2
+                            continue
+            
+            # If all parsing failed, raise last error to trigger fallback
+            if parse_error:
+                raise parse_error
             
             # Validate required fields
             required_fields = ['theory', 'detailed_concepts', 'step_by_step_method', 'common_mistakes', 'tips_for_accuracy']
@@ -712,6 +854,8 @@ YÊU CẦU QUAN TRỌNG:
                 'wrong': data['wrong']
             }
             
+            # Save successful AI response to cache
+            _save_guide_to_cache(topic_name, topic_guide)
             all_topics_guides.append(topic_guide)
             
         except Exception as e:
@@ -1122,13 +1266,11 @@ def generate_study_guide_pdf(study_data: Dict[str, Any]) -> bytes:
         pdf = FPDF(format='A4')
         pdf.add_page()
         
-        # Register font if found
-        if font_path:
-            pdf.add_font(font_name, '', font_path)
-            pdf.set_font(font_name, '', 11)
-        else:
-            pdf.set_font("Arial", "", 11)
-            font_name = "Arial"
+        # Use Helvetica core font (supports normal, bold, italic built-in)
+        # DejaVu requires separate TTF files for each style (normal.ttf, bold.ttf, italic.ttf)
+        # For simplicity, use cross-platform Helvetica
+        font_name = "Helvetica"
+        pdf.set_font(font_name, "", 11)
         
         # ============ TITLE ============
         pdf.set_font(font_name, 'B', 20)

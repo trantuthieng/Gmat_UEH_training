@@ -144,6 +144,24 @@ def init_db():
                 """
             )
             c.execute("CREATE INDEX IF NOT EXISTS idx_user_topic ON user_wrong_answers(user_id, topic);")
+            
+            # Bảng cache AI study guide responses
+            c.execute(
+                """
+                CREATE TABLE IF NOT EXISTS study_guide_cache (
+                    id SERIAL PRIMARY KEY,
+                    topic TEXT NOT NULL UNIQUE,
+                    guide_data JSONB NOT NULL,
+                    version INTEGER DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    accessed_count INTEGER DEFAULT 0,
+                    last_accessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+                """
+            )
+            c.execute("CREATE INDEX IF NOT EXISTS idx_topic_cache ON study_guide_cache(topic);")
+            c.execute("CREATE INDEX IF NOT EXISTS idx_version_cache ON study_guide_cache(version DESC);")
         else:
             # SQLite
             c.execute(
@@ -180,6 +198,24 @@ def init_db():
                 """
             )
             c.execute("CREATE INDEX IF NOT EXISTS idx_user_topic ON user_wrong_answers(user_id, topic);")
+            
+            # Bảng cache AI study guide responses
+            c.execute(
+                """
+                CREATE TABLE IF NOT EXISTS study_guide_cache (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    topic TEXT NOT NULL UNIQUE,
+                    guide_data TEXT NOT NULL,
+                    version INTEGER DEFAULT 1,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    accessed_count INTEGER DEFAULT 0,
+                    last_accessed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+                """
+            )
+            c.execute("CREATE INDEX IF NOT EXISTS idx_topic_cache ON study_guide_cache(topic);")
+            c.execute("CREATE INDEX IF NOT EXISTS idx_version_cache ON study_guide_cache(version DESC);")
         conn.commit()
 
 def _hash_question(q: Dict[str, Any]) -> str:
